@@ -2,26 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+body {
+  @apply bg-background;
+  color: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+.swiper-button {
+  @apply flex items-center justify-center p-2 text-white transition duration-300 border-2 border-white rounded-full cursor-pointer hover:bg-white hover:text-black;
+}
+
+.swiper-button-disabled {
+  @apply cursor-not-allowed opacity-40 hover:text-white hover:bg-transparent;
+}
+
+::-webkit-scrollbar {
+  @apply w-2 bg-white/10;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-500 rounded-md;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  @apply hidden;
+}
+
+.controls-container .control-button {
+  @apply w-8 h-8;
+}
+
+.banner__overlay--down {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 10%,
+    rgba(0, 0, 0, 0.8),
+    rgba(0, 0, 0, 1)
+  );
+}
+
+.banner__overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.reactions img {
+  @apply border rounded-full border-background-800 bg-background-800;
+}
+
+@layer utilities {
+  .snap-x > * {
+    flex-shrink: 0;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@media screen and (min-width: 768px) {
+  .banner__overlay {
+    background-image: linear-gradient(
+      77deg,
+      rgba(0, 0, 0, 0.8) 25%,
+      transparent 85%
+    );
+
+    background-color: transparent;
+  }
+}
+
+main {
+  @apply overflow-x-hidden;
+}
+
+.aspect-w-2 {
+  position: relative;
+  padding-bottom: calc(var(--tw-aspect-h) / var(--tw-aspect-w) * 100%);
+  --tw-aspect-w: 2;
+}
+.aspect-w-2 > * {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.aspect-h-3 {
+  --tw-aspect-h: 3;
+}
+
+.swiper-container {
+  @apply w-full h-full;
+  max-width: screen;
+  overflow: hidden;
 }
