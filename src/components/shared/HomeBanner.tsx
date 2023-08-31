@@ -83,7 +83,7 @@ const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
                 {slide.bannerImage && (
                   <Image
                     src={slide.bannerImage}
-                    alt={title}
+                    alt={title as string}
                     layout="fill"
                     objectFit="cover"
                     className="rounded-md"
@@ -174,7 +174,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
     <React.Fragment>
       <div className="group relative w-full overflow-hidden md:h-[450px] xl:h-[500px] 2xl:h-[550px]">
         <AnimatePresence>
-          {isValidUrl(activeSlide?.bannerImage) && !showTrailer && (
+          {isValidUrl(activeSlide.bannerImage) && !showTrailer && (
             <motion.div
               variants={bannerVariants}
               animate="animate"
@@ -185,10 +185,9 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
             >
               <Image
                 src={activeSlide.bannerImage}
-                layout="fill"
-                objectFit="cover"
-                objectPosition="50% 35%"
-                alt={title}
+                fill
+                style={{ objectFit: "cover", objectPosition: "50% 35%" }}
+                alt={title as string}
               />
             </motion.div>
           )}
@@ -227,7 +226,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
           </div>
 
           <Description
-            description={description}
+            description={description as string}
             className="mt-2 hidden text-gray-200 md:block"
           />
         </motion.div>

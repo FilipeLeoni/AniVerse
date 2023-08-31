@@ -6,7 +6,6 @@ import { getTitle } from "@/utils/data";
 import { motion } from "framer-motion";
 import React, { useRef } from "react";
 import { useLocale } from "next-intl";
-import { Pagination } from "swiper/modules";
 
 interface BannerSwiperProps extends SwiperProps {
   data: Media[];
@@ -41,7 +40,7 @@ const BannerSwiper: React.FC<BannerSwiperProps> = ({ data, ...props }) => {
         },
       }}
       slideToClickedSlide
-      defaultActiveSlide={5}
+      defaultActiveSlide={7}
       className=""
       {...props}
     >
@@ -64,7 +63,7 @@ const BannerSwiper: React.FC<BannerSwiperProps> = ({ data, ...props }) => {
                     },
                   }}
                   animate={isActive ? "enter" : "exit"}
-                  title={title}
+                  title={title as string}
                 >
                   <PlainCard src={anime?.coverImage?.extraLarge} alt={title} />
                 </motion.div>

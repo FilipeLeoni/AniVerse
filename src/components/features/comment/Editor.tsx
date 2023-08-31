@@ -98,7 +98,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={AiOutlineBold}
-                onClick={() => editor?.chain().toggleBold().focus().run()}
+                onClick={() => editor.chain().toggleBold().focus().run()}
                 title="Bold"
               />
 
@@ -107,7 +107,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={AiOutlineUnderline}
-                onClick={() => editor?.chain().toggleUnderline().focus().run()}
+                onClick={() => editor.chain().toggleUnderline().focus().run()}
                 title="Underline"
               />
 
@@ -116,7 +116,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={AiOutlineItalic}
-                onClick={() => editor?.chain().toggleItalic().focus().run()}
+                onClick={() => editor.chain().toggleItalic().focus().run()}
                 title="Italic"
               />
 
@@ -125,7 +125,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={AiOutlineUnorderedList}
-                onClick={() => editor?.chain().toggleBulletList().focus().run()}
+                onClick={() => editor.chain().toggleBulletList().focus().run()}
                 title="Unordered list"
               />
 
@@ -134,9 +134,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={AiOutlineOrderedList}
-                onClick={() =>
-                  editor?.chain().toggleOrderedList().focus().run()
-                }
+                onClick={() => editor.chain().toggleOrderedList().focus().run()}
                 title="Ordered list"
               />
 
@@ -145,7 +143,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={AiOutlineStrikethrough}
-                onClick={() => editor?.chain().toggleStrike().focus().run()}
+                onClick={() => editor.chain().toggleStrike().focus().run()}
                 title="Strikethrough"
               />
 
@@ -154,7 +152,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={GrBlockQuote}
-                onClick={() => editor?.chain().toggleBlockquote().focus().run()}
+                onClick={() => editor.chain().toggleBlockquote().focus().run()}
                 title="Blockquote"
               />
 
@@ -163,7 +161,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 className="text-gray-300"
                 iconClassName="w-4 h-4"
                 LeftIcon={AiOutlineEyeInvisible}
-                onClick={() => editor?.chain().setSpoiler().focus().run()}
+                onClick={() => editor.chain().setSpoiler().focus().run()}
                 title="Spoiler"
               />
             </div>
@@ -175,9 +173,9 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
                 secondary
                 shortcutKey="enter"
                 onClick={() => {
-                  if (editor?.isEmpty) return;
+                  if (editor.isEmpty) return;
 
-                  const html: any = editor?.getHTML();
+                  const html = editor.getHTML();
 
                   onSubmit(html);
                 }}

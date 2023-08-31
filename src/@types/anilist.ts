@@ -1,6 +1,6 @@
 // 💙
 
-import { Translation } from ".";
+// import { Translation } from ".";
 
 /* eslint-disable */
 
@@ -100,6 +100,7 @@ export interface MediaEdge {
 
 /** Anime or Manga */
 export interface Media {
+  media: any;
   /** The id of the media*/
   id: number;
   /** The mal id of the media*/
@@ -207,7 +208,7 @@ export interface Media {
   /** Notes for site moderators*/
   modNotes: Maybe<string>;
 
-  translations?: Translation[];
+  translations?: any[];
 }
 
 /** Media query */
@@ -355,13 +356,13 @@ export interface MediaArgs {
 /** The official titles of the media in various languages */
 export interface MediaTitle extends Record<string, string> {
   /** The romanization of the native language title*/
-  romaji: Maybe<string>;
+  romaji: any;
   /** The official english title*/
-  english: Maybe<string>;
+  english: any;
   /** Official title in it's native language*/
-  native: Maybe<string>;
+  native: any;
   /** The currently authenticated users preferred title language. Default romaji for non-authenticated*/
-  userPreferred: Maybe<string>;
+  userPreferred: any;
 }
 
 /** Media type enum, anime or manga. */

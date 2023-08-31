@@ -1,12 +1,10 @@
-import enTranslations from "@/constants/en";
-import viTranslations from "@/constants/vi";
-import ruTranslations from "@/constants/ru";
-import esTranslations from "@/constants/es";
-import { Chapter, Episode, Translation as TranslationType } from "@/types";
-import { Media } from "@/types/anilist";
-import { Translation } from "next-i18next";
+// import enTranslations from "@/constants/en";
+// import viTranslations from "@/constants/vi";
+// import ruTranslations from "@/constants/ru";
+// import esTranslations from "@/constants/es";
+// import { Chapter, Episode, Translation as TranslationType } from "@/@types";
+import { Media } from "@/@types/anilist";
 import { parseNumbersFromString } from ".";
-import { useTranslations } from "next-intl";
 
 type Translate = { readonly value: string; readonly label: string } & Record<
   string,
@@ -32,20 +30,20 @@ type TranslationKeys = [
 ];
 type Translation = Record<TranslationKeys[number], Translate[]>;
 
-export const getConstantTranslation = (locale: string) => {
-  switch (locale) {
-    case "vi":
-      return viTranslations;
-    case "en":
-      return enTranslations;
-    case "ru":
-      return ruTranslations;
-    case "es":
-      return esTranslations;
-    default:
-      return enTranslations;
-  }
-};
+// export const getConstantTranslation = (locale: string) => {
+//   switch (locale) {
+//     case "vi":
+//       return viTranslations;
+//     case "en":
+//       return enTranslations;
+//     case "ru":
+//       return ruTranslations;
+//     case "es":
+//       return esTranslations;
+//     default:
+//       return enTranslations;
+//   }
+// };
 
 const composeTranslation = (translation: Translation) => {
   return {
@@ -79,7 +77,7 @@ type ConvertOptions = {
 };
 
 export const convert = (
-  text: string,
+  text: any,
   type: (typeof types)[number],
   options: ConvertOptions = {}
 ) => {
@@ -129,7 +127,7 @@ export const getDescription = (data: Media, locale?: string) => {
   return translation.description || data?.description;
 };
 
-export const sortMediaUnit = <T extends Chapter | Episode>(data: T[]) => {
+export const sortMediaUnit = (data: any[]) => {
   return data.sort((a, b) => {
     const aNumber = parseNumbersFromString(a.name, 9999)?.[0];
     const bNumber = parseNumbersFromString(b.name, 9999)?.[0];

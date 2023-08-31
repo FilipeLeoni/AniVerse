@@ -94,3 +94,41 @@ main {
   max-width: screen;
   overflow: hidden;
 }
+
+.slider-outer {
+  margin: 0 auto;
+  padding: 30px;
+  width: 70%;
+  background: #ccc;
+}
+
+.slick-slide {
+  text-align: center;
+  color: #ccc;
+  background: white;
+  width: 90px;
+  transform: translate(-50%, 0);
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  transition: all 0.35s ease;
+}
+
+.slick-slide:hover {
+  width: 170px;
+  top: 0;
+  left: 0;
+  color: red;
+  margin-left: 2rem;
+  margin-right: -0.5rem;
+}
+..swiper-slide {
+  @apply w-auto;
+}
+
+.slick-slide.is-next {
+  margin-right: 3rem; /* Afastar os próximos elementos */
+}
+
+.slick-slide.is-prev {
+  margin-left: 0.5rem; /* Afastar os elementos anteriores */
+}
