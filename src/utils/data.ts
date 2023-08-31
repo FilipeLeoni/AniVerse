@@ -1,8 +1,7 @@
-// import enTranslations from "@/constants/en";
-// import viTranslations from "@/constants/vi";
-// import ruTranslations from "@/constants/ru";
-// import esTranslations from "@/constants/es";
-// import { Chapter, Episode, Translation as TranslationType } from "@/@types";
+import enTranslations from "@/constants/en";
+import viTranslations from "@/constants/vi";
+import ruTranslations from "@/constants/ru";
+import esTranslations from "@/constants/es";
 import { Media } from "@/@types/anilist";
 import { parseNumbersFromString } from ".";
 
@@ -30,20 +29,20 @@ type TranslationKeys = [
 ];
 type Translation = Record<TranslationKeys[number], Translate[]>;
 
-// export const getConstantTranslation = (locale: string) => {
-//   switch (locale) {
-//     case "vi":
-//       return viTranslations;
-//     case "en":
-//       return enTranslations;
-//     case "ru":
-//       return ruTranslations;
-//     case "es":
-//       return esTranslations;
-//     default:
-//       return enTranslations;
-//   }
-// };
+export const getConstantTranslation = (locale: string) => {
+  switch (locale) {
+    case "vi":
+      return viTranslations;
+    case "en":
+      return enTranslations;
+    case "ru":
+      return ruTranslations;
+    case "es":
+      return esTranslations;
+    default:
+      return enTranslations;
+  }
+};
 
 const composeTranslation = (translation: Translation) => {
   return {
@@ -127,11 +126,11 @@ export const getDescription = (data: Media, locale?: string) => {
   return translation.description || data?.description;
 };
 
-export const sortMediaUnit = (data: any[]) => {
-  return data.sort((a, b) => {
-    const aNumber = parseNumbersFromString(a.name, 9999)?.[0];
-    const bNumber = parseNumbersFromString(b.name, 9999)?.[0];
+// export const sortMediaUnit = (data: any[]) => {
+//   return data.sort((a, b) => {
+//     const aNumber = parseNumbersFromString(a.name, 9999)?.[0];
+//     const bNumber = parseNumbersFromString(b.name, 9999)?.[0];
 
-    return aNumber - bNumber;
-  });
-};
+//     return aNumber - bNumber;
+//   });
+// };
