@@ -14,37 +14,39 @@
 // import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 // import axios from "axios";
 // import { getTranslations } from "../tmdb";
-// import {
-//   airingSchedulesQuery,
-//   charactersDefaultFields,
-//   charactersQuery,
-//   mediaDefaultFields,
-//   mediaDetailsQuery,
-//   MediaDetailsQueryResponse,
-//   mediaQuery,
-//   PageQueryResponse,
-//   recommendationsQuery,
-//   staffDefaultFields,
-//   staffQuery,
-//   studioDetailsQuery,
-//   StudioDetailsQueryResponse,
-//   studiosQuery,
-// } from "./queries";
+import axios from "axios";
+import {
+  airingSchedulesQuery,
+  charactersDefaultFields,
+  charactersQuery,
+  mediaDefaultFields,
+  mediaDetailsQuery,
+  MediaDetailsQueryResponse,
+  mediaQuery,
+  PageQueryResponse,
+  recommendationsQuery,
+  staffDefaultFields,
+  staffQuery,
+  studioDetailsQuery,
+  StudioDetailsQueryResponse,
+  studiosQuery,
+} from "./queries";
+import { AiringScheduleArgs, PageArgs } from "@/@types/anilist";
 
-// const GRAPHQL_URL = "https://graphql.anilist.co";
+const GRAPHQL_URL = "https://graphql.anilist.co";
 
-// export const anilistFetcher = async <T>(query: string, variables: any) => {
-//   type Response = {
-//     data: T;
-//   };
+export const anilistFetcher = async <T>(query: string, variables: any) => {
+  type Response = {
+    data: T;
+  };
 
-//   const { data } = await axios.post<Response>(GRAPHQL_URL, {
-//     query,
-//     variables,
-//   });
+  const { data } = await axios.post<Response>(GRAPHQL_URL, {
+    query,
+    variables,
+  });
 
-//   return data?.data;
-// };
+  return data?.data;
+};
 
 // export const getPageMedia = async (
 //   args: MediaArgs & PageArgs,
@@ -138,17 +140,16 @@
 //   };
 // };
 
-// export const getAiringSchedules = async (
-//   args: AiringScheduleArgs & PageArgs,
-//   fields?: string
-// ) => {
-//   const response = await anilistFetcher<PageQueryResponse>(
-//     airingSchedulesQuery(fields),
-//     args
-//   );
+export const getAiringSchedules = async (args: any, fields?: string) => {
+  const response = await anilistFetcher<PageQueryResponse>(
+    airingSchedulesQuery(fields),
+    args
+  );
 
-//   return response?.Page.airingSchedules;
-// };
+  console.log(response);
+
+  return response?.Page.airingSchedules;
+};
 
 // export const getRecommendations = async (
 //   args: RecommendationArgs & PageArgs,

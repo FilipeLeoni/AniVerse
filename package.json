@@ -39,6 +39,7 @@
     "react-icons": "^4.10.1",
     "react-popper": "^2.3.0",
     "react-slick": "^0.29.0",
+    "react-tabs": "^6.0.2",
     "slick-carousel": "^1.8.1",
     "swiper": "^10.2.0",
     "tailwind-merge": "^1.14.0",

@@ -2,13 +2,19 @@ import React, { useState } from "react";
 import Swiper, { SwiperInstance, SwiperSlide } from "./Swiper";
 import SwiperCard from "./SwiperCard";
 
-const CardCarousel = ({ title, data }: any) => {
+interface CardSwiperProps {
+  title?: string;
+  data: any;
+  onEachCard?: (data: any, isHover: boolean) => React.ReactNode;
+}
+
+const CardCarousel: React.FC<CardSwiperProps> = ({ title, data }: any) => {
   const [swiper, setSwiper] = useState<SwiperInstance>();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<any>(null);
 
   const HOVER_WIDTH = 3;
-  const DEBOUNCE_DELAY = 500;
+  const DEBOUNCE_DELAY = 250;
 
   const handleSlideHover = (index: number) => () => {
     if (!swiper) return;
@@ -40,7 +46,7 @@ const CardCarousel = ({ title, data }: any) => {
     }
     setTimeout(() => {
       const slide = swiper.slides[index];
-      slide.style.transition = "width 0.5s";
+      slide.style.transition = "width 0.3s";
       const [originalWidth] = swiper.slidesSizesGrid as number[];
       slide.style.width = `${originalWidth}px`;
       setActiveIndex(null);
@@ -49,9 +55,11 @@ const CardCarousel = ({ title, data }: any) => {
 
   return (
     <div className="w-full">
-      <h2 className="mb-4 text-2xl font-semibold line-clamp-1">
-        {title.toUpperCase()}
-      </h2>
+      {title && (
+        <h2 className="mb-4 text-2xl font-semibold line-clamp-1">
+          {title.toUpperCase()}
+        </h2>
+      )}
       <Swiper
         slidesPerView={2}
         spaceBetween={20}

@@ -12,7 +12,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import PlainCard from "./PlainCard";
 
 interface CardSwiperProps {
-  data: Media[];
+  data: any;
   onEachCard?: (data: Media, isHover: boolean) => React.ReactNode;
 }
 

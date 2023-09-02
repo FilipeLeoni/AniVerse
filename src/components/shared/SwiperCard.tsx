@@ -105,13 +105,12 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                 exit={{
                   opacity: 0,
                 }}
-                className="absolute aspect-w-2 aspect-h-3 w-auto h-auto rounded-md overflow-hidden"
+                className="absolute aspect-w-2 aspect-h-3 w-full h-auto rounded-md overflow-hidden"
               >
                 <Image
                   src={data?.coverImage?.extraLarge || ""}
                   fill
                   style={{ objectFit: "cover" }}
-                  className=""
                   alt={title as string}
                 />
               </motion.div>

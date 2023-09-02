@@ -351,15 +351,15 @@ export const vietnameseSlug = (str: string) => {
 //     });
 // };
 
-// export const removeArrayOfObjectDup = <T extends object, K extends keyof T>(
-//   arr: T[],
-//   property: K
-// ) => {
-//   return arr.filter(
-//     (obj, index, self) =>
-//       index === self.findIndex((t) => t[property] === obj[property])
-//   );
-// };
+export const removeArrayOfObjectDup = <T extends object>(
+  arr: T[],
+  property: keyof T
+) => {
+  return arr.filter(
+    (obj, index, self) =>
+      index === self.findIndex((t) => t[property] === obj[property])
+  );
+};
 
 // export const fulfilledPromises = <T extends Promise<any>>(promises: T[]) =>
 //   Promise.allSettled(promises).then((results) =>
@@ -458,14 +458,13 @@ export const vietnameseSlug = (str: string) => {
 // };
 
 export const createMediaDetailsUrl = (media: Media | any) => {
-  console.log(media.type);
   if (media?.type === MediaType.Anime) {
     return `/anime/details/${media.id}/${vietnameseSlug(
       media?.title?.userPreferred
     )}`;
   }
 
-  return `/manga/details/${media.id}/${vietnameseSlug(
+  return `/manga/details/${media?.id}/${vietnameseSlug(
     media?.title?.userPreferred
   )}`;
 };

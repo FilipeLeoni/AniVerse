@@ -62,7 +62,6 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ data, isLoading }) => {
 };
 
 const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
-  // const { locale } = useRouter();
   const locale = useLocale();
 
   return (
