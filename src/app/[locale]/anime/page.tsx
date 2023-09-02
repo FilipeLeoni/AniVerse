@@ -108,7 +108,7 @@ export default function AnimePage() {
         </div>
       )}
 
-      <Section className="md:pt-20">
+      <Section className="md:pt-20 pb-10">
         <AnimeScheduling />
       </Section>
     </div>

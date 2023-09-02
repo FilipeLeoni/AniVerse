@@ -100,7 +100,7 @@ export const getUpdatedAnime = async () => {
       query: `
             query {
               Page(page: 1, perPage: 20) {
-                media(sort: UPDATED_AT, type: ANIME) {
+                media(sort: UPDATED_AT_DESC, type: ANIME) {
                   id
                   title {
                     romaji
