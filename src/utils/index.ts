@@ -15,6 +15,7 @@
 // import { toast } from "react-toastify";
 
 import { Media, MediaSeason, MediaType } from "@/@types/anilist";
+import { differenceInMilliseconds, formatDistanceToNow } from "date-fns";
 import dayjs from "dayjs";
 
 // export const randomElement = <T>(array: T[]): T => {
@@ -360,6 +361,20 @@ export const removeArrayOfObjectDup = <T extends object>(
       index === self.findIndex((t) => t[property] === obj[property])
   );
 };
+
+export function formatTimeDifference(timestamp: any) {
+  const currentTimestamp = Math.floor(Date.now() / 1000);
+
+  const differenceInSeconds = timestamp - currentTimestamp;
+
+  const days = Math.floor(differenceInSeconds / (60 * 60 * 24));
+  const hours = Math.floor((differenceInSeconds % (60 * 60 * 24)) / (60 * 60));
+  const minutes = Math.floor((differenceInSeconds % (60 * 60)) / 60);
+
+  const formattedTime = `${days}d ${hours}h ${minutes}m`;
+
+  return formattedTime;
+}
 
 // export const fulfilledPromises = <T extends Promise<any>>(promises: T[]) =>
 //   Promise.allSettled(promises).then((results) =>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Swiper, { SwiperInstance, SwiperSlide } from "./Swiper";
 import SwiperCard from "./SwiperCard";
+import { isMobile } from "react-device-detect";
 
 interface CardSwiperProps {
   title?: string;
@@ -64,6 +65,7 @@ const CardCarousel: React.FC<CardSwiperProps> = ({ title, data }: any) => {
         slidesPerView={2}
         spaceBetween={20}
         watchSlidesProgress={true}
+        hideNavigation={isMobile}
         speed={500}
         onSwiper={(swiper) => {
           setSwiper(swiper);

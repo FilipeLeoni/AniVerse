@@ -34,7 +34,7 @@ export const SkeletonItem: React.FC<SkeletonItemProps> = ({
         className
       )}
       {...props}
-    ></div>
+    />
   );
 };
 

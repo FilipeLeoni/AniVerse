@@ -521,6 +521,10 @@ media {
   genres
   favourites
   averageScore
+  nextAiringEpisode {
+    airingAt
+    episode
+  }
 }
 `;
 

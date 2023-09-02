@@ -11,7 +11,6 @@ import Section from "@/components/shared/Section";
 import CardCarousel from "@/components/shared/CardCarousel";
 import ListSwiperSkeleton from "@/components/skeletons/ListSwiperSkeleton";
 import {
-  getFavoriteAnime,
   getPopularAnime,
   getRandomAnime,
   getTrendingAnime,
@@ -20,7 +19,7 @@ import {
 import ShouldWatch from "@/components/shared/ShouldWatch";
 import GenreSwiper from "@/components/shared/GenreSwiper";
 import classNames from "classnames";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 import AnimeScheduling from "@/components/features/anime/Player/AnimeScheduling";
 
 interface Anime {
@@ -90,28 +89,26 @@ export default function AnimePage() {
         )}
       </Section>
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        {UpdatedAnimeLodaing ? (
-          <ListSwiperSkeleton />
-        ) : (
-          <CardCarousel data={UpdatedAnimeData} title="NEWLY UPDATED" />
-        )}
+        <CardCarousel data={UpdatedAnimeData} title="NEWLY UPDATED" />
       </Section>
 
-      <div
-        className={classNames(
-          "flex gap-8 pt-20",
-          isDesktop ? "flex-row" : "flex-col"
-        )}
-      >
-        <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 md:w-[80%] md:!pr-0">
-          <ShouldWatch data={RandomAnime} isLoading={RandomAnimeLoading} />
-        </Section>
-        <Section className="w-full md:w-[20%] md:!pl-0 h-full">
-          <GenreSwiper className="md:h-[520px]" />
-        </Section>
-      </div>
+      {!isMobile && (
+        <div
+          className={classNames(
+            "flex gap-8 pt-20",
+            isDesktop ? "flex-row" : "flex-col"
+          )}
+        >
+          <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 md:w-[80%] md:!pr-0">
+            <ShouldWatch data={RandomAnime} isLoading={RandomAnimeLoading} />
+          </Section>
+          <Section className="w-full md:w-[20%] md:!pl-0 h-full">
+            <GenreSwiper className="md:h-[520px]" />
+          </Section>
+        </div>
+      )}
 
-      <Section className="pt-20">
+      <Section className="md:pt-20">
         <AnimeScheduling />
       </Section>
     </div>

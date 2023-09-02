@@ -15,6 +15,7 @@ import "swiper/css/thumbs";
 
 import CircleButton from "@/components/shared/CircleButton";
 import classNames from "classnames";
+import { isMobile } from "react-device-detect";
 
 export type SwiperInstance = any;
 export interface SwiperProps extends React.ComponentProps<typeof ReactSwiper> {

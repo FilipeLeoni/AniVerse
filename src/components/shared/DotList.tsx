@@ -18,7 +18,7 @@ const DotList: React.FC<DotListProps> = ({
   return (
     <div
       className={classNames(
-        "flex line-clamp-1 items-center space-x-2",
+        "flex line-clamp-1 items-center space-x-2 whitespace-nowrap",
         className
       )}
     >

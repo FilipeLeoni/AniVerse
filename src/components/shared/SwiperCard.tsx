@@ -5,6 +5,7 @@ import useDevice from "@/hooks/useDevice";
 import { Media } from "@/@types/anilist";
 import {
   createMediaDetailsUrl,
+  formatTimeDifference,
   isColorVisible,
   numberWithCommas,
 } from "@/utils";
@@ -77,6 +78,8 @@ const Card: React.FC<AnimeCardProps> = (props) => {
     setCardSize({ width, height: width * (3 / 2) });
   }, []);
 
+  const formattedTime = formatTimeDifference(data?.nextAiringEpisode?.airingAt);
+
   return (
     <Link href={redirectUrl}>
       <motion.div
@@ -96,24 +99,36 @@ const Card: React.FC<AnimeCardProps> = (props) => {
         >
           <AnimatePresence>
             {!isExpanded ? (
-              <motion.div
-                key={data?.coverImage?.extraLarge}
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-                className="absolute aspect-w-2 aspect-h-3 w-full h-auto rounded-md overflow-hidden"
-              >
-                <Image
-                  src={data?.coverImage?.extraLarge || ""}
-                  fill
-                  style={{ objectFit: "cover" }}
-                  alt={title as string}
-                />
-              </motion.div>
+              <div>
+                <motion.div
+                  key={data?.coverImage?.extraLarge}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                  className="absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full"
+                >
+                  <div className=" w-full h-auto">
+                    <Image
+                      src={data?.coverImage?.extraLarge || ""}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      alt={title as string}
+                    />
+                  </div>
+
+                  {data?.nextAiringEpisode && (
+                    <div className="inset-0 flex flex-col justify-end">
+                      <p className="ml-2 mb-1 py-0.5 px-1 bg-background-700 rounded-md absolute line-clamp-1">
+                        EP {data?.nextAiringEpisode?.episode}: {formattedTime}
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              </div>
             ) : (
               <motion.div
                 key={data.bannerImage || data.coverImage?.extraLarge}

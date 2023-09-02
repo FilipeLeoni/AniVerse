@@ -5,7 +5,12 @@ import Image from "@/components/shared/Image";
 import Swiper, { SwiperProps, SwiperSlide } from "@/components/shared/Swiper";
 import TextIcon from "@/components/shared/TextIcon";
 import { Media } from "@/@types/anilist";
-import { createMediaDetailsUrl, isValidUrl, numberWithCommas } from "@/utils";
+import {
+  createMediaDetailsUrl,
+  formatTimeDifference,
+  isValidUrl,
+  numberWithCommas,
+} from "@/utils";
 import { convert, getDescription, getTitle } from "@/utils/data";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -25,6 +30,7 @@ import Description from "./Description";
 import Section from "./Section";
 import Skeleton, { SkeletonItem } from "./Skeleton";
 import { useLocale } from "next-intl";
+import { formatDistanceToNow } from "date-fns";
 
 interface HomeBannerProps {
   data: Media[];
@@ -41,7 +47,7 @@ const transition = [0.33, 1, 0.68, 1];
 
 const HomeBanner: React.FC<HomeBannerProps> = ({ data, isLoading }) => {
   return (
-    <React.Fragment>
+    <div>
       <BrowserView>
         {isLoading ? (
           <DesktopHomeBannerSkeleton />
@@ -57,7 +63,7 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ data, isLoading }) => {
           <MobileHomeBanner data={data} />
         )}
       </MobileView>
-    </React.Fragment>
+    </div>
   );
 };
 
@@ -65,68 +71,78 @@ const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
   const locale = useLocale();
 
   return (
-    <Swiper
-      hideNavigation
-      spaceBetween={10}
-      breakpoints={{}}
-      slidesPerView={1}
-      loop
-    >
-      {data.map((slide: Media, index: number) => {
-        const title = getTitle(slide, locale);
+    <div>
+      <Swiper
+        hideNavigation
+        spaceBetween={10}
+        breakpoints={{}}
+        slidesPerView={1}
+        loop
+      >
+        {data.map((slide: Media, index: number) => {
+          const title = getTitle(slide, locale);
+          const formattedTime = formatTimeDifference(
+            slide?.nextAiringEpisode?.airingAt
+          );
 
-        return (
-          <SwiperSlide key={index}>
-            <Link href={createMediaDetailsUrl(slide)}>
-              <div className="aspect-w-16 aspect-h-9 relative rounded-md">
-                {slide.bannerImage && (
-                  <Image
-                    src={slide.bannerImage}
-                    alt={title as string}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-md"
-                  />
-                )}
+          return (
+            <SwiperSlide key={index}>
+              <Link href={createMediaDetailsUrl(slide)}>
+                <div className="aspect-w-16 aspect-h-9 relative rounded-md overflow-ellipsis">
+                  {slide.bannerImage && (
+                    <Image
+                      src={slide.bannerImage}
+                      alt={title as string}
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-md"
+                    />
+                  )}
 
-                <div className="fixed-0 absolute flex items-end bg-gradient-to-b from-transparent via-black/60 to-black/80">
-                  <div className="p-4">
-                    <h1 className="text-xl font-bold uppercase line-clamp-1">
-                      {title}
-                    </h1>
-
-                    <div className="mt-4 flex flex-wrap items-center gap-x-8 text-lg">
-                      {slide.averageScore && (
-                        <TextIcon
-                          LeftIcon={MdTagFaces}
-                          iconClassName="text-green-300"
-                        >
-                          <p>{slide.averageScore}%</p>
-                        </TextIcon>
+                  <div className="fixed-0 absolute flex items-end bg-gradient-to-b from-black/20 via-black/60 to-black/80">
+                    <div className="p-4 max-w-full overflow-ellipsis overflow-hidden">
+                      <h1 className="text-xl font-bold uppercase line-clamp-1">
+                        {title}
+                      </h1>
+                      {slide?.nextAiringEpisode && (
+                        <p className="text-base font-medium my-2  text-red-200">
+                          Episode {slide?.nextAiringEpisode?.episode}:{" "}
+                          {formattedTime}
+                        </p>
                       )}
-                      <TextIcon
-                        LeftIcon={AiFillHeart}
-                        iconClassName="text-red-400"
-                      >
-                        <p>{numberWithCommas(slide.favourites)}</p>
-                      </TextIcon>
-                      <DotList>
-                        {slide.genres &&
-                          slide.genres.map((genre) => (
-                            <span key={genre}>
-                              {convert(genre, "genre", { locale })}
-                            </span>
-                          ))}
-                      </DotList>
+                      <div className="flex flex-wrap items-center gap-x-8 text-lg">
+                        {slide.averageScore && (
+                          <TextIcon
+                            LeftIcon={MdTagFaces}
+                            iconClassName="text-green-300"
+                          >
+                            <p>{slide.averageScore}%</p>
+                          </TextIcon>
+                        )}
+                        <TextIcon
+                          LeftIcon={AiFillHeart}
+                          iconClassName="text-red-400"
+                        >
+                          <p>{numberWithCommas(slide.favourites)}</p>
+                        </TextIcon>
+                        <DotList>
+                          {slide.genres &&
+                            slide.genres.map((genre) => (
+                              <span key={genre}>
+                                {convert(genre, "genre", { locale })}
+                              </span>
+                            ))}
+                        </DotList>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
-        );
-      })}
-    </Swiper>
+              </Link>
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
+    </div>
   );
 };
 
@@ -142,7 +158,6 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
 
   const [isMuted, setIsMuted] = useState(true);
   const isRanOnce = useRef(false);
-  // const { locale } = useRouter();
   const locale = useLocale();
 
   const activeSlide: any = useMemo(() => data[index], [data, index]);
@@ -163,6 +178,10 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
   const description = useMemo(
     () => getDescription(activeSlide, locale),
     [activeSlide, locale]
+  );
+
+  const formattedTime = formatTimeDifference(
+    activeSlide?.nextAiringEpisode?.airingAt
   );
 
   useEffect(() => {
@@ -202,10 +221,15 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
           className="absolute left-4 top-1/2 w-full -translate-y-1/2 md:left-12 md:w-[45%] lg:left-20 xl:left-28 2xl:left-36"
           transition={{ ease: transition, duration: 1 }}
         >
+          {activeSlide?.nextAiringEpisode && (
+            <p className="text-xl font-semibold mb-4 text-red-300">
+              Episode {activeSlide?.nextAiringEpisode?.episode}: {formattedTime}
+            </p>
+          )}
+
           <h1 className="text-2xl font-bold uppercase line-clamp-2 sm:line-clamp-3 md:text-4xl md:line-clamp-4">
             {title}
           </h1>
-
           <div className="mt-4 flex flex-wrap items-center gap-x-8 text-lg">
             {activeSlide.averageScore && (
               <TextIcon LeftIcon={MdTagFaces} iconClassName="text-green-300">
@@ -223,7 +247,6 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
               ))}
             </DotList>
           </div>
-
           <Description
             description={description as string}
             className="mt-2 hidden text-gray-200 md:block"

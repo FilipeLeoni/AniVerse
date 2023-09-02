@@ -14,22 +14,24 @@ const ListSwiperSkeleton: React.FC<ListSwiperSkeletonProps> = ({
   const breakpoint = useBreakpoint();
 
   return (
-    <Section>
-      <Skeleton>
-        {hasTitle && <SkeletonItem className="mb-4 h-8 w-52" />}
+    <div>
+      <Section>
+        <Skeleton>
+          {hasTitle && <SkeletonItem className="mb-4 h-8 w-52" />}
 
-        <SkeletonItem
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2.5 md:gap-5"
-          container
-        >
-          {[...new Array(breakpoint.items)].map((_, index) => (
-            <SkeletonItem key={index} className="col-span-1 w-full" container>
-              <CardSkeleton />
-            </SkeletonItem>
-          ))}
-        </SkeletonItem>
-      </Skeleton>
-    </Section>
+          <SkeletonItem
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2.5 md:gap-5"
+            container
+          >
+            {[...new Array(breakpoint.items)].map((_, index) => (
+              <SkeletonItem key={index} className="col-span-1 w-full" container>
+                <CardSkeleton />
+              </SkeletonItem>
+            ))}
+          </SkeletonItem>
+        </Skeleton>
+      </Section>
+    </div>
   );
 };
 

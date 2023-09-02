@@ -32,9 +32,9 @@ const AnimeScheduling: React.FC<AnimeSchedulingProps> = () => {
     airingAt_lesser: selectedDayOfWeek.endOf("day").unix(),
     perPage: isMobile ? 10 : 20,
     sort: [AiringSort.Time_desc],
+    notYetAired: true,
   });
 
-  console.log(schedules);
   const handleTabSelect = (index: number) => {
     setSelectedTab(index);
   };
@@ -88,24 +88,7 @@ const AnimeScheduling: React.FC<AnimeSchedulingProps> = () => {
                       .unix(cardWithSchedule.airingAt)
                       .isBefore(dayjs());
 
-                    return (
-                      <SwiperCard
-                        isExpanded={isExpanded}
-                        data={card}
-                        containerEndSlot={
-                          <DotList>
-                            <span>episode {cardWithSchedule.episode}</span>
-                            <span>
-                              {!isReleased
-                                ? dayjs
-                                    .unix(cardWithSchedule.airingAt)
-                                    .format("HH:mm")
-                                : "airing_schedule_passed"}
-                            </span>
-                          </DotList>
-                        }
-                      />
-                    );
+                    return <SwiperCard isExpanded={isExpanded} data={card} />;
                   }}
                 />
               )}

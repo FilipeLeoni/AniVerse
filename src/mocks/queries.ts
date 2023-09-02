@@ -100,7 +100,7 @@ export const getUpdatedAnime = async () => {
       query: `
             query {
               Page(page: 1, perPage: 20) {
-                media(sort: UPDATED_AT_DESC, type: ANIME) {
+                media(sort: UPDATED_AT, type: ANIME) {
                   id
                   title {
                     romaji
@@ -228,11 +228,9 @@ export const getRandomAnime = async () => {
 
   const data = await response.json();
 
-  // Obtenha um índice aleatório na lista de animes recomendados
   const recommendations = data.data.Page.recommendations;
   const randomIndex = Math.floor(Math.random() * recommendations.length);
 
-  // Obtenha o anime aleatório da lista de recomendações
   const randomRecommendedAnime = recommendations[randomIndex].media;
   return randomRecommendedAnime;
 };
@@ -283,6 +281,5 @@ export const getScheduleAnime = async () => {
           `,
     }),
   });
-  console.log(response.json());
   return response.json();
 };
