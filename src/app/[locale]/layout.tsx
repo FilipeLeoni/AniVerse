@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import Providers from "../providers";
+import Footer from "@/components/partials/Footer";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
           <body className={outfit.className}>
             <Header />
             <main>{children}</main>
+            <Footer />
           </body>
         </Providers>
       </NextIntlClientProvider>

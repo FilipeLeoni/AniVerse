@@ -14,7 +14,7 @@
 // import { stringify } from "querystring";
 // import { toast } from "react-toastify";
 
-import { Media, MediaSeason, MediaType } from "@/@types/anilist";
+import { Media, MediaSeason, MediaType, Studio } from "@/@types/anilist";
 import { differenceInMilliseconds, formatDistanceToNow } from "date-fns";
 import dayjs from "dayjs";
 
@@ -106,14 +106,14 @@ export function numberWithCommas(x: any) {
 //     .join("&");
 // }
 
-// export const chunk = <T>(arr: T[], chunkSize: number): T[][] => {
-//   const array: T[][] = [];
+export const chunk = <T>(arr: T[], chunkSize: number): T[][] => {
+  const array: T[][] = [];
 
-//   for (let i = 0; i < arr.length; i += chunkSize)
-//     array.push(arr.slice(i, i + chunkSize));
+  for (let i = 0; i < arr.length; i += chunkSize)
+    array.push(arr.slice(i, i + chunkSize));
 
-//   return array;
-// };
+  return array;
+};
 
 // export const includesArr = (text: string, array: any[]) => {
 //   return array.some((element) => text.includes(element));
@@ -252,19 +252,19 @@ export function isValidUrl(string: string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-// export const groupBy = <T, K extends string>(
-//   list: T[],
-//   getKey: (data: T) => K
-// ) =>
-//   list.reduce((previous, currentItem) => {
-//     const key = getKey(currentItem);
+export const groupBy = <T, K extends string>(
+  list: T[],
+  getKey: (data: T) => K
+) =>
+  list.reduce((previous, currentItem) => {
+    const key = getKey(currentItem);
 
-//     if (!previous[key]) previous[key] = [];
+    if (!previous[key]) previous[key] = [];
 
-//     previous[key].push(currentItem);
+    previous[key].push(currentItem);
 
-//     return previous;
-//   }, {} as Record<string, T[]>);
+    return previous;
+  }, {} as Record<string, T[]>);
 
 // https://gist.github.com/bluzky/b8c205c98ff3318907b30c3e0da4bf3f
 export const vietnameseSlug = (str: string) => {
@@ -496,23 +496,23 @@ export const createMediaDetailsUrl = (media: Media | any) => {
 //   )}`;
 // };
 
-// export const createStudioDetailsUrl = (studio: Studio) => {
-//   return `/studios/${studio.id}/${vietnameseSlug(studio?.name)}`;
-// };
+export const createStudioDetailsUrl = (studio: Studio) => {
+  return `/studios/${studio.id}/${vietnameseSlug(studio?.name)}`;
+};
 
-// export const sortObjectByValue = <T extends object>(
-//   obj: T,
-//   sortFn: (a: T[keyof T], b: T[keyof T]) => number
-// ) => {
-//   const sortedObj = Object.keys(obj)
-//     .sort((a, b) => sortFn(obj[a], obj[b]))
-//     .reduce((result, key) => {
-//       result[key] = obj[key];
-//       return result;
-//     }, {} as T);
+export const sortObjectByValue = <T extends object>(
+  obj: any,
+  sortFn: (a: T[keyof T], b: T[keyof T]) => number
+) => {
+  const sortedObj = Object.keys(obj)
+    .sort((a, b) => sortFn(obj[a], obj[b]))
+    .reduce((result: any, key) => {
+      result[key] = obj[key];
+      return result;
+    }, {} as T);
 
-//   return sortedObj;
-// };
+  return sortedObj;
+};
 
 // // https://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
 // export const array_move = <T>(
