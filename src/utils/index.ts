@@ -18,11 +18,11 @@ import { Media, MediaSeason, MediaType, Studio } from "@/@types/anilist";
 import { differenceInMilliseconds, formatDistanceToNow } from "date-fns";
 import dayjs from "dayjs";
 
-// export const randomElement = <T>(array: T[]): T => {
-//   const index = Math.floor(Math.random() * array.length);
+export const randomElement = <T>(array: T[]): T => {
+  const index = Math.floor(Math.random() * array.length);
 
-//   return array[index];
-// };
+  return array[index];
+};
 
 // export const randomElements = <T>(array: T[], length: number): T[] => {
 //   const randomArr: T[] = [];
