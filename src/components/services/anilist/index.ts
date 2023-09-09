@@ -31,7 +31,8 @@ import {
   StudioDetailsQueryResponse,
   studiosQuery,
 } from "./queries";
-import { AiringScheduleArgs, PageArgs } from "@/@types/anilist";
+import { AiringScheduleArgs, MediaArgs, PageArgs } from "@/@types/anilist";
+import { TranslationValues } from "next-intl";
 
 const GRAPHQL_URL = "https://graphql.anilist.co";
 
@@ -117,11 +118,11 @@ export const anilistFetcher = async <T>(query: string, variables: any) => {
 //     args
 //   );
 
-//   let translations: Translation[] = [];
+//   let translations: TranslationValues[] = [];
 //   const media = response?.Media;
 
 //   const { data } = await supabaseClient
-//     .from<Translation>("kaguya_translations")
+//     .from<TranslationValues>("kaguya_translations")
 //     .select("*")
 //     .eq("mediaId", media.id)
 //     .eq("mediaType", args?.type || MediaType.Anime);

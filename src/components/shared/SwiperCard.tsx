@@ -130,16 +130,8 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                 </motion.div>
               </div>
             ) : (
-              <motion.div
+              <div
                 key={data.bannerImage || data.coverImage?.extraLarge}
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                  width: isExpanded ? "100%" : "auto",
-                }}
-                exit={{
-                  opacity: 0,
-                }}
                 className="absolute h-full w-full border-red-500 overflow-hidden"
               >
                 <div
@@ -214,7 +206,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                     {containerEndSlot}
                   </motion.div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </AnimatePresence>
         </motion.div>

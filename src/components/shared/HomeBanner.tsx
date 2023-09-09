@@ -192,7 +192,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
     <React.Fragment>
       <div className="group relative w-full overflow-hidden md:h-[450px] xl:h-[500px] 2xl:h-[550px]">
         <AnimatePresence>
-          {isValidUrl(activeSlide.bannerImage) && !showTrailer && (
+          {isValidUrl(activeSlide?.bannerImage) && !showTrailer && (
             <motion.div
               variants={bannerVariants}
               animate="animate"
@@ -202,7 +202,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
               key={title}
             >
               <Image
-                src={activeSlide.bannerImage}
+                src={activeSlide?.bannerImage}
                 fill
                 style={{ objectFit: "cover", objectPosition: "50% 35%" }}
                 alt={title as string}
@@ -231,14 +231,14 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
             {title}
           </h1>
           <div className="mt-4 flex flex-wrap items-center gap-x-8 text-lg">
-            {activeSlide.averageScore && (
+            {activeSlide?.averageScore && (
               <TextIcon LeftIcon={MdTagFaces} iconClassName="text-green-300">
-                <p>{activeSlide.averageScore}%</p>
+                <p>{activeSlide?.averageScore}%</p>
               </TextIcon>
             )}
 
             <TextIcon LeftIcon={AiFillHeart} iconClassName="text-red-400">
-              <p>{numberWithCommas(activeSlide.favourites)}</p>
+              <p>{numberWithCommas(activeSlide?.favourites)}</p>
             </TextIcon>
 
             <DotList>

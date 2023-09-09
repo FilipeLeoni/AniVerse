@@ -14,7 +14,7 @@ import Skeleton, { SkeletonItem } from "./Skeleton";
 import { useLocale } from "next-intl";
 
 interface ShouldWatchProps {
-  data: Media;
+  data: any;
   isLoading?: boolean;
 }
 
@@ -73,7 +73,7 @@ const ShouldWatch: React.FC<ShouldWatchProps> = ({ data, isLoading }) => {
             </TextIcon>
 
             <DotList>
-              {data?.genres?.map((genre) => (
+              {data?.genres?.map((genre: any) => (
                 <span key={genre}>{convert(genre, "genre", { locale })}</span>
               ))}
             </DotList>
