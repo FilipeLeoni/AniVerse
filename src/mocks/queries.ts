@@ -1,4 +1,4 @@
-export const getPopularAnime = async () => {
+export const getPopularAnime = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -7,9 +7,9 @@ export const getPopularAnime = async () => {
     },
     body: JSON.stringify({
       query: `
-          query {
+      query ($mediaType: MediaType) {
             Page(page: 2, perPage: 20) {
-              media(sort: POPULARITY_DESC, type: ANIME) {
+              media(sort: POPULARITY_DESC, type: $mediaType) {
                 id
                 title {
                   romaji
@@ -38,13 +38,16 @@ export const getPopularAnime = async () => {
             }
           }
         `,
+      variables: {
+        mediaType,
+      },
     }),
   });
 
   return response.json();
 };
 
-export const getTrendingAnime = async () => {
+export const getTrendingAnime = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -53,9 +56,9 @@ export const getTrendingAnime = async () => {
     },
     body: JSON.stringify({
       query: `
-            query {
+      query ($mediaType: MediaType) {
               Page(page: 1, perPage: 20) {
-                media(sort: TRENDING_DESC, type: ANIME) {
+                media(sort: TRENDING_DESC, type: $mediaType) {
                   id
                   title {
                     romaji
@@ -83,13 +86,15 @@ export const getTrendingAnime = async () => {
               }
             }
           `,
+      variables: {
+        mediaType,
+      },
     }),
   });
-
   return response.json();
 };
 
-export const getUpdatedAnime = async () => {
+export const getUpdatedAnime: any = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -98,9 +103,9 @@ export const getUpdatedAnime = async () => {
     },
     body: JSON.stringify({
       query: `
-            query {
+      query ($mediaType: MediaType) {
               Page(page: 1, perPage: 20) {
-                media(sort: UPDATED_AT_DESC, type: ANIME) {
+                media(sort: UPDATED_AT_DESC, type: $mediaType) {
                   id
                   title {
                     romaji
@@ -129,13 +134,16 @@ export const getUpdatedAnime = async () => {
               }
             }
           `,
+      variables: {
+        mediaType,
+      },
     }),
   });
 
   return response.json();
 };
 
-export const getFavoriteAnime = async () => {
+export const getFavoriteAnime = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -144,9 +152,9 @@ export const getFavoriteAnime = async () => {
     },
     body: JSON.stringify({
       query: `
-            query {
+      query ($mediaType: MediaType) {
               Page(page: 1, perPage: 20) {
-                media(sort: FAVOURITES_DESC, type: ANIME) {
+                media(sort: FAVOURITES_DESC, type: $mediaType) {
                   id
                   title {
                     romaji
@@ -175,6 +183,9 @@ export const getFavoriteAnime = async () => {
               }
             }
           `,
+      variables: {
+        mediaType,
+      },
     }),
   });
 
@@ -190,7 +201,7 @@ export const getRandomAnime = async () => {
     },
     body: JSON.stringify({
       query: `
-        query {
+      query {
           Page(page: 1, perPage: 20) {
             recommendations {
               media {

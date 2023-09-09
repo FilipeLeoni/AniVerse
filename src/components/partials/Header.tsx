@@ -141,7 +141,7 @@ const Header = () => {
           </NavItem>
 
           <div className="flex items-center space-x-2">
-            <Link href={`/login?redirectedFrom=`}>
+            <Link href={`/login`}>
               <Button primary>
                 <p className="line-clamp-1">login</p>
               </Button>
