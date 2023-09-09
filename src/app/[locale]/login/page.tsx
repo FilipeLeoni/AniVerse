@@ -80,14 +80,14 @@ const LoginPage = () => {
                 <p>Login with google</p>
               </Button>
               <Button
-                className="shadow-lg relative bg-blue-600 !hover:bg-white/20 text-white font-bold flex items-center justify-center w-full hover:!bg-opacity-90"
+                className="shadow-lg relative !bg-[#2D88FF] !hover:bg-white/20 text-white font-bold flex items-center justify-center w-full hover:!bg-opacity-90"
                 LeftIcon={FaFacebookF}
                 iconClassName="absolute left-6"
               >
                 <p>Login with Facebook</p>
               </Button>
               <Button
-                className="shadow-lg relative bg-purple-600 !hover:bg-white/20 text-white font-bold flex items-center justify-center w-full hover:!bg-opacity-90"
+                className="shadow-lg relative !bg-[#5865F2] bg-purple-600/90 !hover:bg-white/20 text-white font-bold flex items-center justify-center w-full hover:!bg-opacity-90"
                 LeftIcon={FaDiscord}
                 iconClassName="absolute left-6"
               >
