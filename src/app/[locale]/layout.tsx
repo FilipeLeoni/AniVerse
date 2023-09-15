@@ -1,5 +1,6 @@
 import Header from "@/components/partials/Header";
 import "../globals.css";
+import NextTopLoader from "nextjs-toploader";
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
@@ -29,6 +30,7 @@ export default function RootLayout({
       <NextIntlClientProvider locale={locale} messages={messages}>
         <Providers>
           <body className={outfit.className}>
+            <NextTopLoader color="#EF4444" />
             <Header />
             <main>{children}</main>
             <Footer />
