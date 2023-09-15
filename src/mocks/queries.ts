@@ -294,3 +294,115 @@ export const getScheduleAnime = async () => {
   });
   return response.json();
 };
+
+export const getAnimeById = async (id: any, type: any) => {
+  const response = await fetch(`https://graphql.anilist.co`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+      query ($id: Int, $type: MediaType) {
+              Media (id: $id, type: $type) {
+                id
+                title {
+                  romaji
+                  english
+                  native
+                  userPreferred
+                }
+                bannerImage
+                coverImage {
+                  extraLarge
+                  color
+                }
+                description
+                format
+                type
+                genres
+                episodes
+                status
+                countryOfOrigin
+                duration
+                averageScore
+                popularity
+                trending
+                favourites
+                synonyms
+                season
+                seasonYear
+                relations {
+                  nodes {
+                    id
+                    title {
+                      userPreferred
+                    }
+                    bannerImage
+                    coverImage {
+                      extraLarge
+                    }
+                  averageScore
+                    favourites
+                    genres
+                    description
+                  }
+                }
+
+                recommendations {
+                  nodes {
+                    id
+                    media {
+                      title {
+                        userPreferred
+                      }
+                      bannerImage
+                      coverImage {
+                        extraLarge
+                      }
+                    averageScore
+                      favourites
+                      genres
+                      description
+                    }
+                    }
+                }
+
+                studios {
+                  nodes {
+                  id
+                  name
+                }
+              }
+              characters {
+                edges {
+                  node {
+                    id
+                    image {
+                      large
+                    }
+                    name {
+                      userPreferred
+                    }
+                    
+                  }
+                  role
+                }
+              }
+                nextAiringEpisode {
+                  airingAt
+                  episode
+                }
+              }
+          }
+      `,
+      variables: {
+        id,
+        type,
+      },
+    }),
+  });
+
+  return response.json();
+};

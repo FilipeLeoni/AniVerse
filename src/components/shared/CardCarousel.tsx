@@ -47,10 +47,6 @@ const CardCarousel: React.FC<CardSwiperProps> = ({ title, data }: any) => {
       const { first: firstVisibleCardIndex, last: lastVisibleCardIndex } =
         getVisibleIndex(swiper);
 
-      const isVisible = slide.classList.contains("swiper-slide-visible");
-
-      if (!isVisible) return;
-
       const nonPlaceholderSlides = swiper.slides.filter(
         (slide: any) => !slide.classList.contains("swiper-placeholder")
       );
