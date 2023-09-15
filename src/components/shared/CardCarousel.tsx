@@ -47,10 +47,6 @@ const CardCarousel: React.FC<CardSwiperProps> = ({ title, data }: any) => {
       const { first: firstVisibleCardIndex, last: lastVisibleCardIndex } =
         getVisibleIndex(swiper);
 
-      const isVisible = slide.classList.contains("swiper-slide-visible");
-
-      if (!isVisible) return;
-
       const nonPlaceholderSlides = swiper.slides.filter(
         (slide: any) => !slide.classList.contains("swiper-placeholder")
       );
@@ -103,12 +99,11 @@ const CardCarousel: React.FC<CardSwiperProps> = ({ title, data }: any) => {
     if (hoverTimeout) {
       clearTimeout(hoverTimeout);
     }
+    const slide = swiper.slides[index];
+    const nextSlide = swiper.slides[index + 1];
+    const [originalWidth] = swiper.slidesSizesGrid as number[];
 
     setTimeout(() => {
-      const slide = swiper.slides[index];
-      const nextSlide = swiper.slides[index + 1];
-      const [originalWidth] = swiper.slidesSizesGrid as number[];
-
       const { first: firstVisibleCardIndex } = getVisibleIndex(swiper);
 
       let spaceBetween = 0;

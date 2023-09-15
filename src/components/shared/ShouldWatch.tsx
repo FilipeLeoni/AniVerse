@@ -35,11 +35,10 @@ const ShouldWatch: React.FC<ShouldWatchProps> = ({ data, isLoading }) => {
         {data?.bannerImage && (
           <Image
             src={data.bannerImage}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="50% 35%"
+            fill
             alt="Details banner"
-            className="rounded-md"
+            className="rounded-md object-cover"
+            style={{ objectPosition: "50% 35%" }}
           />
         )}
 

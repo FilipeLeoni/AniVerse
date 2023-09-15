@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "@/components/shared/Image";
 import { ImageProps } from "next/image";
 import React from "react";

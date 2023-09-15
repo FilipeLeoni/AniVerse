@@ -93,9 +93,8 @@ const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
                     <Image
                       src={slide.bannerImage}
                       alt={title as string}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-md"
+                      fill
+                      className="rounded-md object-cover"
                     />
                   )}
 
