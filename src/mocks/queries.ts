@@ -342,29 +342,34 @@ export const getAnimeById = async (id: any, type: any) => {
                     bannerImage
                     coverImage {
                       extraLarge
+                      color
                     }
                   averageScore
                     favourites
                     genres
                     description
+                    type
                   }
                 }
 
                 recommendations {
                   nodes {
                     id
-                    media {
+                    mediaRecommendation {
+                      id
                       title {
                         userPreferred
                       }
                       bannerImage
                       coverImage {
                         extraLarge
+                        color
                       }
                     averageScore
                       favourites
                       genres
                       description
+                      type
                     }
                     }
                 }
