@@ -170,7 +170,15 @@ export default async function DetailsPage({
           {!!data.Media?.relations?.nodes?.length && (
             <DetailsSection title={"Relations"}>
               <List data={data.Media.relations.nodes}>
-                {(node: any) => <Card data={node} />}
+                {(node: any) => <Card data={node} className="relations" />}
+              </List>
+            </DetailsSection>
+          )}
+
+          {!!data.Media?.recommendations?.nodes?.length && (
+            <DetailsSection title={"Recomendations"}>
+              <List data={data.Media.recommendations.nodes}>
+                {(node: any) => <Card data={node.mediaRecommendation} />}
               </List>
             </DetailsSection>
           )}
@@ -178,18 +186,4 @@ export default async function DetailsPage({
       </Section>
     </div>
   );
-}
-
-{
-  /* {!!data.Media?.recommendations?.nodes?.length && (
-              <DetailsSection title={"Recomendations"}>
-                <List
-                  data={data.Media.recommendations.nodes.map(
-                    (node: any) => node.mediaRecommendation
-                  )}
-                >
-                  {(node: any) => <Card data={node} />}
-                </List>
-              </DetailsSection>
-            )} */
 }

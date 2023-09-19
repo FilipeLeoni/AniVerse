@@ -98,8 +98,13 @@ const Card: React.FC<CardProps> = (props) => {
               {imageEndSlot}
             </div>
 
+            {data.type && className === "relations" && (
+              <p className="italic text-gray-200 font-light text-sm mt-2 ">
+                {data.type}
+              </p>
+            )}
             <p
-              className="mt-2 text-base font-semibold line-clamp-2"
+              className="text-base font-semibold line-clamp-2"
               style={{ color: primaryColor }}
             >
               {title}

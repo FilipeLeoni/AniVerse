@@ -30,14 +30,6 @@ interface Anime {
   };
 }
 
-interface AnimeListResponse {
-  data: {
-    Page: {
-      media: Anime[];
-    };
-  };
-}
-
 export default function AnimePage() {
   const { data: TrendingAnime, isLoading: TrendingAnimeLoading } =
     useQuery<any>({
@@ -55,7 +47,7 @@ export default function AnimePage() {
       return response.data;
     },
   });
-  const { data: UpdatedAnime, isLoading: UpdatedAnimeLodaing } = useQuery<any>({
+  const { data: UpdatedAnime } = useQuery<any>({
     queryKey: ["UpdatedAnime"],
     queryFn: async () => {
       const response = await getUpdatedAnime();
