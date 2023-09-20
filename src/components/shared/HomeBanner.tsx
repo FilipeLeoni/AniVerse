@@ -47,7 +47,7 @@ const transition = [0.33, 1, 0.68, 1];
 
 const HomeBanner: React.FC<HomeBannerProps> = ({ data, isLoading }) => {
   return (
-    <div>
+    <React.Fragment>
       <BrowserView>
         {isLoading ? (
           <DesktopHomeBannerSkeleton />
@@ -63,7 +63,7 @@ const HomeBanner: React.FC<HomeBannerProps> = ({ data, isLoading }) => {
           <MobileHomeBanner data={data} />
         )}
       </MobileView>
-    </div>
+    </React.Fragment>
   );
 };
 
@@ -71,7 +71,7 @@ const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
   const locale = useLocale();
 
   return (
-    <div>
+    <React.Fragment>
       <Swiper
         hideNavigation
         spaceBetween={10}
@@ -141,14 +141,16 @@ const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
           );
         })}
       </Swiper>
-    </div>
+    </React.Fragment>
   );
 };
 
 const MobileHomeBannerSkeleton = () => (
-  <Skeleton>
-    <SkeletonItem className="aspect-w-16 aspect-h-9 rounded-md" />
-  </Skeleton>
+  <>
+    <Skeleton>
+      <SkeletonItem className="aspect-w-16 aspect-h-9 rounded-md" />
+    </Skeleton>
+  </>
 );
 
 const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
@@ -249,6 +251,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
           <Description
             description={description as string}
             className="mt-2 hidden text-gray-200 md:block"
+            editorClassname="overflow-ellipsis line-clamp-5"
           />
         </motion.div>
 

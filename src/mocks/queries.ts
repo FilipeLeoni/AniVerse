@@ -333,6 +333,29 @@ export const getAnimeById = async (id: any, type: any) => {
                 synonyms
                 season
                 seasonYear
+                nextAiringEpisode {
+                  airingAt
+                  timeUntilAiring
+                  episode 
+                }
+                airingSchedule {
+                  nodes {
+                    airingAt
+                    timeUntilAiring
+                    episode
+                  }
+                }
+                tags {
+                  id
+                  name
+                  description
+                  category
+                  rank
+                  isGeneralSpoiler
+                  isMediaSpoiler
+                  isAdult
+                  userId
+                }
                 relations {
                   nodes {
                     id

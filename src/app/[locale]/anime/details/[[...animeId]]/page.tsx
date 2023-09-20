@@ -10,14 +10,19 @@ import MediaDescription from "@/components/shared/MediaDescription";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
 import { getAnimeById } from "@/mocks/queries";
-import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
+import {
+  createStudioDetailsUrl,
+  formatTimeDifference,
+  numberWithCommas,
+} from "@/utils";
 import { convert, getDescription, getTitle } from "@/utils/data";
-import dayjs from "dayjs";
 import { useLocale } from "next-intl";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import dayjs from "@/lib/dayjs";
+import AiringCountDown from "@/components/shared/AiringCountDown";
 
 export default async function DetailsPage({
   params,
@@ -33,38 +38,43 @@ export default async function DetailsPage({
     ?.sort((a: any, b: any) => a.episode - b.episode)
     .find((schedule: any) => dayjs.unix(schedule.airingAt).isAfter(dayjs()));
 
-  const nextAiringScheduleTime = () => {
-    if (!nextAiringSchedule?.airingAt) return null;
-
-    return dayjs.unix(nextAiringSchedule.airingAt).locale(locale).fromNow();
-  };
-
   return (
     <div className="pb-8">
       <DetailsBanner image={data.Media.bannerImage} />
 
-      <Section className="relative pb-4 bg-background-900">
+      <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
         <div className="flex flex-row md:space-x-8">
-          <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] -mt-12 space-y-6">
+          <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6">
             <PlainCard src={data.Media.coverImage.extraLarge} alt={"Test"} />
-            <Button primary className="gap-4 flex w-full justify-center">
+            <Button
+              primary
+              className="gap-4 w-full justify-center md:flex hidden"
+            >
               <BsPlusCircleFill size={22} />
               Add to list
             </Button>
           </div>
 
-          <div className="flex flex-col justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-4">
-            <Button primary className="gap-4">
+          <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4">
+            <Button primary className="gap-4 md:flex hidden">
               <BsFillPlayFill size={24} />
               Watch now
             </Button>
-            <div className="flex flex-col items-start space-y-4 md:no-scrollbar py-4">
-              <p className="mb-2 text-2xl md:text-3xl font-semibold">{title}</p>
-              <DotList>
-                {data.Media.genres.map((genre: any) => (
-                  <span key={genre}>{convert(genre, "genre", { locale })}</span>
-                ))}
-              </DotList>
+
+            <div className="flex flex-col items-start space-y-4 py-4 max-w-fit">
+              <p className="text-2xl md:text-3xl font-semibold max-w-full">
+                {title}
+              </p>
+
+              <div className="overflow-ellipsis line-clamp-1">
+                <DotList>
+                  {data.Media.genres.map((genre: any) => (
+                    <span key={genre}>
+                      {convert(genre, "genre", { locale })}
+                    </span>
+                  ))}
+                </DotList>
+              </div>
               <MediaDescription
                 description={description}
                 containerClassName="mt-4 mb-8 hidden md:block"
@@ -72,6 +82,7 @@ export default async function DetailsPage({
               />
               <div id="mal-sync" className="hidden md:block"></div>
             </div>
+
             <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0">
               <InfoItem
                 title={"Country"}
@@ -94,20 +105,26 @@ export default async function DetailsPage({
               />
 
               {nextAiringSchedule && (
-                <InfoItem
-                  className="!text-primary-300"
-                  title={"Next Airing Schedule"}
-                  value={`Episodes ${nextAiringSchedule.episode}: ${nextAiringScheduleTime}`}
+                <AiringCountDown
+                  airingAt={nextAiringSchedule.airingAt}
+                  episode={nextAiringSchedule.episode}
                 />
               )}
             </div>
           </div>
         </div>
+        <div className="md:hidden block">
+          <MediaDescription
+            description={description}
+            containerClassName="mt-4 mb-8"
+            className="text-gray-300 hover:text-gray-100 transition duration-300"
+          />
+        </div>
       </Section>
 
       <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
         <div className="md:col-span-2 xl:h-[max-content] space-y-4">
-          <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
+          <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
             <InfoItem
               title={"Format"}
               value={convert(data.Media.format, "format", { locale })}
@@ -155,6 +172,26 @@ export default async function DetailsPage({
                 </div>
               ))}
             />
+          </div>
+          <div className="space-y-2 text-gray-400">
+            <h1 className="font-semibold">Tags</h1>
+
+            <ul className="overflow-x-auto flex flex-row md:flex-col gap-2 [&>*]:shrink-0 md:no-scrollbar">
+              {data.Media.tags.map((tag: any) => (
+                <Link
+                  href={{
+                    pathname: "/browse",
+                    query: { type: "anime", tags: tag.name },
+                  }}
+                  key={tag.id}
+                  className="md:block"
+                >
+                  <li className="p-2 rounded-md bg-background-900 hover:text-primary-300 transition duration-300">
+                    {tag.name}
+                  </li>
+                </Link>
+              ))}
+            </ul>
           </div>
         </div>
         <div className="space-y-12 md:col-span-8">

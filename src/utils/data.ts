@@ -111,6 +111,9 @@ export const getTitle = (data: Media, locale?: string) => {
     return data?.title?.userPreferred;
   }
 
+  console.log(translation.title);
+  console.log(data?.title?.userPreferred);
+
   return translation.title || data?.title?.userPreferred;
 };
 
