@@ -113,17 +113,44 @@ export default async function DetailsPage({
             </div>
           </div>
         </div>
-        <div className="md:hidden block">
-          <MediaDescription
-            description={description}
-            containerClassName="mt-4 mb-8"
-            className="text-gray-300 hover:text-gray-100 transition duration-300"
-          />
-        </div>
+        <MediaDescription
+          description={description}
+          containerClassName="mt-4 mb-8 md:hidden block"
+          className="text-gray-300 hover:text-gray-100 transition duration-300"
+        />
       </Section>
 
       <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
         <div className="md:col-span-2 xl:h-[max-content] space-y-4">
+          <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
+            <InfoItem
+              title={"Country"}
+              value={convert(data.Media.countryOfOrigin, "country", {
+                locale,
+              })}
+            />
+            <InfoItem title={"Total Episodes"} value={data.Media.episodes} />
+
+            {data.Media.duration && (
+              <InfoItem
+                title={"Duration"}
+                value={`${data.Media.duration} ${"Minutes"}`}
+              />
+            )}
+
+            <InfoItem
+              title={"Status"}
+              value={convert(data.Media.status, "status", { locale })}
+            />
+
+            {nextAiringSchedule && (
+              <AiringCountDown
+                airingAt={nextAiringSchedule.airingAt}
+                episode={nextAiringSchedule.episode}
+              />
+            )}
+          </div>
+
           <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
             <InfoItem
               title={"Format"}
