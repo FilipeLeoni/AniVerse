@@ -42,7 +42,10 @@ const MediaDescription: React.FC<MediaDescriptionProps> = ({
   }, []);
 
   return (
-    <div className={classNames("group relative", containerClassName)}>
+    <div
+      className={classNames("group relative", containerClassName)}
+      onClick={isMobile ? handleClick : noop}
+    >
       <Description
         ref={ref}
         description={description || "..."}
@@ -50,9 +53,6 @@ const MediaDescription: React.FC<MediaDescriptionProps> = ({
           isDescriptionExpanded ? "line-clamp-none" : "line-clamp-6",
           className
         )}
-        containerProps={{
-          onClick: isMobile ? handleClick : noop,
-        }}
         {...props}
       />
 
