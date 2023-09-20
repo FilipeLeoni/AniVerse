@@ -1,3 +1,4 @@
+import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
 import CharacterConnectionCard from "@/components/shared/CharacterConnectionCard";
 import DetailsBanner from "@/components/shared/DetailsBanner";
@@ -16,6 +17,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 
 export default async function DetailsPage({
   params,
@@ -41,15 +43,26 @@ export default async function DetailsPage({
     <div className="pb-8">
       <DetailsBanner image={data.Media?.bannerImage} />
 
-      <Section className="relative pb-4 bg-background-900">
+      <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
         <div className="flex flex-row md:space-x-8">
-          <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] -mt-20 space-y-6">
+          <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] -mt-12 space-y-6">
             <PlainCard src={data?.Media?.coverImage?.extraLarge} alt={"Test"} />
+            <Button
+              primary
+              className="gap-4 w-full justify-center md:flex hidden"
+            >
+              <BsPlusCircleFill size={22} />
+              Add to list
+            </Button>
           </div>
 
           <div className="flex flex-col justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-4">
-            <div className="flex flex-col items-start space-y-4 md:no-scrollbar">
-              <p className="mb-2 text-2xl md:text-3xl font-semibold">{title}</p>
+            <Button primary className="gap-4 md:flex hidden">
+              <BsFillPlayFill size={24} />
+              Read now
+            </Button>
+            <div className="flex flex-col items-start space-y-4 md:no-scrollbar py-4">
+              <p className="text-2xl md:text-3xl font-semibold">{title}</p>
 
               <DotList>
                 {data.Media?.genres.map((genre: any) => (
@@ -59,13 +72,13 @@ export default async function DetailsPage({
 
               <MediaDescription
                 description={description}
-                containerClassName="mt-4 mb-8 hidden md:block"
+                containerClassName="hidden md:block"
                 className="text-gray-300 hover:text-gray-100 transition duration-300"
               />
 
               <div id="mal-sync" className="hidden md:block"></div>
             </div>
-            <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0">
+            <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0 ">
               <InfoItem
                 title={"Country"}
                 value={convert(data.Media.countryOfOrigin, "country", {
@@ -95,6 +108,13 @@ export default async function DetailsPage({
               )}
             </div>
           </div>
+        </div>
+        <div className="md:hidden block">
+          <MediaDescription
+            description={description}
+            containerClassName="mt-4 mb-8"
+            className="text-gray-300 hover:text-gray-100 transition duration-300"
+          />
         </div>
       </Section>
 

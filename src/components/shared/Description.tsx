@@ -1,22 +1,24 @@
 import React from "react";
 import Editor, { EditorProps } from "../features/comment/Editor";
 import { Editor as EditorType } from "@tiptap/react";
-import { twMerge } from "tailwind-merge";
+import classNames from "classnames";
 
 export interface DescriptionProps extends EditorProps {
   description: string;
+  editorClassname?: string;
 }
 
 const Description = React.forwardRef<EditorType, DescriptionProps>(
-  ({ description, ...props }, ref) => {
+  ({ description, editorClassname, ...props }, ref) => {
     return (
       <Editor
         ref={ref}
         readOnly
         defaultContent={description}
-        editorClassName={
-          "text-base text-gray-300 hover:text-gray-100 line-clamp-5 overflow-ellipsis"
-        }
+        editorClassName={classNames(
+          "text-base text-gray-300 hover:text-gray-100",
+          editorClassname
+        )}
         {...props}
       />
     );
