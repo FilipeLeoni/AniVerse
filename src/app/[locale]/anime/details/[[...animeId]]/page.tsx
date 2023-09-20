@@ -118,6 +118,19 @@ export default async function DetailsPage({
           containerClassName="mt-4 mb-8 md:hidden block"
           className="text-gray-300 hover:text-gray-100 transition duration-300"
         />
+
+        <div className="flex gap-2 mt-2">
+          <Button
+            primary
+            className="gap-4 w-full justify-center flex md:hidden"
+          >
+            <BsPlusCircleFill size={22} />
+            Add to list
+          </Button>
+          <Button primary className="flex md:hidden bg-transparent text-white">
+            <BsFillPlayFill size={24} />
+          </Button>
+        </div>
       </Section>
 
       <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
