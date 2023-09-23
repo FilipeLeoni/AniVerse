@@ -45,7 +45,7 @@ export default async function DetailsPage({
 
       <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
         <div className="flex flex-row md:space-x-8">
-          <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] -mt-12 space-y-6">
+          <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6">
             <PlainCard src={data?.Media?.coverImage?.extraLarge} alt={"Test"} />
             <Button
               primary
@@ -61,8 +61,10 @@ export default async function DetailsPage({
               <BsFillPlayFill size={24} />
               Read now
             </Button>
-            <div className="flex flex-col items-start space-y-4 md:no-scrollbar py-4">
-              <p className="text-2xl md:text-3xl font-semibold">{title}</p>
+            <div className="flex flex-col items-start space-y-4 md:no-scrollbar md:py-4">
+              <p className="text-2xl md:text-3xl font-semibold max-w-full">
+                {title}
+              </p>
 
               <DotList>
                 {data.Media?.genres.map((genre: any) => (
@@ -109,18 +111,50 @@ export default async function DetailsPage({
             </div>
           </div>
         </div>
-        <div className="md:hidden block">
-          <MediaDescription
-            description={description}
-            containerClassName="mt-4 mb-8"
-            className="text-gray-300 hover:text-gray-100 transition duration-300"
-          />
+        <MediaDescription
+          description={description}
+          containerClassName="mt-4 mb-8 md:hidden block"
+          className="text-gray-300 hover:text-gray-100 transition duration-300"
+        />
+
+        <div className="flex gap-2 mt-2">
+          <Button
+            primary
+            className="gap-4 w-full justify-center flex md:hidden"
+          >
+            <BsPlusCircleFill size={22} />
+            Add to list
+          </Button>
+          <Button primary className="flex md:hidden bg-transparent text-white">
+            <BsFillPlayFill size={24} />
+          </Button>
         </div>
       </Section>
 
       <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
         <div className="md:col-span-2 xl:h-[max-content] space-y-4">
-          <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
+          <div className="flex md:hidden px-4 flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
+            <InfoItem
+              title={"Country"}
+              value={convert(data.Media.countryOfOrigin, "country", {
+                locale,
+              })}
+            />
+            <InfoItem title={"Total Episodes"} value={data.Media.episodes} />
+
+            {data.Media.duration && (
+              <InfoItem
+                title={"Duration"}
+                value={`${data.Media.duration} ${"Minutes"}`}
+              />
+            )}
+
+            <InfoItem
+              title={"Status"}
+              value={convert(data.Media.status, "status", { locale })}
+            />
+          </div>
+          <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 py-5 px-4 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
             <InfoItem
               title={"Format"}
               value={convert(data.Media.format, "format", { locale })}
@@ -168,6 +202,26 @@ export default async function DetailsPage({
                 </div>
               ))}
             />
+          </div>
+          <div className="space-y-2 text-gray-400">
+            <h1 className="font-semibold">Tags</h1>
+
+            <ul className="overflow-x-auto flex flex-row md:flex-col gap-2 [&>*]:shrink-0 md:no-scrollbar">
+              {data.Media.tags.map((tag: any) => (
+                <Link
+                  href={{
+                    pathname: "/browse",
+                    query: { type: "anime", tags: tag.name },
+                  }}
+                  key={tag.id}
+                  className="md:block"
+                >
+                  <li className="p-2 rounded-md bg-background-900 hover:text-primary-300 transition duration-300">
+                    {tag.name}
+                  </li>
+                </Link>
+              ))}
+            </ul>
           </div>
         </div>
         <div className="space-y-12 md:col-span-8">
