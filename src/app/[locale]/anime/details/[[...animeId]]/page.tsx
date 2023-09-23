@@ -61,7 +61,7 @@ export default async function DetailsPage({
               Watch now
             </Button>
 
-            <div className="flex flex-col items-start space-y-4 py-4 max-w-fit">
+            <div className="flex flex-col items-start space-y-4 md:py-4 max-w-fit">
               <p className="text-2xl md:text-3xl font-semibold max-w-full">
                 {title}
               </p>
@@ -135,7 +135,7 @@ export default async function DetailsPage({
 
       <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
         <div className="md:col-span-2 xl:h-[max-content] space-y-4">
-          <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
+          <div className="flex md:hidden flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
             <InfoItem
               title={"Country"}
               value={convert(data.Media.countryOfOrigin, "country", {
