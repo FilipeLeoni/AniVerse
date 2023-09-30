@@ -15,6 +15,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 // import LanguageSwitcher from "../shared/LanguageSwitcher";
 import Section from "../shared/Section";
 import { useTranslations } from "next-intl";
+import { signOut, useSession } from "next-auth/react";
+import Cookies from "js-cookie";
 
 const routes = [
   {
@@ -42,6 +44,7 @@ const routes = [
 const Header = () => {
   const [isTop, setIsTop] = useState(true);
   const drawerRef = useRef<any>();
+  const { data: session } = useSession();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +55,12 @@ const Header = () => {
   }, []);
 
   const t = useTranslations("Header");
+
+  function handleSingOut() {
+    signOut();
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+  }
 
   return (
     <nav>
@@ -140,13 +149,21 @@ const Header = () => {
             )}
           </NavItem>
 
-          <div className="flex items-center space-x-2">
-            <Link href={`/login`}>
-              <Button primary>
-                <p className="line-clamp-1">login</p>
+          {!session ? (
+            <div className="flex items-center space-x-2">
+              <Link href={`/login`}>
+                <Button primary>
+                  <p className="line-clamp-1">Login</p>
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <Button primary onClick={() => handleSingOut()}>
+                <p className="line-clamp-1">Sair</p>
               </Button>
-            </Link>
-          </div>
+            </div>
+          )}
         </div>
       </Section>
     </nav>

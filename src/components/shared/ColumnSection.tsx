@@ -20,7 +20,6 @@ const ColumnSection: React.FC<ColumnSectionProps> = ({
   type,
   isLoading,
 }) => {
-  console.log(data);
   return !isLoading ? (
     <div className="w-full grow-0 bg-background-800 pt-4">
       {title && (

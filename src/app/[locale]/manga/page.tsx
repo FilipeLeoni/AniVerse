@@ -68,7 +68,6 @@ export default function MangaPage() {
     queryKey: ["RandomAnime"],
     queryFn: async () => {
       const response = TrendingAnime;
-      console.log(response);
 
       return response;
     },
