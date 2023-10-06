@@ -19,6 +19,7 @@ import { MdTagFaces } from "react-icons/md";
 import Description from "./Description";
 import Popup from "./Popup";
 import { useLocale } from "next-intl";
+import Button from "./Button";
 
 interface CardProps {
   data: Media;
@@ -26,6 +27,8 @@ interface CardProps {
   containerEndSlot?: React.ReactNode;
   imageEndSlot?: React.ReactNode;
   redirectUrl?: string;
+  isEditCard?: boolean;
+  editName?: string;
 }
 
 const popupOptions: Partial<Options> = {
@@ -59,6 +62,8 @@ const Card: React.FC<CardProps> = (props) => {
     className,
     imageEndSlot,
     redirectUrl = createMediaDetailsUrl(data),
+    isEditCard = false,
+    editName,
   } = props;
 
   const locale = useLocale();
@@ -84,7 +89,7 @@ const Card: React.FC<CardProps> = (props) => {
           <React.Fragment>
             <div
               className={classNames(
-                "relative aspect-w-2 aspect-h-3",
+                "relative aspect-w-2 aspect-h-3 group",
                 className
               )}
             >
@@ -94,8 +99,13 @@ const Card: React.FC<CardProps> = (props) => {
                 className="rounded-sm object-cover"
                 alt={title}
               />
-
               {imageEndSlot}
+
+              {isEditCard && (
+                <div className=" bg-black/50 w-fit h-fit absolute hidden group-hover:flex justify-center items-center ">
+                  <Button primary>{editName}</Button>
+                </div>
+              )}
             </div>
 
             {data.type && className === "relations" && (
