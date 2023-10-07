@@ -11,6 +11,7 @@ import { GetStaticProps, NextPage } from "next";
 import React, { useMemo } from "react";
 import { FaDiscord, FaFacebookF } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { signIn, useSession } from "next-auth/react";
 
 interface Quote {
   anime: string;
@@ -22,25 +23,9 @@ interface LoginPageProps {
   quotes: Quote[];
 }
 
-const isDev = process.env.NODE_ENV === "development";
-
 const LoginPage = () => {
   const randomQuote = useMemo(() => randomElement(quotes), []);
-  //   const { t } = useTranslation("login");
-
-  //   const { query } = useRouter();
-
-  //   const { redirectedFrom = "/" } = query as { redirectedFrom: string };
-
-  //   const signInMutation = useSignIn({
-  //     redirectTo: isDev
-  //       ? `http://localhost:3000${redirectedFrom}`
-  //       : redirectedFrom,
-  //   });
-
-  //   const handleSignIn = (provider: Provider) => () => {
-  //     signInMutation.mutate(provider);
-  //   };
+  const { data: session } = useSession();
 
   return (
     <React.Fragment>
@@ -76,6 +61,7 @@ const LoginPage = () => {
                 className="shadow-lg relative bg-white text-black font-bold flex items-center justify-center w-full hover:!bg-opacity-90"
                 LeftIcon={FcGoogle}
                 iconClassName="absolute left-6"
+                onClick={() => signIn("google", { callbackUrl: "/" })}
               >
                 <p>Login with google</p>
               </Button>
@@ -83,6 +69,7 @@ const LoginPage = () => {
                 className="shadow-lg relative !bg-[#2D88FF] !hover:bg-white/20 text-white font-bold flex items-center justify-center w-full hover:!bg-opacity-90"
                 LeftIcon={FaFacebookF}
                 iconClassName="absolute left-6"
+                onClick={() => signIn("facebook", { callbackUrl: "/" })}
               >
                 <p>Login with Facebook</p>
               </Button>
@@ -90,6 +77,7 @@ const LoginPage = () => {
                 className="shadow-lg relative !bg-[#5865F2] bg-purple-600/90 !hover:bg-white/20 text-white font-bold flex items-center justify-center w-full hover:!bg-opacity-90"
                 LeftIcon={FaDiscord}
                 iconClassName="absolute left-6"
+                onClick={() => signIn("discord", { callbackUrl: "/" })}
               >
                 <p>Login with discord</p>
               </Button>

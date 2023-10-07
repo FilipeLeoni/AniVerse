@@ -49,36 +49,17 @@ export const anilistFetcher = async <T>(query: string, variables: any) => {
   return data?.data;
 };
 
-// export const getPageMedia = async (
-//   args: MediaArgs & PageArgs,
-//   fields?: string
-// ) => {
-//   const response = await anilistFetcher<PageQueryResponse>(
-//     mediaQuery(fields),
-//     args
-//   );
+export const getPageMedia = async (
+  args: MediaArgs & PageArgs,
+  fields?: string
+) => {
+  const response = await anilistFetcher<PageQueryResponse>(
+    mediaQuery(fields),
+    args
+  );
 
-//   const mediaIdList = response?.Page?.media?.map((media) => media.id);
-
-//   const { data: mediaTranslations, error } = await supabaseClient
-//     .from<Translation>("kaguya_translations")
-//     .select("*")
-//     .in("mediaId", mediaIdList);
-
-//   if (error || !mediaTranslations?.length) return response?.Page;
-
-//   response?.Page?.media?.forEach((media) => {
-//     const translations = mediaTranslations.filter(
-//       (translation) => translation.mediaId === media.id
-//     );
-
-//     if (!translations?.length) return;
-
-//     media.translations = translations;
-//   });
-
-//   return response?.Page;
-// };
+  return response?.Page;
+};
 
 // export const getMedia = async (args: MediaArgs & PageArgs, fields?: string) => {
 //   const response = await anilistFetcher<PageQueryResponse>(

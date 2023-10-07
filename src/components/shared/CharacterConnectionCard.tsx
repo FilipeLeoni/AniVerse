@@ -16,8 +16,13 @@ const CharacterConnectionCard: React.FC<CharacterCardProps> = ({
 }) => {
   const locale = useLocale();
 
+  const id = characterEdge?.node?.id;
+  const name = characterEdge?.node?.name?.userPreferred;
+  const formattedName = name ? name.replaceAll(" ", "-") : "";
+  const url = `/characters/details/${id}/${formattedName}`;
+
   return (
-    <Link href={`/characters/details/${characterEdge?.node?.id}`}>
+    <Link href={url}>
       <div className="text-gray-300 space-x-4 col-span-1 flex w-full h-24 bg-background-900 hover:bg-white/20 transtion duration-300">
         <div className="relative h-full w-16">
           <Image

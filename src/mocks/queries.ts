@@ -1,3 +1,56 @@
+export const searchData = async (
+  search: string,
+  mediaType: string = "ANIME"
+) => {
+  const response = await fetch(`https://graphql.anilist.co`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+      query ($search: String, $mediaType: MediaType, ) {
+            Page(page: 1, perPage: 30) {
+              media(search: $search, type: $mediaType, sort: TRENDING_DESC) {
+                id
+                title {
+                  romaji
+                  english
+                  native
+                  userPreferred
+                }
+                bannerImage
+                coverImage {
+                  extraLarge
+                  color
+                }
+                description
+                format
+                type
+                genres
+                averageScore
+                popularity
+                trending
+                favourites
+                nextAiringEpisode {
+                  airingAt
+                  episode
+                }
+              }
+            }
+          }
+        `,
+      variables: {
+        mediaType,
+        search,
+      },
+    }),
+  });
+
+  return response.json();
+};
+
 export const getPopularAnime = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
@@ -393,6 +446,7 @@ export const getAnimeById = async (id: any, type: any) => {
                       genres
                       description
                       type
+                      
                     }
                     }
                 }
@@ -412,8 +466,15 @@ export const getAnimeById = async (id: any, type: any) => {
                     }
                     name {
                       userPreferred
+                      full
                     }
-                    
+                    dateOfBirth {
+                      day
+                      month
+                      year
+                    }
+                    age
+                    gender
                   }
                   role
                 }
