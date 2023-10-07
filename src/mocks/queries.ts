@@ -446,6 +446,7 @@ export const getAnimeById = async (id: any, type: any) => {
                       genres
                       description
                       type
+                      
                     }
                     }
                 }
@@ -465,8 +466,15 @@ export const getAnimeById = async (id: any, type: any) => {
                     }
                     name {
                       userPreferred
+                      full
                     }
-                    
+                    dateOfBirth {
+                      day
+                      month
+                      year
+                    }
+                    age
+                    gender
                   }
                   role
                 }

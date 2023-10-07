@@ -31,30 +31,26 @@ import CharacterAddCard from "@/components/features/panel/CharacterAddCard";
 import CharacterConnectionRemoveCard from "@/components/features/panel/CharacterConnectionRemove";
 import Modal from "@/components/features/panel/CharacterModal";
 import AddDataModal from "@/components/features/panel/CharacterModal";
+import AddRemoveItem from "@/components/features/panel/AddRemoveItem";
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 export default function UploadPage({
   params,
 }: {
   params: { params: string[] };
 }) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<any>();
   const [character, setCharacter] = useState<any>(null);
   const [showCharacterModal, setShowCharacterModal] = useState(false);
-  const [newGenre, setNewGenre] = useState<string>("");
-  const [genres, setGenres] = useState<string[]>([]);
-  console.log(genres);
-
-  const handleAddGenre = () => {
-    if (newGenre.trim() !== "") {
-      setGenres([...genres, newGenre]);
-      setNewGenre("");
-    }
-  };
-
-  const handleRemoveGenre = (index: number) => {
-    const updatedGenres = [...genres];
-    updatedGenres.splice(index, 1);
-    setGenres(updatedGenres);
-  };
+  const [studios, setStudios] = useState<any[]>([]);
+  const [synonimus, setSynonimus] = useState<any[]>([]);
+  const [tags, setTags] = useState<any[]>([]);
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ["AnimeById"],
@@ -66,9 +62,16 @@ export default function UploadPage({
   const locale = useLocale();
 
   useEffect(() => {
-    setGenres(data?.Media?.genres);
+    if (data?.Media?.studios?.nodes) {
+      setStudios(data.Media.studios.nodes);
+    }
+    if (data?.Media?.synonyms) {
+      setSynonimus(data.Media.synonyms);
+    }
+    if (data?.Media?.tags) {
+      setTags(data.Media.tags);
+    }
   }, [data?.Media]);
-  console.log(data);
 
   if (isLoading) {
     return (
@@ -81,50 +84,112 @@ export default function UploadPage({
   const title = getTitle(data?.Media, locale);
   const description = getDescription(data?.Media, locale);
 
+  const transformCharactersData = (characters: any) => {
+    return characters.map((character: any) => ({
+      name: character.node.name.userPreferred,
+      image: character.node.image.large,
+      description: character.node.description,
+      gender: character.node.gender,
+      age: Number(character.node.age),
+      dateOfBirth: `${character.node.dateOfBirth.year}-${character.node.dateOfBirth.month}-${character.node.dateOfBirth.day}`,
+      role: character.role,
+    }));
+  };
+
+  const onSubmit: SubmitHandler<any> = async (test) => {
+    const episodes = parseInt(test.episodes, 10);
+    const duration = parseInt(test.duration, 10);
+    const popularity = parseInt(test.popularity, 10);
+    const favourites = parseInt(test.favourites, 10);
+    const trending = parseInt(test.trending, 10);
+    const transformedCharacters = transformCharactersData(
+      data.Media.characters.edges
+    );
+    console.log(episodes);
+    console.log(test);
+
+    // console.log(episodes);
+    // console.log(transformedCharacters);
+
+    // Crie um objeto com todas as propriedades que deseja enviar
+    const requestBody = {
+      title: {
+        romaji: test.romaji,
+        english: test.english,
+        native: test.native,
+      },
+      bannerImage: data.Media.bannerImage,
+      coverImage: data.Media.coverImage.extraLarge,
+      episodes: episodes,
+      duration: duration,
+      popularity: popularity,
+      favourites: favourites,
+      trending: trending,
+      status: test.status,
+      format: test.format,
+      season: test.season,
+      characters: transformedCharacters,
+      // ...test,
+    };
+
+    console.log(requestBody);
+    // Enviar a solicitação usando o objeto como corpo
+    const response = await fetch("http://localhost:8000/anime", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+    console.log(response);
+  };
+
+  // console.log(data?.Media?.characters.edges);
+
   const nextAiringSchedule = data.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
     .find((schedule: any) => dayjs.unix(schedule.airingAt).isAfter(dayjs()));
 
   return (
-    <div className="pb-8">
-      <div className="relative group transition-all">
-        <DetailsBanner image={data.Media.bannerImage} />
-        <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100  flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-xl">
-          Edit banner image
-        </div>
-      </div>
-      <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
-        <div className="flex flex-row md:space-x-8">
-          <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6 ">
-            <div className="relative group">
-              <PlainCard src={data.Media.coverImage.extraLarge} alt={"Test"} />
-              <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-lg">
-                Edit Cover Image
-              </div>
-            </div>
-            <Button
-              primary
-              className="gap-4 w-full justify-center md:flex hidden"
-            >
-              <BsPlusCircleFill size={22} />
-              Add to Home
-            </Button>
+    <div className="pb-8 relative">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="relative group transition-all">
+          <DetailsBanner image={data.Media.bannerImage} />
+          <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100  flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-xl">
+            Edit banner image
           </div>
+        </div>
+        <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
+          <div className="flex flex-row md:space-x-8">
+            <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6 ">
+              <div className="relative group">
+                <PlainCard
+                  src={data.Media.coverImage.extraLarge}
+                  alt={"Test"}
+                />
+                <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-lg">
+                  Edit Cover Image
+                </div>
+              </div>
+              <Button
+                primary
+                className="gap-4 w-full justify-center md:flex hidden"
+              >
+                <BsPlusCircleFill size={22} />
+                Add to Home
+              </Button>
+            </div>
 
-          <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4 w-full">
-            <div className="flex flex-col items-start space-y-4 pt-20 md:pb-4 w-full">
-              {/* <p className="text-2xl md:text-3xl font-semibold max-w-full ">
-                {title}
-              </p> */}
-
-              <Input
-                label={"Title"}
-                value={title}
-                // onChange={(e) => setQuery(e.target)}
-                containerClassName="w-full md:w-1/3 mb-8"
-                className="px-4 py-1 text-white text-3xl focus:ring-2 focus:ring-primary-500 rounded-sm"
-              />
-              <div className="flex flex-col h-auto">
+            <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4 w-full">
+              <div className="flex flex-col items-start space-y-4 pt-20 md:pb-4 w-full">
+                <Input
+                  label={"Title"}
+                  defaultValue={title}
+                  // {...register("te", { required: true })}
+                  containerClassName="w-full md:w-1/3 mb-8 text-gray-400"
+                  className="px-4 py-1 text-white text-3xl focus:ring-2 focus:ring-primary-500 rounded-sm"
+                />
+                {/* <div className="flex flex-col h-auto">
                 <div className="flex gap-2 items-end">
                   <Input
                     type="text"
@@ -134,12 +199,12 @@ export default function UploadPage({
                     containerClassName="w-full text-gray-400 "
                     className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                   />
-                  <Button primary onClick={handleAddGenre}>
+                  <Button primary onClick={handleAddStudio}>
                     Adicionar
                   </Button>
                 </div>
-                <div className="overflow-ellipsis line-clamp-1 pb-10 flex">
-                  <ul className="flex">
+                <div className="overflow-ellipsis line-clamp-1 pb-10 flex mt-3">
+                  <ul className="flex gap-2">
                     {genres?.map((genre, index) => (
                       <li
                         key={index}
@@ -156,76 +221,79 @@ export default function UploadPage({
                     ))}
                   </ul>
                 </div>
+              </div> */}
+                <div className="w-full">
+                  <h2 className="font-bold text-gray-400">Description</h2>
+                  <textarea
+                    className="bg-neutral-800 w-full h-full p-4 rounded-md mt-3 focus:ring-2 focus:ring-primary-500 outline-none"
+                    rows={7}
+                    {...register("description")}
+                  >
+                    {description}
+                  </textarea>
+                </div>
+                <div id="mal-sync" className="hidden md:block"></div>
               </div>
-              <textarea
-                className="bg-neutral-800 w-full h-full p-4 rounded-md mt-5 focus:ring-2 focus:ring-primary-500 outline-none"
-                rows={7}
-              >
-                {description}
-              </textarea>
 
-              <div id="mal-sync" className="hidden md:block"></div>
-            </div>
-
-            <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0">
-              {/* <InfoItem
-                title={"Country"}
-                value={convert(data.Media.countryOfOrigin, "country", {
-                  locale,
-                })}
-              /> */}
-              <Input
-                containerInputClassName="focus:border border-white/80"
-                label={"Country"}
-                value={convert(data.Media.countryOfOrigin, "country", {
-                  locale,
-                })}
-                // onChange={(e) => setQuery(e.target)}
-                containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
-                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-              />
-              {/* <InfoItem title={"Total Episodes"} value={data.Media.episodes} /> */}
-
-              <Input
-                containerInputClassName="focus:border border-white/80"
-                label={"Total Episodes"}
-                value={data.Media.episodes}
-                // onChange={(e) => setQuery(e.target)}
-                containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
-                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-              />
-
-              {data.Media.duration && (
-                // <InfoItem
-                //   title={"Duration"}
-                //   value={`${data.Media.duration} ${"Minutes"}`}
-                // />
-
+              <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0 flex-wrap">
                 <Input
                   containerInputClassName="focus:border border-white/80"
-                  label={"Duration"}
-                  value={`${data.Media.duration} ${"Minutes"}`}
+                  label={"Country"}
+                  defaultValue={convert(data.Media.countryOfOrigin, "country", {
+                    locale,
+                  })}
                   // onChange={(e) => setQuery(e.target)}
                   containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
                   className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                  {...register("countryOfOrigin")}
                 />
-              )}
+                {/* <InfoItem title={"Total Episodes"} value={data.Media.episodes} /> */}
 
-              {/* <InfoItem
+                <Input
+                  containerInputClassName="focus:border border-white/80"
+                  label={"Total Episodes"}
+                  defaultValue={parseInt(data.Media.episodes)}
+                  // onChange={(e) => setQuery(e.target)}
+                  containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                  className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                  {...register("episodes")}
+                />
+
+                {data.Media.duration && (
+                  // <InfoItem
+                  //   title={"Duration"}
+                  //   value={`${data.Media.duration} ${"Minutes"}`}
+                  // />
+
+                  <Input
+                    containerInputClassName="focus:border border-white/80"
+                    label={"Duration"}
+                    defaultValue={parseInt(data.Media.duration)}
+                    // onChange={(e) => setQuery(e.target)}
+                    containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                    className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                    {...register("duration")}
+                  />
+                )}
+
+                {/* <InfoItem
                 title={"Status"}
                 value={convert(data.Media.status, "status", { locale })}
               /> */}
 
-              <Input
-                containerInputClassName="focus:border border-white/80"
-                label={"Status"}
-                value={convert(data.Media.status, "status", { locale })}
-                // onChange={(e) => setQuery(e.target)}
-                containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
-                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-              />
+                <Input
+                  containerInputClassName="focus:border border-white/80"
+                  label={"Status"}
+                  defaultValue={convert(data.Media.status, "status", {
+                    locale,
+                  })}
+                  // onChange={(e) => setQuery(e.target)}
+                  containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                  className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                  {...register("status")}
+                />
 
-              {/* {nextAiringSchedule && (
+                {/* {nextAiringSchedule && (
                 // <AiringCountDown
                 //   airingAt={nextAiringSchedule.airingAt}
                 //   episode={nextAiringSchedule.episode}
@@ -240,232 +308,203 @@ export default function UploadPage({
                   className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                 />
               )} */}
+              </div>
             </div>
           </div>
-        </div>
-        <MediaDescription
-          description={description}
-          containerClassName="mt-4 mb-8 md:hidden block"
-          className="text-gray-300 hover:text-gray-100 transition duration-300"
-        />
+          <MediaDescription
+            description={description}
+            containerClassName="mt-4 mb-8 md:hidden block"
+            className="text-gray-300 hover:text-gray-100 transition duration-300"
+          />
 
-        <div className="flex gap-2 mt-2">
-          <Button
-            primary
-            className="gap-4 w-full justify-center flex md:hidden"
-          >
-            <BsPlusCircleFill size={22} />
-            Add to list
-          </Button>
-          <Button primary className="flex md:hidden bg-transparent text-white">
-            <BsFillPlayFill size={24} />
-          </Button>
-        </div>
-      </Section>
-
-      <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
-        <div className="md:col-span-2 xl:h-[max-content] space-y-4">
-          <div className="flex md:hidden flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
-            <InfoItem
-              title={"Country"}
-              value={convert(data.Media.countryOfOrigin, "country", {
-                locale,
-              })}
-            />
-            <InfoItem title={"Total Episodes"} value={data.Media.episodes} />
-
-            {data.Media.duration && (
-              <InfoItem
-                title={"Duration"}
-                value={`${data.Media.duration} ${"Minutes"}`}
-              />
-            )}
-
-            <InfoItem
-              title={"Status"}
-              value={convert(data.Media.status, "status", { locale })}
-            />
-
-            {nextAiringSchedule && (
-              <AiringCountDown
-                airingAt={nextAiringSchedule.airingAt}
-                episode={nextAiringSchedule.episode}
-              />
-            )}
-          </div>
-
-          <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar w-full">
-            {/* <InfoItem
-              title={"Format"}
-              value={convert(data.Media.format, "format", { locale })}
-            /> */}
-            <Input
-              containerInputClassName="focus:border border-white/80 w-full"
-              label={"Format"}
-              value={convert(data.Media.format, "format", { locale })}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-            {/* <InfoItem title="English" value={data.Media.title.english} /> */}
-            <Input
-              containerInputClassName="focus:border border-white/80"
-              label={"English"}
-              value={data.Media.title.english}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-            {/* <InfoItem title="Native" value={data.Media.title.native} /> */}
-            <Input
-              containerInputClassName="focus:border border-white/80"
-              label={"Native"}
-              value={data.Media.title.native}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-            {/* <InfoItem title="Romanji" value={data.Media.title.romaji} /> */}
-            <Input
-              containerInputClassName="focus:border border-white/80"
-              label={"Romanji"}
-              value={data.Media.title.romaji}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-            {/* <InfoItem
-              title={"Popular"}
-              value={numberWithCommas(data.Media.popularity)}
-            /> */}
-            <Input
-              containerInputClassName="focus:border border-white/80"
-              label={"Popular"}
-              value={numberWithCommas(data.Media.popularity)}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-            {/* <InfoItem
-              title={"Favourite"}
-              value={numberWithCommas(data.Media.favourites)}
-            /> */}
-            <Input
-              containerInputClassName="focus:border border-white/80"
-              label={"Favourite"}
-              value={numberWithCommas(data.Media.favourites)}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-            {/* <InfoItem
-              title={"Trending"}
-              value={numberWithCommas(data.Media.trending)}
-            /> */}
-            <Input
-              containerInputClassName="focus:border border-white/80"
-              label={"Trending"}
-              value={numberWithCommas(data.Media.trending)}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-
-            <InfoItem
-              title="Studio"
-              value={data.Media.studios.nodes.map((studio: any) => (
-                <Link
-                  key={studio.id}
-                  href={createStudioDetailsUrl(studio)}
-                  className="hover:text-primary-300 transition duration-300"
-                >
-                  <p>{studio.name}</p>
-                </Link>
-              ))}
-            />
-
-            <Input
-              containerInputClassName="focus:border border-white/80"
-              label={"Season"}
-              value={`${convert(data.Media.season, "season", { locale })} ${
-                data.Media.seasonYear
-              }`}
-              // onChange={(e) => setQuery(e.target)}
-              containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-            />
-            <InfoItem
-              title={"Synonimus"}
-              value={data.Media.synonyms.map((synomym: any) => (
-                <div key={synomym} className="-mb-2">
-                  <p>{synomym}</p>
-                </div>
-              ))}
-            />
-          </div>
-          <div className="space-y-2 text-gray-400">
-            <h1 className="font-semibold">Tags</h1>
-
-            <ul className="overflow-x-auto flex flex-row md:flex-col gap-2 [&>*]:shrink-0 md:no-scrollbar">
-              {data.Media.tags.map((tag: any) => (
-                <Link
-                  href={{
-                    pathname: "/browse",
-                    query: { type: "anime", tags: tag.name },
-                  }}
-                  key={tag.id}
-                  className="md:block"
-                >
-                  <li className="p-2 rounded-md bg-background-900 hover:text-primary-300 transition duration-300">
-                    {tag.name}
-                  </li>
-                </Link>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="space-y-12 md:col-span-8">
-          {!!data.Media?.characters?.edges?.length && (
-            <DetailsSection
-              title={"Characters"}
-              className="grid w-full grid-cols-1 gap-4 md:grid-cols-2"
+          <div className="flex gap-2 mt-2">
+            <Button
+              primary
+              className="gap-4 w-full justify-center flex md:hidden"
             >
-              <CharacterAddCard onClick={() => setShowCharacterModal(true)} />
-              {data.Media.characters.edges.map(
-                (characterEdge: any, index: number) => (
-                  <CharacterConnectionRemoveCard
-                    characterEdge={characterEdge}
-                    key={index}
-                  />
-                )
+              <BsPlusCircleFill size={22} />
+              Add to list
+            </Button>
+            <Button
+              primary
+              className="flex md:hidden bg-transparent text-white"
+            >
+              <BsFillPlayFill size={24} />
+            </Button>
+          </div>
+        </Section>
+
+        <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
+          <div className="md:col-span-2 xl:h-[max-content] space-y-4">
+            <div className="flex md:hidden flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
+              <InfoItem
+                title={"Country"}
+                value={convert(data.Media.countryOfOrigin, "country", {
+                  locale,
+                })}
+              />
+              <InfoItem title={"Total Episodes"} value={data.Media.episodes} />
+
+              {data.Media.duration && (
+                <InfoItem
+                  title={"Duration"}
+                  value={`${data.Media.duration} ${"Minutes"}`}
+                />
               )}
-            </DetailsSection>
-          )}
 
-          {showCharacterModal && (
-            <AddDataModal
-              isOpen={showCharacterModal}
-              onClose={() => setShowCharacterModal(false)}
-            />
-          )}
+              <InfoItem
+                title={"Status"}
+                value={convert(data.Media.status, "status", { locale })}
+              />
 
-          {!!data.Media?.relations?.nodes?.length && (
-            <DetailsSection title={"Relations"}>
-              <List data={data.Media.relations.nodes}>
-                {(node: any) => <Card data={node} className="relations" />}
-              </List>
-            </DetailsSection>
-          )}
+              {nextAiringSchedule && (
+                <AiringCountDown
+                  airingAt={nextAiringSchedule.airingAt}
+                  episode={nextAiringSchedule.episode}
+                />
+              )}
+            </div>
 
-          {!!data.Media?.recommendations?.nodes?.length && (
-            <DetailsSection title={"Recomendations"}>
-              <List data={data.Media.recommendations.nodes}>
-                {(node: any) => <Card data={node.mediaRecommendation} />}
-              </List>
-            </DetailsSection>
-          )}
+            <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar w-full">
+              <Input
+                containerInputClassName="focus:border border-white/80 w-full"
+                label={"Format"}
+                defaultValue={convert(data.Media.format, "format", { locale })}
+                containerClassName="w-full text-gray-400"
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("format")}
+              />
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"English"}
+                defaultValue={data.Media.title.english}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("english")}
+              />
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Native"}
+                defaultValue={data.Media.title.native}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("native")}
+              />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Romanji"}
+                defaultValue={data.Media.title.romaji}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("romaji")}
+              />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Popularity"}
+                defaultValue={parseInt(data.Media.popularity)}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("popularity")}
+              />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Favourite"}
+                defaultValue={parseInt(data.Media.favourites)}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("favourites")}
+              />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Trending"}
+                defaultValue={parseInt(data.Media.trending)}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("trending")}
+              />
+
+              <AddRemoveItem
+                label="Studios"
+                state={studios}
+                setState={setStudios}
+              />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Season"}
+                defaultValue={`${convert(data.Media.season, "season", {
+                  locale,
+                })} ${data.Media.seasonYear}`}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("season")}
+              />
+
+              <AddRemoveItem
+                label="Synonimus"
+                state={synonimus}
+                setState={setSynonimus}
+              />
+            </div>
+            <div className="space-y-2 w-full">
+              <AddRemoveItem label="Tags" state={tags} setState={setTags} />
+            </div>
+          </div>
+
+          <div className="space-y-12 md:col-span-8">
+            {!!data.Media?.characters?.edges?.length && (
+              <DetailsSection
+                title={"Characters"}
+                className="grid w-full grid-cols-1 gap-4 md:grid-cols-2"
+              >
+                <CharacterAddCard onClick={() => setShowCharacterModal(true)} />
+                {data.Media.characters.edges.map(
+                  (characterEdge: any, index: number) => (
+                    <CharacterConnectionRemoveCard
+                      characterEdge={characterEdge}
+                      key={index}
+                    />
+                  )
+                )}
+              </DetailsSection>
+            )}
+
+            {showCharacterModal && (
+              <AddDataModal
+                isOpen={showCharacterModal}
+                onClose={() => setShowCharacterModal(false)}
+              />
+            )}
+
+            {!!data.Media?.relations?.nodes?.length && (
+              <DetailsSection title={"Relations"}>
+                <List data={data.Media.relations.nodes}>
+                  {(node: any) => <Card data={node} className="relations" />}
+                </List>
+              </DetailsSection>
+            )}
+
+            {!!data.Media?.recommendations?.nodes?.length && (
+              <DetailsSection title={"Recomendations"}>
+                <List data={data.Media.recommendations.nodes}>
+                  {(node: any) => <Card data={node.mediaRecommendation} />}
+                </List>
+              </DetailsSection>
+            )}
+          </div>
+        </Section>
+
+        <div className="fixed w-full h-16 bg-neutral-900 bottom-0 left-0 flex justify-end items-center px-36 z-50">
+          <Button primary className="flex gap-2" type="submit">
+            <AiOutlinePlusCircle size={24} />
+            Add Anime
+          </Button>
         </div>
-      </Section>
+      </form>
     </div>
   );
 }

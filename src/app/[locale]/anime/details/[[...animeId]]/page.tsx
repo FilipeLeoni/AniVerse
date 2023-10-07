@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import dayjs from "@/lib/dayjs";
 import AiringCountDown from "@/components/shared/AiringCountDown";
+import DisqusComments from "@/components/features/comment/DisquesComment";
 
 export default async function DetailsPage({
   params,
@@ -267,6 +268,9 @@ export default async function DetailsPage({
             </DetailsSection>
           )}
         </div>
+      </Section>
+      <Section className="mt-36">
+        <DisqusComments animeId={params.animeId[0]} title={title} />
       </Section>
     </div>
   );
