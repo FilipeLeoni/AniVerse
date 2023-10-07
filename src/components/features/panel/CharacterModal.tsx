@@ -26,7 +26,9 @@ const AddDataModal = ({ isOpen, onClose, onSave }: any) => {
           containerInputClassName="focus:border border-white/80 w-full"
           label={"Name"}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
           containerClassName="w-full text-gray-400 "
           className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
         />
@@ -34,7 +36,9 @@ const AddDataModal = ({ isOpen, onClose, onSave }: any) => {
           containerInputClassName="focus:border border-white/80 w-full"
           label={"Gender"}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
           containerClassName="w-full text-gray-400 "
           className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
         />
@@ -42,7 +46,9 @@ const AddDataModal = ({ isOpen, onClose, onSave }: any) => {
           containerInputClassName="focus:border border-white/80 w-full"
           label={"Age"}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
           containerClassName="w-full text-gray-400 "
           className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
         />
@@ -50,7 +56,9 @@ const AddDataModal = ({ isOpen, onClose, onSave }: any) => {
           containerInputClassName="focus:border border-white/80 w-full mb-8"
           label={"Date of birthday"}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTitle(e.target.value)
+          }
           containerClassName="w-full text-gray-400 "
           className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
         />
