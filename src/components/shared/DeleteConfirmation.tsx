@@ -18,7 +18,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = (props) => {
 
   const {
     children,
-    confirmString = "Delete confirmation string",
+    confirmString = "delete",
     onConfirm,
     isLoading = false,
     reference = (
@@ -27,7 +27,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = (props) => {
         isLoading={isLoading}
         className="text-red-500 bg-red-500/20 hover:text-white hover:bg-red-500/80"
       >
-        Xóa
+        Delete
       </Button>
     ),
     className,
@@ -59,14 +59,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = (props) => {
       <div className={classNames("space-y-4", className)} {...restProps}>
         {children}
 
-        {/* <Trans
-          i18nKey="delete_modal:deleteRequirement"
-          values={{
-            confirmString,
-          }}
-        >
-          Nhập <b>{confirmString}</b> để xác nhận xóa.
-        </Trans> */}
+        <b>{`Enter "${confirmString}" to confirm deletion.`}</b>
 
         <Input
           onChange={handleInputChange}
@@ -82,7 +75,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = (props) => {
           disabled={isButtonDisable}
           onClick={handleConfirm}
         >
-          Accept delete
+          Delete
         </Button>
       </div>
     </Modal>

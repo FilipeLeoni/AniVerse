@@ -15,10 +15,7 @@ import Editor from "./Editor";
 import useComments from "@/hooks/useComments";
 import useCreateComment from "@/hooks/useCreateComment";
 import { useSession } from "next-auth/react";
-
-interface CommentState {
-  defaultContent?: string;
-}
+import Link from "next/link";
 
 interface CommentsProps {
   parentId?: string;
@@ -32,8 +29,6 @@ const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
   const { data: session } = useSession();
   const user = useUser();
   const editorRef = useRef<EditorType>(null);
-
-  console.log(session);
 
   const { mutate: createComment, isLoading: createCommentLoading } =
     useCreateComment();
@@ -49,10 +44,11 @@ const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
   }, [commentReply?.replyingTo]);
 
   const handleEditorSubmit: any = (content: string) => {
+    console.log(content);
     createComment({
       animeId,
       parentId,
-      comment: content,
+      text: content,
     });
 
     setCommentState({ defaultContent: null });
@@ -63,17 +59,32 @@ const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
 
   return (
     <div>
-      <div className="mb-10">
-        {session?.user && (
+      <h1 className="font-semibold text-3xl mb-8">Comments</h1>
+      <div>
+        {session?.user ? (
           <Editor
             ref={editorRef}
-            placeholder={"placeholder"}
+            placeholder={"Add a comment"}
             defaultContent={commentState.defaultContent}
             autofocus={!!commentReply?.replyingTo}
             onSubmit={handleEditorSubmit}
             isLoading={createCommentLoading}
           />
+        ) : (
+          <div className="bg-neutral-900 p-3 text-neutral-300">
+            You need to
+            <Link href={"/login"}>
+              <span className="text-primary-300 mx-1 hover:text-primary-500">
+                login
+              </span>
+            </Link>
+            to comment
+          </div>
         )}
+      </div>
+      <div className="flex w-full gap-3 justify-end mt-4 mb-6">
+        <p className="hover:text-primary-400 cursor-pointer">Most recent</p>
+        <p className="hover:text-primary-400 cursor-pointer">Oldest</p>
       </div>
       <div>
         {data &&
@@ -82,34 +93,6 @@ const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
           ))}
       </div>
     </div>
-    // <div className="space-y-4 mb-4">
-    //   {isLoading ? (
-    //     <div className="relative w-full h-20">
-    //       <Loading className="w-8 h-8" />
-    //     </div>
-    //   ) : (
-    //     comments &&
-    //     comments.map((comment: any) => (
-    //       <CommentComponent key={comment.id} commentId={comment.id} />
-    //     ))
-    //   )}
-
-    //   ) : (
-    //     <p className="p-2 bg-background-800 text-gray-300">
-    //       dwdwdw
-    //       {/* <Trans i18nKey="comment:need_login_msg">
-    //         Bạn phải{" "}
-    //         <TransLink
-    //           href={`/login?redirectedFrom=${asPath}`}
-    //           className="text-primary-300 hover:underline"
-    //         >
-    //           đăng nhập
-    //         </TransLink>{" "}
-    //         dể bình luận.
-    //       </Trans> */}
-    //     </p>
-    //   )}
-    // </div>
   );
 };
 

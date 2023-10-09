@@ -9,53 +9,39 @@ import CommentReplyContextProvider, {
 } from "@/contexts/CommentReplyContext";
 
 import { Comment } from "@/@types";
-import { getMentionedUserIds } from "@/utils/editor";
-import { useUser } from "@/contexts/AuthContext";
 import classNames from "classnames";
 import dayjs from "dayjs";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+import { AiFillDelete, AiFillEdit, AiOutlineClose } from "react-icons/ai";
 import { BsArrowReturnRight, BsReplyFill } from "react-icons/bs";
-import Comments from "./Comments";
 import Editor from "./Editor";
-import ReactionSelector from "./ReactionSelector";
-import Link from "next/link";
-import useComment from "@/hooks/useComment";
-import useCreateReaction from "@/hooks/useCreateReaction";
+
 import useDeleteComment from "@/hooks/useDeleteComment";
-import useRemoveReaction from "@/hooks/useRemoveReaction";
 import useUpdateComment from "@/hooks/useUpdateComment";
-import CommentReactions from "./CommentReactions";
 import { useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import Replies from "./Replies";
-
-interface CommentContainerProps {
-  commentId: string;
-}
+import { Comments } from "@/@types/Comment";
 
 interface CommentProps {
-  comment: Comment;
+  comment: Comments;
 }
 
-const CommentContainer: React.FC<any> = ({ comment }) => {
-  // const { data: comment, isLoading } = useComment(commentId);
-  console.log(comment);
-
-  const isLoading = false;
+const CommentContainer: React.FC<CommentProps> = ({ comment }) => {
   return (
     <div className="relative">
-      {!comment.parentId && (
-        <CommentReplyContextProvider>
-          <CommentComponent comment={comment} />
-        </CommentReplyContextProvider>
-      )}
-      {comment.replies.map((comment: any) => (
-        <div className="ml-8" key={comment.id}>
-          <CommentComponent comment={comment} />
-        </div>
-      ))}
+      <CommentReplyContextProvider>
+        {!comment.parentId && (
+          <div>
+            <CommentComponent comment={comment} />
+          </div>
+        )}
+        {comment?.replies?.map((comment: any) => (
+          <div className="ml-8" key={comment.id}>
+            <CommentComponent comment={comment} />
+          </div>
+        ))}
+      </CommentReplyContextProvider>
     </div>
   );
 };
@@ -68,24 +54,12 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
 
   const commentReply = useCommentReply();
   const { data: session } = useSession();
-  console.log(session);
-  // const { mutate: createReaction } = useCreateReaction();
-  // const { mutate: removeReaction } = useRemoveReaction();
-  const { mutate: updateComment } = useUpdateComment();
-  // const { mutate: deleteComment } = useDeleteComment({
-  //   topic: comment.topic,
-  //   parentId: comment.parent_id,
-  // });
 
-  // const activeReactions = comment.reactions_metadata.reduce(
-  //   (set: any, reactionMetadata: any) => {
-  //     if (reactionMetadata.active_for_user) {
-  //       set.add(reactionMetadata.reaction_type);
-  //     }
-  //     return set;
-  //   },
-  //   new Set<string>()
-  // );
+  const { mutate: updateComment } = useUpdateComment();
+  const { mutate: deleteComment } = useDeleteComment({
+    animeId: comment.animeId,
+    parentId: comment.parentId,
+  });
 
   const handleUpdate = (content: string) => {
     updateComment({
@@ -96,14 +70,16 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
     setIsEditing(false);
   };
 
-  // const handleDelete = () => {
-  //   deleteComment(comment.id);
-  // };
+  const handleDelete = () => {
+    deleteComment(comment.id);
+  };
 
   const handleToggleActionMenu: (
     isShow: boolean
   ) => React.MouseEventHandler<HTMLDivElement> = (isShow) => () => {
-    setShowActionMenu(isShow);
+    if (session) {
+      setShowActionMenu(isShow);
+    }
   };
 
   const handleReply = () => {
@@ -120,25 +96,11 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
     setIsEditing(!isEditing);
   };
 
-  // const toggleReaction = (reactionType: string) => {
-  //   if (!activeReactions.has(reactionType)) {
-  //     createReaction({
-  //       commentId: comment.id,
-  //       reactionType,
-  //     });
-  //   } else {
-  //     removeReaction({
-  //       commentId: comment.id,
-  //       reactionType,
-  //     });
-  //   }
-  // };
-
-  console.log(comment);
+  const parentId = comment.parentId ? comment.parentId : comment.id;
 
   return (
     <div
-      className="relative flex gap-2 md:gap-4 mt-2"
+      className="relative flex gap-2 md:gap-4 hover:bg-neutral-950 p-4"
       onMouseEnter={handleToggleActionMenu(true)}
       onMouseLeave={handleToggleActionMenu(false)}
     >
@@ -148,7 +110,16 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
         <DotList className="mb-1">
           <span className="font-semibold">{comment?.user?.name}</span>
 
-          <span className="capitalize font-medium text-gray-200 text-sm">
+          <span
+            className={classNames(
+              "capitalize font-medium text-sm",
+              comment?.user?.role === "Admin"
+                ? "text-red-400"
+                : comment?.user?.role === "Moderator"
+                ? "text-yellow-400"
+                : "text-gray-200"
+            )}
+          >
             {comment?.user?.role}
           </span>
 
@@ -176,9 +147,13 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
           </TextIcon>
         )}
 
-        {showReplies && !comment?.parentId && (
+        {showReplies && (
           <div className="mt-6">
-            <Replies animeId={comment.animeId} parentId={comment.id} />
+            <Replies
+              animeId={comment.animeId}
+              parentId={parentId}
+              handleShowReplies={handleShowReplies}
+            />
           </div>
         )}
       </div>
@@ -189,13 +164,11 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
           showActionMenu ? "flex" : "hidden"
         )}
       >
-        {/* <ReactionSelector toggleReaction={toggleReaction} /> */}
-
-        {comment.userId === session?.user?.id && (
+        {comment.user.id === session?.user?.id && (
           <Button
             iconClassName="w-5 h-5"
             secondary
-            LeftIcon={AiFillEdit}
+            LeftIcon={!isEditing ? AiFillEdit : AiOutlineClose}
             onClick={handleEdit}
           />
         )}
@@ -203,7 +176,7 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
         <Button
           iconClassName="w-5 h-5"
           secondary
-          LeftIcon={BsReplyFill}
+          LeftIcon={!showReplies ? BsReplyFill : AiOutlineClose}
           onClick={handleReply}
         />
 
@@ -217,7 +190,7 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
                 LeftIcon={AiFillDelete}
               />
             }
-            // onConfirm={handleDelete}
+            onConfirm={handleDelete}
           />
         )}
       </div>

@@ -1,40 +1,47 @@
 import { Comment } from "@/@types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface UseDeleteCommentProps {
-  parentId?: string;
-  topic: string;
-}
-
-const useDeleteComment: any = (props: UseDeleteCommentProps) => {
+const useDeleteComment: any = () => {
   const queryClient = useQueryClient();
 
-  // return useMutation<Comment, PostgrestError, string, any>(
-  //   async (commentId: string) => {
-  //     const { data, error } = await supabaseClient
-  //       .from<Comment>("sce_comments")
-  //       .delete()
-  //       .match({ id: commentId })
-  //       .single();
+  return useMutation<any>({
+    mutationKey: ["deleteComment"],
+    mutationFn: async (payload: any) => {
+      console.log(payload);
+      try {
+        const response = await fetch(
+          `http://localhost:8000/comments/${payload}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-  //     if (error) throw error;
+        if (!response.ok) {
+          throw new Error("Erro ao buscar comentários");
+        }
 
-  //     return data;
-  //   },
-  //   {
-  //     onMutate: (commentId) => {
-  //       queryClient.setQueryData<Comment[]>(["comments", props], (comments) =>
-  //         comments.filter((comment) => comment.id !== commentId)
-  //       );
-  //     },
-  //     onSettled: () => {
-  //       queryClient.invalidateQueries(["comments", props]);
-  //     },
-  //     onError: (error) => {
-  //       toast.error(error.message);
-  //     },
-  //   }
-  // );
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        throw new Error("Erro ao buscar comentários");
+      }
+    },
+    onMutate(payload: any) {
+      queryClient.setQueryData(["comment", payload], (comment: any) => ({
+        ...comment,
+        comment: payload.comment,
+      }));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 };
 
 export default useDeleteComment;

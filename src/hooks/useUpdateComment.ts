@@ -42,49 +42,13 @@ const useUpdateComment: any = () => {
         mentioned_user_ids: payload.mentionedUserIds,
       }));
     },
-    onSettled(data: any) {
-      console.log("teste");
+    onSuccess: async (data: any, params: any) => {
       queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
     onError: (error) => {
       console.log(error);
     },
   });
-
-  // return useMutation<Comment, PostgrestError, UseUpdateCommentPayload, any>(
-  //   async (payload: UseUpdateCommentPayload) => {
-  //     const { data, error } = await supabaseClient
-  //       .from<Comment>("sce_comments")
-  //       .update({
-  //         mentioned_user_ids: payload.mentionedUserIds,
-  //         comment: payload.comment,
-  //       })
-  //       .match({ id: payload.id })
-  //       .single();
-
-  //     if (error) throw error;
-
-  //     return data;
-  //   },
-  //   {
-  //     onMutate: (payload) => {
-  //       queryClient.setQueryData<Comment>(
-  //         ["comment", payload.id],
-  //         (comment) => ({
-  //           ...comment,
-  //           comment: payload.comment,
-  //           mentioned_user_ids: payload.mentionedUserIds,
-  //         })
-  //       );
-  //     },
-  //     onSettled: (data) => {
-  //       queryClient.invalidateQueries(["comment", data.id]);
-  //     },
-  //     onError: (error) => {
-  //       toast.error(error.message);
-  //     },
-  //   }
-  // );
 };
 
 export default useUpdateComment;

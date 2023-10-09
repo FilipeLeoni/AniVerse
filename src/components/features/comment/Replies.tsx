@@ -23,17 +23,18 @@ interface CommentState {
 interface CommentsProps {
   parentId?: string;
   animeId: string;
+  handleShowReplies: any;
 }
 
-const Replies: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
-  const { data, isLoading } = useComments({ parentId, animeId });
+const Replies: React.FC<CommentsProps> = ({
+  parentId = null,
+  animeId,
+  handleShowReplies,
+}) => {
   const [commentState, setCommentState] = useState<any>({});
   const commentReply = useCommentReply();
   const { data: session } = useSession();
-  const user = useUser();
-  const editorRef = useRef<EditorType>(null);
-
-  console.log(session);
+  const replyRef = useRef<EditorType>(null);
 
   const { mutate: createComment, isLoading: createCommentLoading } =
     useCreateComment();
@@ -52,13 +53,13 @@ const Replies: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
     createComment({
       animeId,
       parentId,
-      comment: content,
+      text: content,
     });
 
     setCommentState({ defaultContent: null });
-
-    editorRef.current?.commands?.clearContent();
+    replyRef.current?.commands?.clearContent();
     commentReply?.setReplyingTo(null);
+    handleShowReplies();
   };
 
   return (
@@ -66,8 +67,8 @@ const Replies: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
       <div className="mb-10">
         {session?.user && (
           <Editor
-            ref={editorRef}
-            placeholder={"placeholder"}
+            ref={replyRef}
+            placeholder={"Add a reply"}
             defaultContent={commentState.defaultContent}
             autofocus={!!commentReply?.replyingTo}
             onSubmit={handleEditorSubmit}
