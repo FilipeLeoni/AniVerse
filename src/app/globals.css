@@ -146,9 +146,35 @@ main {
 }
 
 .slick-slide.is-next {
-  margin-right: 3rem; /* Afastar os próximos elementos */
+  margin-right: 3rem;
 }
 
 .slick-slide.is-prev {
-  margin-left: 0.5rem; /* Afastar os elementos anteriores */
+  margin-left: 0.5rem;
+}
+
+@layer base {
+  ul,
+  ol {
+    list-style: revert;
+    margin-left: 24px;
+  }
+}
+
+.tiptap {
+  > * + * {
+    margin-top: 0.75em;
+  }
+
+  blockquote {
+    border-left: 3px solid rgba(#0d0d0d, 0.1);
+    padding-left: 1rem;
+  }
+}
+
+@layer components {
+  blockquote {
+    border-left: 3px solid #6f6f6e;
+    padding-left: 1rem;
+  }
 }

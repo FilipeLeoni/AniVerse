@@ -1,8 +1,10 @@
 import CircleButton from "@/components/shared/CircleButton";
 import { spoilerExtension } from "@/utils/editor";
+
 import Mention from "@tiptap/extension-mention";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
+import Blockquote from "@tiptap/extension-blockquote";
 import { EditorContent, EditorOptions, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import classNames from "classnames";
@@ -50,6 +52,7 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
         extensions: [
           StarterKit,
           Underline,
+          Blockquote,
           Placeholder.configure({
             placeholder,
             emptyNodeClass:

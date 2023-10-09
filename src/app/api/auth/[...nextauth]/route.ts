@@ -8,7 +8,7 @@ import { renewAccessToken } from "@/utils/renewRefreshToken";
 
 const scopes = ["identify", "email"];
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -28,30 +28,6 @@ const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    signIn: async ({ user, account }) => {
-      const { email, name, image } = user;
-      const provider = account?.provider;
-      const cookie = cookies();
-
-      const response = await fetch(`${process.env.API_URL_ENV}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, name, profilePicture: image, provider }),
-      });
-      if (response.status === 200 || 201) {
-        const data = await response.json();
-        cookie.set("accessToken", data.backendTokens.accessToken);
-        cookie.set("refreshToken", data.backendTokens.refreshToken);
-        user = data.user;
-
-        return data;
-      } else {
-        console.error("Authentication failed:", response.statusText);
-        return null;
-      }
-    },
     async jwt({ token, user }) {
       const cookie = cookies();
       const accessToken = cookie.get("accessToken");
@@ -60,9 +36,27 @@ const authOptions: NextAuthOptions = {
       token.accessToken = accessToken?.value;
       token.refreshToken = refreshToken?.value;
 
-      return token;
+      return { ...token, ...user };
     },
-    async session({ session, token, user }: any) {
+    async session({ session, token, account }: any) {
+      if (session) {
+        const { email, name, image } = token;
+        const provider = account?.provider;
+        const response = await fetch(`${process.env.API_URL_ENV}/auth/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            name,
+            profilePicture: image,
+            provider,
+          }),
+        });
+        const userData = await response.json();
+        session.user = userData.user;
+      }
       if (token) {
         const expiration = getExpirationFromToken(token.accessToken);
 
