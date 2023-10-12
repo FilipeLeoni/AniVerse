@@ -275,7 +275,7 @@ export default async function DetailsPage({
           <h2 className="text-xl">What do you think?</h2>
           <Reaction />
         </div>
-        <Comments animeId={"f7fd1ec1-196d-4fd2-bee9-ac0afd2925b3"} />
+        <Comments animeId={"420b7bcb-bf68-47a1-ac7c-c4d87b9f530d"} />
       </Section>
     </div>
   );
