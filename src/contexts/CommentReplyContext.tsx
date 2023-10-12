@@ -20,7 +20,8 @@ export const useCommentReply = () => {
 };
 
 const CommentReplyContextProvider: React.FC<any> = ({ children }) => {
-  const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
+  const [replyingTo, setReplyingTo] = useState<any | null>(null);
+  console.log(replyingTo);
 
   const api = useMemo(
     () => ({

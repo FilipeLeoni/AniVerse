@@ -471,7 +471,6 @@ export const getAnimeById = async (id: any, type: any) => {
                     dateOfBirth {
                       day
                       month
-                      year
                     }
                     age
                     gender

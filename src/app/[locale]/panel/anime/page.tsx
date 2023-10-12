@@ -41,7 +41,7 @@ export default function AnimePanel() {
   return (
     <UploadContainer isVerified={true}>
       {/* <Head title="Anime" /> */}
-      <h1 className="text-4xl font-semibold mb-8">Anime</h1>,
+      <h1 className="text-4xl font-semibold mb-8">Anime</h1>
       <React.Fragment>
         <List data={data?.Page.media}>
           {(data: any) => (
