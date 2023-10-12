@@ -10,17 +10,18 @@ import "swiper/css/thumbs";
 import Section from "@/components/shared/Section";
 import CardCarousel from "@/components/shared/CardCarousel";
 import ListSwiperSkeleton from "@/components/skeletons/ListSwiperSkeleton";
-import {
-  getPopularAnime,
-  getRandomAnime,
-  getTrendingAnime,
-  getUpdatedAnime,
-} from "@/mocks/queries";
+
 import ShouldWatch from "@/components/shared/ShouldWatch";
 import GenreSwiper from "@/components/shared/GenreSwiper";
 import classNames from "classnames";
 import { isDesktop, isMobile } from "react-device-detect";
 import AnimeScheduling from "@/components/features/anime/Player/AnimeScheduling";
+import {
+  getPopularMedia,
+  getRandomMedia,
+  getTrendingMedia,
+  getUpdatedMedia,
+} from "@/mocks/queries";
 
 interface Anime {
   id: number;
@@ -35,7 +36,7 @@ export default function AnimePage() {
     useQuery<any>({
       queryKey: ["TrendingAnime"],
       queryFn: async () => {
-        const response = await getTrendingAnime();
+        const response = await getTrendingMedia();
         return response.data;
       },
     });
@@ -43,14 +44,14 @@ export default function AnimePage() {
   const { data: PopularAnime, isLoading: PopularAnimeLoading } = useQuery<any>({
     queryKey: ["PopularAnime"],
     queryFn: async () => {
-      const response = await getPopularAnime();
+      const response = await getPopularMedia();
       return response.data;
     },
   });
   const { data: UpdatedAnime } = useQuery<any>({
     queryKey: ["UpdatedAnime"],
     queryFn: async () => {
-      const response = await getUpdatedAnime();
+      const response = await getUpdatedMedia();
       return response.data;
     },
   });
@@ -58,7 +59,7 @@ export default function AnimePage() {
   const { data: RandomAnime, isLoading: RandomAnimeLoading } = useQuery<any>({
     queryKey: ["RandomAnime"],
     queryFn: async () => {
-      const response = await getRandomAnime();
+      const response = await getRandomMedia();
       return response;
     },
     staleTime: 3600 * 1000,
