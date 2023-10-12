@@ -24,7 +24,7 @@ const authOptions: NextAuthOptions = {
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
     }),
   ],
-  secret: process.env.NEXT_PUBLIC_SECRET,
+  secret: process.env.SECRET,
   pages: {
     signIn: "/login",
   },
