@@ -1,8 +1,14 @@
 import Button from "@/components/shared/Button";
 import Input from "@/components/shared/Input";
+import classNames from "classnames";
 import React, { ChangeEvent, useState } from "react";
 
-export default function AddRemoveItem({ state, setState, label }: any) {
+export default function AddRemoveItem({
+  state,
+  setState,
+  label,
+  className,
+}: any) {
   const [newState, setNewState] = useState<string>("");
 
   const handleAddRemove = (
@@ -27,10 +33,10 @@ export default function AddRemoveItem({ state, setState, label }: any) {
             id: state.length + 1,
             name: newItem,
           };
-          setState([...state, newItemObject]);
+          setState([newItemObject, ...state]);
           setNewState("");
         } else {
-          setState([...state, newItem]);
+          setState([newItem, ...state]);
           setNewState("");
         }
       }
@@ -38,7 +44,7 @@ export default function AddRemoveItem({ state, setState, label }: any) {
   };
 
   return (
-    <div className="flex flex-col h-auto ">
+    <div className="flex flex-col h-auto w-full justify-start items-start">
       <div className="flex gap-2 items-end">
         <Input
           placeholder="Add Item"
@@ -58,22 +64,25 @@ export default function AddRemoveItem({ state, setState, label }: any) {
           Add
         </Button>
       </div>
-      <div className="overflow-ellipsis line-clamp-1 pb-10 flex mt-3">
-        <ul className="flex flex-col gap-2 w-full">
-          {state?.map((item: any, index: number) => (
-            <li
-              key={item?.id || index}
-              className="bg-neutral-800 rounded flex justify-between pl-2 py-1 text-gray-300"
-            >
-              {typeof item === "object" ? item.name : item}
-              <button
-                onClick={() => handleAddRemove("", state, setState, index)}
-                className="hover:bg-primary-900 px-2 rounded hover:text-primary-400"
+      <div className="overflow-ellipsis line-clamp-1 pb-10 flex mt-3 w-full">
+        <ul className={classNames("flex flex-col gap-2 w-full m-0", className)}>
+          {state &&
+            state.length > 0 &&
+            state?.map((item: any, index: number) => (
+              <li
+                key={item?.id || index}
+                className="bg-neutral-800 rounded flex justify-between pl-2 py-1 text-gray-300"
               >
-                x
-              </button>
-            </li>
-          ))}
+                {typeof item === "object" ? item.name : item}
+                <button
+                  type="button"
+                  onClick={() => handleAddRemove("", state, setState, index)}
+                  className="hover:bg-primary-900 px-2 rounded hover:text-primary-400"
+                >
+                  x
+                </button>
+              </li>
+            ))}
         </ul>
       </div>
     </div>

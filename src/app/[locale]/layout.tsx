@@ -6,6 +6,7 @@ import { Outfit } from "next/font/google";
 import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import Providers from "../providers";
 import Footer from "@/components/partials/Footer";
+import { Toaster } from "react-hot-toast";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
             <Header />
             <main>{children}</main>
             <Footer />
+            <Toaster />
           </body>
         </Providers>
       </NextIntlClientProvider>

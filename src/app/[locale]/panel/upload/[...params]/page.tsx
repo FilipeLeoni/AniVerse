@@ -2,38 +2,32 @@
 
 import React, { useEffect, useState } from "react";
 import Button from "@/components/shared/Button";
-import Card from "@/components/shared/Card";
-import CharacterConnectionCard from "@/components/shared/CharacterConnectionCard";
 import DetailsBanner from "@/components/shared/DetailsBanner";
 import DetailsSection from "@/components/shared/DetailsSection";
-import DotList from "@/components/shared/DotList";
 import InfoItem from "@/components/shared/InfoItem";
-import List from "@/components/shared/List";
 import MediaDescription from "@/components/shared/MediaDescription";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
 import { getAnimeById } from "@/mocks/queries";
-import {
-  createStudioDetailsUrl,
-  formatTimeDifference,
-  numberWithCommas,
-} from "@/utils";
+
 import { convert, getDescription, getTitle } from "@/utils/data";
 import { useLocale } from "next-intl";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import dayjs from "@/lib/dayjs";
 import AiringCountDown from "@/components/shared/AiringCountDown";
 import Input from "@/components/shared/Input";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import CharacterAddCard from "@/components/features/panel/CharacterAddCard";
 import CharacterConnectionRemoveCard from "@/components/features/panel/CharacterConnectionRemove";
-import Modal from "@/components/features/panel/CharacterModal";
 import AddDataModal from "@/components/features/panel/CharacterModal";
 import AddRemoveItem from "@/components/features/panel/AddRemoveItem";
-import { AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlineLeftCircle, AiOutlinePlusCircle } from "react-icons/ai";
+import { IoIosRemoveCircle } from "react-icons/io";
 import { useForm, SubmitHandler } from "react-hook-form";
+import AddRemoveCard from "@/components/features/panel/AddRemoveCard";
+import { AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 
 export default function UploadPage({
   params,
@@ -44,34 +38,88 @@ export default function UploadPage({
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
+    setValue,
   } = useForm<any>();
   const [character, setCharacter] = useState<any>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
   const [showCharacterModal, setShowCharacterModal] = useState(false);
   const [studios, setStudios] = useState<any[]>([]);
+  const [genres, setGenres] = useState<any[]>([]);
   const [synonimus, setSynonimus] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
+  const [selectedFile, setSelectedFile] = useState<any | null>(null);
+  const [banner, setBanner] = useState<any | null>(null);
+  const [coverImage, setCoverImage] = useState<any | null>(null);
 
   const { data, isLoading } = useQuery<any>({
-    queryKey: ["AnimeById"],
+    queryKey: ["AnimeById", params.params[0]],
     queryFn: async () => {
       const response = await getAnimeById(params.params[0], "ANIME");
       return response.data;
     },
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
+
+  const isChecked = watch("isHomeBanner");
   const locale = useLocale();
+  const router = useRouter();
 
   useEffect(() => {
-    if (data?.Media?.studios?.nodes) {
+    const propertiesToSet = {
+      synonyms: setSynonimus,
+      tags: setTags,
+      characters: setCharacter,
+      bannerImage: setBanner,
+      genres: setGenres,
+    };
+
+    if (data?.Media) {
+      Object.entries(propertiesToSet).forEach(([property, setState]) => {
+        if (data.Media[property] !== undefined) {
+          setState(data.Media[property]);
+        }
+      });
+
+      setValue("format", data.Media.format);
+      setValue("english", data.Media.title.english);
+      setValue("native", data.Media.title.native);
+      setValue("romaji", data.Media.title.romaji);
+      setValue("popularity", parseInt(data.Media.popularity));
+      setValue("favourites", parseInt(data.Media.favourites));
+      setValue("trending", data.Media.trending);
+      setValue("Season", convert(data.Media.season, "season", { locale }));
+      setValue("averageScore", data.Media.averageScore);
+      setValue(
+        "countryOfOrigin",
+        convert(data.Media.countryOfOrigin, "country", {
+          locale,
+        })
+      );
+      setValue("episodes", parseInt(data.Media.episodes));
+      setValue("duration", parseInt(data.Media.duration));
+      setValue(
+        "status",
+        convert(data.Media.status, "status", {
+          locale,
+        })
+      );
+    }
+
+    if (data?.Media?.studios) {
       setStudios(data.Media.studios.nodes);
     }
-    if (data?.Media?.synonyms) {
-      setSynonimus(data.Media.synonyms);
+
+    if (data?.Media?.coverImage?.extraLarge) {
+      setCoverImage(data.Media.coverImage.extraLarge);
     }
-    if (data?.Media?.tags) {
-      setTags(data.Media.tags);
+
+    if (data?.Media?.characters) {
+      setCharacter(data.Media.characters.edges);
     }
-  }, [data?.Media]);
+  }, [data?.Media, locale, setValue]);
 
   if (isLoading) {
     return (
@@ -80,6 +128,21 @@ export default function UploadPage({
       </div>
     );
   }
+
+  const handleFileChange = (event: any, setState: any) => {
+    const file = event.target.files[0];
+    const allowedTypes = ["image/webp", "image/png", "image/jpeg", "image/jpg"];
+
+    if (file && allowedTypes.includes(file.type)) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        setState(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setState(data.Media.bannerImage);
+    }
+  };
 
   const title = getTitle(data?.Media, locale);
   const description = getDescription(data?.Media, locale);
@@ -91,50 +154,92 @@ export default function UploadPage({
       description: character.node.description,
       gender: character.node.gender,
       age: Number(character.node.age),
-      dateOfBirth: `${character.node.dateOfBirth.year}-${character.node.dateOfBirth.month}-${character.node.dateOfBirth.day}`,
+      dateOfBirth: `${character.node.dateOfBirth.day}/${character.node.dateOfBirth.month}`,
       role: character.role,
     }));
   };
 
-  const onSubmit: SubmitHandler<any> = async (test) => {
-    const episodes = parseInt(test.episodes, 10);
-    const duration = parseInt(test.duration, 10);
-    const popularity = parseInt(test.popularity, 10);
-    const favourites = parseInt(test.favourites, 10);
-    const trending = parseInt(test.trending, 10);
-    const transformedCharacters = transformCharactersData(
-      data.Media.characters.edges
-    );
-    console.log(episodes);
-    console.log(test);
+  const handleAddCharacter = () => {
+    const nameFieldValue = watch("name");
 
-    // console.log(episodes);
-    // console.log(transformedCharacters);
+    if (!nameFieldValue) {
+      return;
+    }
 
-    // Crie um objeto com todas as propriedades que deseja enviar
-    const requestBody = {
-      title: {
-        romaji: test.romaji,
-        english: test.english,
-        native: test.native,
+    const characterData = {
+      node: {
+        id: Math.random(),
+        image: {
+          large: selectedFile,
+        },
+        name: { userPreferred: nameFieldValue, full: nameFieldValue },
+        gender: watch("gender"),
+        age: watch("age"),
+        dateOfBirth: watch("dateOfBirth"),
       },
-      bannerImage: data.Media.bannerImage,
-      coverImage: data.Media.coverImage.extraLarge,
-      episodes: episodes,
-      duration: duration,
-      popularity: popularity,
-      favourites: favourites,
-      trending: trending,
-      status: test.status,
-      format: test.format,
-      season: test.season,
-      characters: transformedCharacters,
-      // ...test,
+      role: watch("role"),
     };
 
-    console.log(requestBody);
-    // Enviar a solicitação usando o objeto como corpo
-    const response = await fetch("http://localhost:8000/anime", {
+    setCharacter([characterData, ...character]);
+
+    setShowCharacterModal(false);
+    setSelectedFile(null);
+    reset({ name: "", gender: "", age: "", role: "", dateOfBirth: "" });
+  };
+
+  const handleRemoveCharacter = (characterId: number) => {
+    const updatedCharacters = character.filter(
+      (character: any) => character.node.id !== characterId
+    );
+    setCharacter(updatedCharacters);
+  };
+
+  const editCharacter = (characterId: any) => {
+    const nameFieldValue = watch("name");
+    const gender = watch("gender");
+    const role = watch("role");
+    const age = watch("age");
+    const day = watch("day");
+    const month = watch("month");
+
+    if (!nameFieldValue) {
+      return;
+    }
+
+    setCharacter((characters: any) => {
+      return characters.map((character: any) => {
+        if (character.node.id === characterId) {
+          const updatedCharacter = {
+            node: {
+              id: characterId,
+              image: {
+                large: selectedFile,
+              },
+              name: { userPreferred: nameFieldValue, full: nameFieldValue },
+              gender: gender,
+              age: age,
+              dateOfBirth: {
+                day: day,
+                month: month,
+              },
+            },
+            role: role,
+          };
+
+          return updatedCharacter;
+        }
+        return character;
+      });
+    });
+
+    setShowCharacterModal(false);
+    setSelectedCharacter(null);
+    setSelectedFile(null);
+    reset({ name: "", gender: "", age: "", role: "", dateOfBirth: "" });
+  };
+
+  async function SendData(requestBody: any) {
+    const response: any = await fetch("http://localhost:8000/anime", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,9 +247,71 @@ export default function UploadPage({
       body: JSON.stringify(requestBody),
     });
     console.log(response);
+    if (response.ok) {
+      router.push("/panel/upload");
+      return response;
+    }
+    return response;
+  }
+
+  const handleCheckboxToggle = () => {
+    setValue("isHomeBanner", !isChecked);
   };
 
-  // console.log(data?.Media?.characters.edges);
+  const onSubmit: SubmitHandler<any> = async (data) => {
+    const episodes = parseInt(data.episodes, 10);
+    const duration = parseInt(data.duration, 10);
+    const popularity = parseInt(data.popularity, 10);
+    const favourites = parseInt(data.favourites, 10);
+    const trending = parseInt(data.trending, 10);
+    const transformedCharacters = transformCharactersData(character);
+
+    console.log(character);
+    console.log(transformedCharacters);
+    console.log(data.isHomeBanner);
+
+    const requestBody = {
+      title: {
+        english: data.english,
+        romaji: data.romaji,
+        native: data.native,
+      },
+      bannerImage: banner,
+      description: data.description,
+      coverImage: coverImage,
+      genres: genres,
+      episodes: episodes,
+      duration: duration,
+      countryOfOrigin: data.countryOfOrigin,
+      popularity: popularity,
+      favourites: favourites,
+      trending: trending,
+      averageScore: data.averageScore,
+      status: data.status,
+      format: data.format,
+      season: data.season,
+      characters: transformedCharacters,
+      isAdult: data.isAdult,
+    };
+
+    const callFunction = SendData(requestBody);
+
+    toast.promise(
+      callFunction,
+      {
+        loading: "Adding...",
+        success: <b>Added successfully!</b>,
+        error: <b>Could not add.</b>,
+      },
+      {
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      }
+    );
+  };
 
   const nextAiringSchedule = data.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
@@ -154,74 +321,96 @@ export default function UploadPage({
     <div className="pb-8 relative">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative group transition-all">
-          <DetailsBanner image={data.Media.bannerImage} />
-          <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100  flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-xl">
-            Edit banner image
-          </div>
+          <label htmlFor="bannerInput">
+            <DetailsBanner image={banner} />
+            <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100  flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-xl">
+              Edit banner image
+              <input
+                type="file"
+                id="bannerInput"
+                className="hidden"
+                checked={isChecked}
+                onChange={(e) => {
+                  handleFileChange(e, setBanner);
+                }}
+              />
+            </div>
+          </label>
         </div>
         <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
           <div className="flex flex-row md:space-x-8">
             <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6 ">
-              <div className="relative group">
-                <PlainCard
-                  src={data.Media.coverImage.extraLarge}
-                  alt={"Test"}
-                />
-                <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-lg">
-                  Edit Cover Image
-                </div>
+              <div className="relative group mb-2">
+                <label htmlFor="coverInput">
+                  <PlainCard src={coverImage} alt={"Test"} />
+                  <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-lg">
+                    Edit Cover Image
+                    <input
+                      type="file"
+                      id="coverInput"
+                      className="hidden"
+                      onChange={(e) => {
+                        handleFileChange(e, setCoverImage);
+                      }}
+                    />
+                  </div>
+                </label>
               </div>
-              <Button
-                primary
-                className="gap-4 w-full justify-center md:flex hidden"
-              >
-                <BsPlusCircleFill size={22} />
-                Add to Home
-              </Button>
+
+              <label htmlFor="isHomeBanner" onClick={handleCheckboxToggle}>
+                <input
+                  className="hidden"
+                  type="checkbox"
+                  id="isHomeBanner"
+                  defaultChecked={false}
+                  {...register("isHomeBanner")}
+                />
+                <Button
+                  primary
+                  className="gap-2 w-full justify-center md:flex hidden"
+                >
+                  {isChecked ? (
+                    <>
+                      <IoIosRemoveCircle size={25} />
+                      Remove Home
+                    </>
+                  ) : (
+                    <>
+                      <BsPlusCircleFill size={22} />
+                      Add to Home
+                    </>
+                  )}
+                </Button>
+              </label>
             </div>
 
             <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4 w-full">
               <div className="flex flex-col items-start space-y-4 pt-20 md:pb-4 w-full">
                 <Input
                   label={"Title"}
-                  defaultValue={title}
-                  // {...register("te", { required: true })}
                   containerClassName="w-full md:w-1/3 mb-8 text-gray-400"
                   className="px-4 py-1 text-white text-3xl focus:ring-2 focus:ring-primary-500 rounded-sm"
+                  {...register("english")}
                 />
-                {/* <div className="flex flex-col h-auto">
-                <div className="flex gap-2 items-end">
-                  <Input
-                    type="text"
-                    label={"Genres"}
-                    value={newGenre}
-                    onChange={(e) => setNewGenre(e.target.value)}
-                    containerClassName="w-full text-gray-400 "
-                    className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                <div className="flex gap-10 w-full">
+                  <AddRemoveItem
+                    label="Genres"
+                    state={genres}
+                    setState={setGenres}
+                    className="!flex-row"
                   />
-                  <Button primary onClick={handleAddStudio}>
-                    Adicionar
-                  </Button>
+
+                  <Input
+                    containerInputClassName="focus:border border-white/80"
+                    label={"Average Score"}
+                    type="number"
+                    defaultValue={data.Media.averageScore}
+                    containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                    className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                    {...(register("averageScore"), { max: 100, min: 1 })}
+                  />
                 </div>
-                <div className="overflow-ellipsis line-clamp-1 pb-10 flex mt-3">
-                  <ul className="flex gap-2">
-                    {genres?.map((genre, index) => (
-                      <li
-                        key={index}
-                        className="bg-neutral-800 rounded flex gap-2 pl-2"
-                      >
-                        {genre}
-                        <button
-                          onClick={() => handleRemoveGenre(index)}
-                          className="hover:bg-primary-900 px-2 rounded hover:text-primary-300"
-                        >
-                          x
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div> */}
+
                 <div className="w-full">
                   <h2 className="font-bold text-gray-400">Description</h2>
                   <textarea
@@ -242,44 +431,30 @@ export default function UploadPage({
                   defaultValue={convert(data.Media.countryOfOrigin, "country", {
                     locale,
                   })}
-                  // onChange={(e) => setQuery(e.target)}
                   containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
                   className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                   {...register("countryOfOrigin")}
                 />
-                {/* <InfoItem title={"Total Episodes"} value={data.Media.episodes} /> */}
 
                 <Input
                   containerInputClassName="focus:border border-white/80"
                   label={"Total Episodes"}
                   defaultValue={parseInt(data.Media.episodes)}
-                  // onChange={(e) => setQuery(e.target)}
                   containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
                   className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                   {...register("episodes")}
                 />
 
                 {data.Media.duration && (
-                  // <InfoItem
-                  //   title={"Duration"}
-                  //   value={`${data.Media.duration} ${"Minutes"}`}
-                  // />
-
                   <Input
                     containerInputClassName="focus:border border-white/80"
                     label={"Duration"}
                     defaultValue={parseInt(data.Media.duration)}
-                    // onChange={(e) => setQuery(e.target)}
                     containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
                     className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                     {...register("duration")}
                   />
                 )}
-
-                {/* <InfoItem
-                title={"Status"}
-                value={convert(data.Media.status, "status", { locale })}
-              /> */}
 
                 <Input
                   containerInputClassName="focus:border border-white/80"
@@ -287,27 +462,10 @@ export default function UploadPage({
                   defaultValue={convert(data.Media.status, "status", {
                     locale,
                   })}
-                  // onChange={(e) => setQuery(e.target)}
                   containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
                   className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                   {...register("status")}
                 />
-
-                {/* {nextAiringSchedule && (
-                // <AiringCountDown
-                //   airingAt={nextAiringSchedule.airingAt}
-                //   episode={nextAiringSchedule.episode}
-                // />
-
-                <Input
-                  containerInputClassName="focus:border border-white/80"
-                  label={"nextAiringSchedule"}
-                  value={nextAiringSchedule.airingAt}
-                  // onChange={(e) => setQuery(e.target)}
-                  containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
-                  className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-                />
-              )} */}
               </div>
             </div>
           </div>
@@ -369,7 +527,6 @@ export default function UploadPage({
               <Input
                 containerInputClassName="focus:border border-white/80 w-full"
                 label={"Format"}
-                defaultValue={convert(data.Media.format, "format", { locale })}
                 containerClassName="w-full text-gray-400"
                 className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                 {...register("format")}
@@ -377,15 +534,13 @@ export default function UploadPage({
               <Input
                 containerInputClassName="focus:border border-white/80"
                 label={"English"}
-                defaultValue={data.Media.title.english}
                 containerClassName="w-full text-gray-400 "
                 className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
-                {...register("english")}
+                value={watch("english")}
               />
               <Input
                 containerInputClassName="focus:border border-white/80"
                 label={"Native"}
-                defaultValue={data.Media.title.native}
                 containerClassName="w-full text-gray-400 "
                 className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                 {...register("native")}
@@ -456,49 +611,59 @@ export default function UploadPage({
           </div>
 
           <div className="space-y-12 md:col-span-8">
-            {!!data.Media?.characters?.edges?.length && (
+            {!!character?.length && (
               <DetailsSection
                 title={"Characters"}
                 className="grid w-full grid-cols-1 gap-4 md:grid-cols-2"
               >
-                <CharacterAddCard onClick={() => setShowCharacterModal(true)} />
-                {data.Media.characters.edges.map(
-                  (characterEdge: any, index: number) => (
-                    <CharacterConnectionRemoveCard
-                      characterEdge={characterEdge}
-                      key={index}
-                    />
-                  )
-                )}
+                <CharacterAddCard
+                  onClick={() => (
+                    setShowCharacterModal(true), setSelectedCharacter(null)
+                  )}
+                />
+                {character?.map((characterEdge: any, index: number) => (
+                  <CharacterConnectionRemoveCard
+                    characterEdge={characterEdge}
+                    key={index}
+                    handleRemoveCharacter={handleRemoveCharacter}
+                    setShowCharacterModal={setShowCharacterModal}
+                    setSelectedCharacter={setSelectedCharacter}
+                  />
+                ))}
               </DetailsSection>
             )}
 
-            {showCharacterModal && (
-              <AddDataModal
-                isOpen={showCharacterModal}
-                onClose={() => setShowCharacterModal(false)}
-              />
-            )}
+            <AnimatePresence>
+              {showCharacterModal && (
+                <AddDataModal
+                  register={register}
+                  isOpen={showCharacterModal}
+                  handleAddCharacter={handleAddCharacter}
+                  selectedCharacter={selectedCharacter}
+                  setSelectedFile={setSelectedFile}
+                  selectedFile={selectedFile}
+                  editCharacter={editCharacter}
+                  setValue={setValue}
+                  onClose={() => setShowCharacterModal(false)}
+                />
+              )}
+            </AnimatePresence>
 
-            {!!data.Media?.relations?.nodes?.length && (
-              <DetailsSection title={"Relations"}>
-                <List data={data.Media.relations.nodes}>
-                  {(node: any) => <Card data={node} className="relations" />}
-                </List>
-              </DetailsSection>
-            )}
+            <div className="w-full">
+              <AddRemoveCard label={"Relations"} />
+            </div>
 
-            {!!data.Media?.recommendations?.nodes?.length && (
-              <DetailsSection title={"Recomendations"}>
-                <List data={data.Media.recommendations.nodes}>
-                  {(node: any) => <Card data={node.mediaRecommendation} />}
-                </List>
-              </DetailsSection>
-            )}
+            <div className="w-full">
+              <AddRemoveCard label={"Recommendations"} />
+            </div>
           </div>
         </Section>
 
-        <div className="fixed w-full h-16 bg-neutral-900 bottom-0 left-0 flex justify-end items-center px-36 z-50">
+        <div className="fixed w-full h-16 bg-neutral-900 bottom-0 left-0 flex justify-between items-center px-36 z-50">
+          <Button className="flex gap-2 items-center ">
+            <AiOutlineLeftCircle size={20} />
+            Back
+          </Button>
           <Button primary className="flex gap-2" type="submit">
             <AiOutlinePlusCircle size={24} />
             Add Anime
