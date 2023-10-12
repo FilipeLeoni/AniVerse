@@ -4,7 +4,7 @@ import Card from "@/components/shared/Card";
 import Input from "@/components/shared/Input";
 import List from "@/components/shared/List";
 import ListSkeleton from "@/components/skeletons/ListSkeleton";
-import { getTrendingAnime, searchData } from "@/mocks/queries";
+import { getTrendingMedia, searchData } from "@/mocks/queries";
 import { useQuery } from "@tanstack/react-query";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -20,7 +20,7 @@ export default function UploadData() {
         const response = await searchData(debouncedQuery);
         return response.data;
       }
-      const trendingResponse = await getTrendingAnime();
+      const trendingResponse = await getTrendingMedia();
       return trendingResponse.data;
     },
   });

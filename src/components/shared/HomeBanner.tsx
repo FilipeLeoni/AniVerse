@@ -296,4 +296,4 @@ const DesktopHomeBannerSkeleton = () => (
   </Skeleton>
 );
 
-export default React.memo(HomeBanner) as typeof HomeBanner;
+export default HomeBanner as typeof HomeBanner;
