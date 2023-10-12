@@ -30,16 +30,10 @@ const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      const cookie = cookies();
-      const accessToken = cookie.get("accessToken");
-      const refreshToken = cookie.get("refreshToken");
-
-      token.accessToken = accessToken?.value;
-      token.refreshToken = refreshToken?.value;
-
       return { ...token, ...user };
     },
     async session({ session, token, account }: any) {
+      console.log(session, token, account);
       if (session) {
         const { email, name, image } = token;
         const provider = account?.provider;
@@ -56,7 +50,10 @@ const authOptions: NextAuthOptions = {
           }),
         });
         const userData = await response.json();
+        console.log(userData);
         session.user = userData.user;
+        token.accessToken = userData.backendTokens.accessToken;
+        token.accessToken = userData.backendTokens.refreshToken;
       }
       if (token) {
         const expiration = getExpirationFromToken(token.accessToken);
