@@ -23,6 +23,8 @@ import { useRouter } from "next/router";
 import React from "react";
 import dayjs from "@/lib/dayjs";
 import AiringCountDown from "@/components/shared/AiringCountDown";
+import Comments from "@/components/features/comment/Comments";
+import Reaction from "@/components/features/comment/Reaction";
 
 export default async function DetailsPage({
   params,
@@ -267,6 +269,13 @@ export default async function DetailsPage({
             </DetailsSection>
           )}
         </div>
+      </Section>
+      <Section className="mt-24">
+        <div className="w-full flex flex-col items-center justify-center mb-20 gap-6">
+          <h2 className="text-xl">What do you think?</h2>
+          <Reaction />
+        </div>
+        <Comments animeId={"420b7bcb-bf68-47a1-ac7c-c4d87b9f530d"} />
       </Section>
     </div>
   );

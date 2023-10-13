@@ -10,18 +10,18 @@ import "swiper/css/thumbs";
 import Section from "@/components/shared/Section";
 import CardCarousel from "@/components/shared/CardCarousel";
 import ListSwiperSkeleton from "@/components/skeletons/ListSwiperSkeleton";
-import {
-  getPopularAnime,
-  getRandomAnime,
-  getTrendingAnime,
-  getUpdatedAnime,
-} from "@/mocks/queries";
+
 import ShouldWatch from "@/components/shared/ShouldWatch";
 import GenreSwiper from "@/components/shared/GenreSwiper";
 import classNames from "classnames";
 import { isDesktop, isMobile } from "react-device-detect";
 import AnimeScheduling from "@/components/features/anime/Player/AnimeScheduling";
 import { randomElement } from "@/utils";
+import {
+  getPopularMedia,
+  getTrendingMedia,
+  getUpdatedMedia,
+} from "@/mocks/queries";
 
 interface Anime {
   id: number;
@@ -40,34 +40,34 @@ interface AnimeListResponse {
 }
 
 export default function MangaPage() {
-  const { data: TrendingAnime, isLoading: TrendingAnimeLoading } =
+  const { data: TrendingManga, isLoading: TrendingMangaLoading } =
     useQuery<any>({
-      queryKey: ["TrendingAnime"],
+      queryKey: ["TrendingManga"],
       queryFn: async () => {
-        const response = await getTrendingAnime("MANGA");
+        const response = await getTrendingMedia("MANGA");
         return response.data;
       },
     });
 
-  const { data: PopularAnime, isLoading: PopularAnimeLoading } = useQuery<any>({
-    queryKey: ["PopularAnime"],
+  const { data: PopularManga, isLoading: PopularMangaLoading } = useQuery<any>({
+    queryKey: ["PopularManga"],
     queryFn: async () => {
-      const response = await getPopularAnime("MANGA");
+      const response = await getPopularMedia("MANGA");
       return response.data;
     },
   });
-  const { data: UpdatedAnime, isLoading: UpdatedAnimeLodaing } = useQuery<any>({
-    queryKey: ["UpdatedAnime"],
+  const { data: UpdatedManga, isLoading: UpdatedMangaLodaing } = useQuery<any>({
+    queryKey: ["UpdatedManga"],
     queryFn: async () => {
-      const response = await getUpdatedAnime("MANGA");
+      const response = await getUpdatedMedia("MANGA");
       return response.data;
     },
   });
 
-  const { data: RandomAnime, isLoading: RandomAnimeLoading } = useQuery<any>({
-    queryKey: ["RandomAnime"],
+  const { data: RandomManga, isLoading: RandomMangaLoading } = useQuery<any>({
+    queryKey: ["RandomManga"],
     queryFn: async () => {
-      const response = TrendingAnime;
+      const response = TrendingManga;
 
       return response;
     },
@@ -75,27 +75,27 @@ export default function MangaPage() {
   });
 
   const randomTrendingManga = useMemo(() => {
-    return randomElement(TrendingAnime?.Page.media || []);
-  }, [TrendingAnime]);
+    return randomElement(TrendingManga?.Page.media || []);
+  }, [TrendingManga]);
 
-  const PopularAnimeData = PopularAnime?.Page?.media || [];
-  const TrendingAnimeData = TrendingAnime?.Page?.media || [];
-  const UpdatedAnimeData = UpdatedAnime?.Page?.media || [];
+  const PopularMangaData = PopularManga?.Page?.media || [];
+  const TrendingMangaData = TrendingManga?.Page?.media || [];
+  const UpdatedMangaData = UpdatedManga?.Page?.media || [];
 
   return (
     <div>
       <div>
-        <HomeBanner data={TrendingAnimeData} isLoading={TrendingAnimeLoading} />
+        <HomeBanner data={TrendingMangaData} isLoading={TrendingMangaLoading} />
       </div>
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        {PopularAnimeLoading ? (
+        {PopularMangaLoading ? (
           <ListSwiperSkeleton />
         ) : (
-          <CardCarousel data={PopularAnimeData} title="Popular Animes" />
+          <CardCarousel data={PopularMangaData} title="Popular Mangas" />
         )}
       </Section>
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        <CardCarousel data={UpdatedAnimeData} title="NEWLY UPDATED" />
+        <CardCarousel data={UpdatedMangaData} title="NEWLY UPDATED" />
       </Section>
 
       {!isMobile && (
@@ -108,7 +108,7 @@ export default function MangaPage() {
           <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 md:w-[80%] md:!pr-0">
             <ShouldWatch
               data={randomTrendingManga}
-              isLoading={RandomAnimeLoading}
+              isLoading={RandomMangaLoading}
             />
           </Section>
           <Section className="w-full md:w-[20%] md:!pl-0 h-full">

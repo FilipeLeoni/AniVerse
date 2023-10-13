@@ -9,6 +9,10 @@ const SidebarPanel = () => {
   const router = useRouter();
   const pathname = usePathname();
 
+  if (pathname.startsWith("/panel/upload/")) {
+    return null;
+  }
+
   const handleChangePage = (page: string) => {
     router.push(page);
   };

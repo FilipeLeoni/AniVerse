@@ -1,8 +1,11 @@
 import CircleButton from "@/components/shared/CircleButton";
 import { spoilerExtension } from "@/utils/editor";
+
 import Mention from "@tiptap/extension-mention";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
+import Blockquote from "@tiptap/extension-blockquote";
+import CharacterCount from "@tiptap/extension-character-count";
 import { EditorContent, EditorOptions, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import classNames from "classnames";
@@ -31,6 +34,8 @@ export interface EditorProps extends Partial<EditorOptions> {
   editorClassName?: string;
 }
 
+const limit = 500;
+
 const Editor = React.forwardRef<EditorType, EditorProps>(
   (
     {
@@ -50,6 +55,10 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
         extensions: [
           StarterKit,
           Underline,
+          Blockquote,
+          CharacterCount.configure({
+            limit,
+          }),
           Placeholder.configure({
             placeholder,
             emptyNodeClass:
@@ -83,7 +92,10 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
 
     return (
       <div
-        className={classNames(!readOnly && "border border-gray-600", className)}
+        className={classNames(
+          !readOnly && "border border-gray-600 rounded-md",
+          className
+        )}
       >
         <EditorContent
           className={classNames(!readOnly && "p-4")}
@@ -91,100 +103,111 @@ const Editor = React.forwardRef<EditorType, EditorProps>(
         />
 
         {!readOnly && (
-          <div className="p-2 flex flex-col md:flex-row justify-between border-t gap-2 border-gray-600">
-            <div className="flex items-center md:gap-2 flex-wrap">
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={AiOutlineBold}
-                onClick={() => editor.chain().toggleBold().focus().run()}
-                title="Bold"
-              />
-
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={AiOutlineUnderline}
-                onClick={() => editor.chain().toggleUnderline().focus().run()}
-                title="Underline"
-              />
-
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={AiOutlineItalic}
-                onClick={() => editor.chain().toggleItalic().focus().run()}
-                title="Italic"
-              />
-
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={AiOutlineUnorderedList}
-                onClick={() => editor.chain().toggleBulletList().focus().run()}
-                title="Unordered list"
-              />
-
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={AiOutlineOrderedList}
-                onClick={() => editor.chain().toggleOrderedList().focus().run()}
-                title="Ordered list"
-              />
-
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={AiOutlineStrikethrough}
-                onClick={() => editor.chain().toggleStrike().focus().run()}
-                title="Strikethrough"
-              />
-
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={GrBlockQuote}
-                onClick={() => editor.chain().toggleBlockquote().focus().run()}
-                title="Blockquote"
-              />
-
-              <CircleButton
-                secondary
-                className="text-gray-300"
-                iconClassName="w-4 h-4"
-                LeftIcon={AiOutlineEyeInvisible}
-                onClick={() => editor.chain().setSpoiler().focus().run()}
-                title="Spoiler"
-              />
+          <>
+            <div className="pr-2 flex w-full justify-end text-sm text-gray-400">
+              {editor?.storage?.characterCount?.characters()}/{limit} characters
             </div>
+            <div className="p-2 flex flex-col md:flex-row justify-between border-t gap-2 border-gray-600">
+              <div className="flex items-center md:gap-2 flex-wrap">
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={AiOutlineBold}
+                  onClick={() => editor.chain().toggleBold().focus().run()}
+                  title="Bold"
+                />
 
-            {onSubmit && (
-              <CircleButton
-                className="ml-auto max-w-min text-primary-300"
-                iconClassName="w-4 h-4"
-                secondary
-                shortcutKey="enter"
-                onClick={() => {
-                  if (editor.isEmpty) return;
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={AiOutlineUnderline}
+                  onClick={() => editor.chain().toggleUnderline().focus().run()}
+                  title="Underline"
+                />
 
-                  const html = editor.getHTML();
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={AiOutlineItalic}
+                  onClick={() => editor.chain().toggleItalic().focus().run()}
+                  title="Italic"
+                />
 
-                  onSubmit(html);
-                }}
-                isLoading={isLoading}
-                disabled={editor?.isEmpty}
-                LeftIcon={AiOutlineSend}
-              />
-            )}
-          </div>
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={AiOutlineUnorderedList}
+                  onClick={() =>
+                    editor.chain().toggleBulletList().focus().run()
+                  }
+                  title="Unordered list"
+                />
+
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={AiOutlineOrderedList}
+                  onClick={() =>
+                    editor.chain().toggleOrderedList().focus().run()
+                  }
+                  title="Ordered list"
+                />
+
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={AiOutlineStrikethrough}
+                  onClick={() => editor.chain().toggleStrike().focus().run()}
+                  title="Strikethrough"
+                />
+
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={GrBlockQuote}
+                  onClick={() =>
+                    editor.chain().toggleBlockquote().focus().run()
+                  }
+                  title="Blockquote"
+                />
+
+                <CircleButton
+                  secondary
+                  className="text-gray-300"
+                  iconClassName="w-4 h-4"
+                  LeftIcon={AiOutlineEyeInvisible}
+                  onClick={() => editor.chain().setSpoiler().focus().run()}
+                  title="Spoiler"
+                />
+              </div>
+
+              {onSubmit && (
+                <CircleButton
+                  className="ml-auto max-w-min text-primary-300"
+                  iconClassName="w-4 h-4"
+                  secondary
+                  shortcutKey="enter"
+                  onClick={() => {
+                    if (editor.isEmpty) return;
+
+                    const html = editor.getHTML();
+
+                    onSubmit(html);
+                  }}
+                  isLoading={isLoading}
+                  disabled={editor?.isEmpty}
+                  LeftIcon={AiOutlineSend}
+                />
+              )}
+            </div>
+          </>
         )}
       </div>
     );

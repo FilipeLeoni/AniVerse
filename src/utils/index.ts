@@ -407,21 +407,21 @@ export function formatTimeDifference(timestamp: any) {
 // };
 
 // // https://stackoverflow.com/questions/6860853/generate-random-string-for-div-id
-// export const randomString = (length: number) => {
-//   const chars =
-//     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz".split("");
+export const randomString = (length: number) => {
+  const chars =
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghiklmnopqrstuvwxyz".split("");
 
-//   if (!length) {
-//     length = Math.floor(Math.random() * chars.length);
-//   }
+  if (!length) {
+    length = Math.floor(Math.random() * chars.length);
+  }
 
-//   let str = "";
+  let str = "";
 
-//   for (var i = 0; i < length; i++) {
-//     str += chars[Math.floor(Math.random() * chars.length)];
-//   }
-//   return str;
-// };
+  for (var i = 0; i < length; i++) {
+    str += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return str;
+};
 
 // export const createFileFromUrl = async (url: string, filename: string) => {
 //   const { data } = await axios.get<Blob>(url, { responseType: "blob" });

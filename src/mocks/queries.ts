@@ -51,7 +51,7 @@ export const searchData = async (
   return response.json();
 };
 
-export const getPopularAnime = async (mediaType: string = "ANIME") => {
+export const getPopularMedia = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -100,7 +100,7 @@ export const getPopularAnime = async (mediaType: string = "ANIME") => {
   return response.json();
 };
 
-export const getTrendingAnime = async (mediaType: string = "ANIME") => {
+export const getTrendingMedia = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -147,7 +147,7 @@ export const getTrendingAnime = async (mediaType: string = "ANIME") => {
   return response.json();
 };
 
-export const getUpdatedAnime: any = async (mediaType: string = "ANIME") => {
+export const getUpdatedMedia: any = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -196,7 +196,7 @@ export const getUpdatedAnime: any = async (mediaType: string = "ANIME") => {
   return response.json();
 };
 
-export const getFavoriteAnime = async (mediaType: string = "ANIME") => {
+export const getFavoriteMedia = async (mediaType: string = "ANIME") => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -245,7 +245,7 @@ export const getFavoriteAnime = async (mediaType: string = "ANIME") => {
   return response.json();
 };
 
-export const getRandomAnime = async () => {
+export const getRandomMedia = async () => {
   const response = await fetch(`https://graphql.anilist.co`, {
     method: "POST",
     headers: {
@@ -295,8 +295,8 @@ export const getRandomAnime = async () => {
   const recommendations = data.data.Page.recommendations;
   const randomIndex = Math.floor(Math.random() * recommendations.length);
 
-  const randomRecommendedAnime = recommendations[randomIndex].media;
-  return randomRecommendedAnime;
+  const randomRecommendedMedia = recommendations[randomIndex].media;
+  return randomRecommendedMedia;
 };
 
 export const getScheduleAnime = async () => {
@@ -446,6 +446,7 @@ export const getAnimeById = async (id: any, type: any) => {
                       genres
                       description
                       type
+                      
                     }
                     }
                 }
@@ -465,8 +466,14 @@ export const getAnimeById = async (id: any, type: any) => {
                     }
                     name {
                       userPreferred
+                      full
                     }
-                    
+                    dateOfBirth {
+                      day
+                      month
+                    }
+                    age
+                    gender
                   }
                   role
                 }

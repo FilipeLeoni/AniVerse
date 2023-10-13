@@ -6,7 +6,7 @@ import Card from "@/components/shared/Card";
 import Input from "@/components/shared/Input";
 import List from "@/components/shared/List";
 import Loading from "@/components/shared/Loading";
-import { getTrendingAnime, searchData } from "@/mocks/queries";
+import { getTrendingMedia, searchData } from "@/mocks/queries";
 import { useQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default function AnimePanel() {
         const response = await searchData(keyword);
         return response.data;
       } else {
-        const response = await getTrendingAnime();
+        const response = await getTrendingMedia();
         return response.data;
       }
     },
@@ -41,7 +41,7 @@ export default function AnimePanel() {
   return (
     <UploadContainer isVerified={true}>
       {/* <Head title="Anime" /> */}
-      <h1 className="text-4xl font-semibold mb-8">Anime</h1>,
+      <h1 className="text-4xl font-semibold mb-8">Anime</h1>
       <React.Fragment>
         <List data={data?.Page.media}>
           {(data: any) => (
