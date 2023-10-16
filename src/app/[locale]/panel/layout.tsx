@@ -3,9 +3,9 @@ import React from "react";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex">
+    <div className="flex relative">
       <SidebarPanel />
-      <div className="w-full p-8">{children}</div>
+      <div className="w-full">{children}</div>
     </div>
   );
 }

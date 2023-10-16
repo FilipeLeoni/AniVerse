@@ -43,6 +43,7 @@
     "react-datepicker": "^4.20.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
+    "react-files-uploading": "^1.0.2",
     "react-hook-form": "^7.47.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.10.1",
