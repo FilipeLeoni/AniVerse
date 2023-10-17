@@ -30,33 +30,41 @@ const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token }) {
-      console.log(token);
       return token;
     },
     async session({ session, token, account }: any) {
-      console.log(session, token, account);
       if (session) {
         const { email, name, image } = token;
         const provider = account?.provider;
         console.log("Session exist");
-        const response = await fetch(`${process.env.API_URL_ENV}/auth/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            name,
-            profilePicture: image,
-            provider,
-          }),
-        });
-        console.log("response", response);
-        const userData = await response.json();
-        console.log(userData);
-        session.user = userData.user;
-        token.accessToken = userData.backendTokens.accessToken;
-        token.accessToken = userData.backendTokens.refreshToken;
+        try {
+          const response = await fetch(
+            `${process.env.API_URL_ENV}/auth/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email,
+                name,
+                profilePicture: image,
+                provider,
+              }),
+            }
+          );
+
+          if (response) {
+            console.log("response", response);
+            const userData = await response.json();
+            console.log(userData);
+            session.user = userData.user;
+            token.accessToken = userData.backendTokens.accessToken;
+            token.accessToken = userData.backendTokens.refreshToken;
+          }
+        } catch (error) {
+          console.log(error);
+        }
       }
       if (token) {
         const expiration = getExpirationFromToken(token.accessToken);
