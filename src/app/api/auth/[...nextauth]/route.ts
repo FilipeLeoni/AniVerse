@@ -29,15 +29,16 @@ const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      console.log(token, user);
-      return { ...token, ...user };
+    async jwt({ token }) {
+      console.log(token);
+      return token;
     },
     async session({ session, token, account }: any) {
       console.log(session, token, account);
       if (session) {
         const { email, name, image } = token;
         const provider = account?.provider;
+        console.log("Session exist");
         const response = await fetch(`${process.env.API_URL_ENV}/auth/login`, {
           method: "POST",
           headers: {
@@ -50,6 +51,7 @@ const authOptions: NextAuthOptions = {
             provider,
           }),
         });
+        console.log("response", response);
         const userData = await response.json();
         console.log(userData);
         session.user = userData.user;
