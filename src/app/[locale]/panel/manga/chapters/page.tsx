@@ -14,13 +14,13 @@ export default function UploadData() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
   const { data, isLoading } = useQuery<any>({
-    queryKey: ["AddAnime", debouncedQuery],
+    queryKey: ["AddChapter", debouncedQuery],
     queryFn: async () => {
       if (debouncedQuery.trim() !== "") {
         const response = await searchData(debouncedQuery);
         return response.data;
       }
-      const trendingResponse = await getTrendingMedia();
+      const trendingResponse = await getTrendingMedia("MANGA");
       return trendingResponse.data;
     },
   });
@@ -39,12 +39,12 @@ export default function UploadData() {
     <div className="p-32">
       <div>
         <div>Hi, Username</div>
-        <h1 className="font-semibold text-4xl">Add Anime</h1>
+        <h1 className="font-semibold text-4xl">Upload Chapter</h1>
       </div>
       <div>
         <div></div>
       </div>
-      <div className="flex gap-4 items-center mt-8 justify-between">
+      <div className="flex gap-4 items-center mt-8">
         <Input
           containerInputClassName="border border-white/80"
           LeftIcon={AiOutlineSearch}
@@ -56,7 +56,7 @@ export default function UploadData() {
           containerClassName="w-full md:w-1/3 mb-8"
         />
         <div>
-          <Button primary>Add Data Manually</Button>
+          <Button primary>Add other data</Button>
         </div>
       </div>
       {isLoading ? (
@@ -66,7 +66,10 @@ export default function UploadData() {
       ) : (
         <List data={data?.Page.media}>
           {(data: any) => (
-            <Card data={data} redirectUrl={`/panel/upload/anime/${data.id}`} />
+            <Card
+              data={data}
+              redirectUrl={`/panel/manga/chapters/${data.id}`}
+            />
           )}
         </List>
       )}

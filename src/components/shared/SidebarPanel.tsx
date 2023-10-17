@@ -32,7 +32,7 @@ const SidebarPanel = () => {
     { name: "Upload Anime", href: "/panel/upload/anime" },
     { name: "Upload Manga", href: "/panel/upload/manga" },
     { name: "Upload Episode", href: "/panel/anime/episodes" },
-    { name: "Upload Chapter", href: "/panel/upload/chapter" },
+    { name: "Upload Chapter", href: "/panel/manga/chapters" },
   ];
 
   return (
@@ -74,11 +74,9 @@ const SidebarPanel = () => {
         <Button
           primary
           className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
-            pathname === "/panel/home-page"
-              ? "!bg-neutral-600"
-              : "bg-transparent"
+            pathname === "/panel/home" ? "!bg-neutral-600" : "bg-transparent"
           }`}
-          onClick={() => handleChangePage("/panel/home-page")}
+          onClick={() => handleChangePage("/panel/home")}
         >
           <AiOutlineHome size={24} />
           Home

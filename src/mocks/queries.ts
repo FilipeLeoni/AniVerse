@@ -122,6 +122,7 @@ export const getTrendingMedia = async (mediaType: string = "ANIME") => {
                   bannerImage
                   coverImage {
                     extraLarge 
+                    color
                   }
                   description
                   format

@@ -96,16 +96,10 @@ const Card: React.FC<CardProps> = (props) => {
               <Image
                 src={data.coverImage?.extraLarge as string}
                 fill
-                className="rounded-sm object-cover"
+                className="rounded-md object-cover"
                 alt={title}
               />
               {imageEndSlot}
-
-              {isEditCard && (
-                <div className=" bg-black/50 w-fit h-fit absolute hidden group-hover:flex justify-center items-center ">
-                  <Button primary>{editName}</Button>
-                </div>
-              )}
             </div>
 
             {data.type && className === "relations" && (

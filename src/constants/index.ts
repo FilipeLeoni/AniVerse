@@ -89,7 +89,7 @@ export const supportedUploadFontFormats = [
   "PFT",
 ];
 
-export const supportedUploadImageFormats = ["jpg", "jpeg", "png"];
+export const supportedUploadImageFormats = ["jpg", "jpeg", "png", ".zip"];
 
 export const SEASON_YEARS = new Array(CURRENT_YEAR + 1 - START_YEAR)
   .fill(null)

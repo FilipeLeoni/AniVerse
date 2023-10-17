@@ -32,24 +32,28 @@ const HorizontalCard = ({
     >
       <div className="w-12 shrink-0">
         <Link href={redirectUrl}>
-          <PlainCard src={data?.coverImage?.extraLarge} alt={title} />
+          <PlainCard
+            src={data?.coverImage?.extraLarge || data.coverImage}
+            alt={title}
+          />
         </Link>
       </div>
 
       <div className="space-y-1 self-start">
         <Link href={redirectUrl}>
           <p className="font-semibold text-white transition duration-300 line-clamp-1 hover:text-primary-300">
-            {title}
+            {title || data?.title?.romaji || data?.title?.english}
           </p>
         </Link>
 
         <DotList className="text-sm text-gray-300">
           {data.format && <span>{convert(data.format, "format")}</span>}
 
-          {"season" in data && "seasonYear" in data && (
+          {"season" in data && "seasonYear" in data && data?.season && (
             <span>
               {data && convert(data.season, "season", { locale })}{" "}
               {data.seasonYear}
+              {data.season.toUpperCase()}
             </span>
           )}
 
