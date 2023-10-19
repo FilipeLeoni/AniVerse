@@ -17,11 +17,15 @@ export default function UploadData() {
     queryKey: ["Add", debouncedQuery],
     queryFn: async () => {
       if (debouncedQuery.trim() !== "") {
-        const response = await searchData(debouncedQuery);
-        return response.data;
+        const response = await fetch(
+          `http://localhost:8000/anime/search?query=${debouncedQuery}`
+        );
+        const data = await response.json();
+        return { media: data };
       }
-      const trendingResponse = await getTrendingMedia();
-      return trendingResponse.data;
+      const trendingResponse = await fetch("http://localhost:8000/anime");
+      const data = await trendingResponse.json();
+      return { media: data };
     },
   });
 
@@ -34,6 +38,8 @@ export default function UploadData() {
       clearTimeout(timeoutId);
     };
   }, [query]);
+
+  console.log(data);
 
   return (
     <div className="p-32">
@@ -64,7 +70,7 @@ export default function UploadData() {
           <ListSkeleton />
         </div>
       ) : (
-        <List data={data?.Page.media}>
+        <List data={data?.media}>
           {(data: any) => (
             <Card
               data={data}

@@ -22,6 +22,7 @@ import Button from "@/components/shared/Button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTrendingMedia } from "@/mocks/queries";
 import ServerPaginateTable from "@/components/shared/ServerPaginateTable";
+import { useApi } from "@/hooks/useApi";
 
 interface UploadAnimePageProps {
   user: any;
@@ -52,7 +53,7 @@ const columns: Column<any>[] = [
 
       return (
         <div className="px-6 py-4">
-          <p className="line-clamp-5">{title}</p>
+          <p className="line-clamp-5">{title || originalCell.title.english}</p>
         </div>
       );
     },
@@ -81,7 +82,8 @@ const columns: Column<any>[] = [
       return (
         <div className="px-6 py-4">
           <p className="line-clamp-5 overflow-hidden">
-            {originalCell.totalUploadedEpisodes || 0}/{cell.value || "??"}
+            {originalCell.totalUploadedEpisodes || 0}/
+            {originalCell.totalChapters || "??"}
           </p>
         </div>
       );
@@ -92,7 +94,7 @@ const columns: Column<any>[] = [
     Cell: ({ cell }: any) => {
       return (
         <div className="w-full flex items-center justify-center">
-          <Link href={`/upload/anime/${cell.value}`}>
+          <Link href={`/upload/manga/${cell.value}`}>
             <CircleButton secondary LeftIcon={AiOutlineEdit} />
           </Link>
         </div>
@@ -108,11 +110,23 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
 
   const queryClient = useQueryClient();
 
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ["MangaAdded"],
+  //   queryFn: async () => {
+  //     const response = await getTrendingMedia("MANGA");
+  //     console.log(response.data);
+  //     return response.data.Page;
+  //   },
+  // });
+
+  const api = useApi();
+
   const { data, isLoading } = useQuery({
     queryKey: ["MangaAdded"],
     queryFn: async () => {
-      const response = await getTrendingMedia("MANGA");
-      return response.data.Page;
+      const response = await api.getUploadedManga(pageIndex + 1, pageSize);
+      console.log(response);
+      return response;
     },
   });
 
@@ -164,11 +178,11 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
 
         {isLoading ? (
           <Loading />
-        ) : data?.media?.length ? (
+        ) : data?.data?.length ? (
           <ServerPaginateTable
-            data={data.media}
+            data={data.data}
             columns={columns}
-            totalCount={data.total}
+            totalCount={data.data.total}
             pageIndex={pageIndex}
             pageSize={pageSize}
             onPageSizeChange={handlePageSizeChange}

@@ -33,7 +33,7 @@ const MediaDetails: React.FC<MediaDetailsProps> = ({ media }) => {
           </div>
 
           <div className="space-y-4">
-            <h1 className="text-2xl font-semibold">{title}</h1>
+            <h1 className="text-2xl font-semibold">{media.title.english}</h1>
 
             <p className="text-gray-300">{media.title.native}</p>
 

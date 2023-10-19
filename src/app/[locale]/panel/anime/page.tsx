@@ -38,7 +38,7 @@ const columns: Column<any>[] = [
 
       return (
         <div className="p-2">
-          <PlainCard src={originalCell.coverImage} alt={title} />
+          <PlainCard src={originalCell.coverImage.extraLarge} alt={title} />
         </div>
       );
     },
@@ -50,11 +50,10 @@ const columns: Column<any>[] = [
       const originalCell = cell.row.original;
 
       const title = getTitle(originalCell);
-      console.log(originalCell);
 
       return (
         <div className="px-6 py-4">
-          <p className="line-clamp-5">{title || }</p>
+          <p className="line-clamp-5">{title || originalCell.title.english}</p>
         </div>
       );
     },
@@ -83,7 +82,8 @@ const columns: Column<any>[] = [
       return (
         <div className="px-6 py-4">
           <p className="line-clamp-5 overflow-hidden">
-            {originalCell.totalUploadedEpisodes || 0}/{cell.value || "??"}
+            {originalCell.totalUploadedEpisodes || 0}/
+            {originalCell.totalEpisodes || "??"}
           </p>
         </div>
       );
@@ -94,7 +94,7 @@ const columns: Column<any>[] = [
     Cell: ({ cell }: any) => {
       return (
         <div className="w-full flex items-center justify-center">
-          <Link href={`/upload/anime/${cell.value}`}>
+          <Link href={`/panel/anime/episodes/${cell.value}`}>
             <CircleButton secondary LeftIcon={AiOutlineEdit} />
           </Link>
         </div>
@@ -112,13 +112,18 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["AnimeAddeds"],
+    queryKey: ["AnimeAddeds", pageIndex, pageSize],
     queryFn: async () => {
-      const response: any = await api.getUploadedAnimes();
+      const response: any = await api.getUploadedAnimes(
+        pageIndex + 1,
+        pageSize
+      );
       console.log(response);
-      return response.data;
+      return response;
     },
   });
+
+  console.log(pageIndex);
 
   async function searchData() {
     try {
@@ -192,9 +197,9 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
 
         {isLoading ? (
           <Loading />
-        ) : data?.length ? (
+        ) : data?.data.length ? (
           <ServerPaginateTable
-            data={data}
+            data={data.data}
             columns={columns}
             totalCount={data.total}
             pageIndex={pageIndex}

@@ -155,15 +155,17 @@ const AddDataModal = ({
               {...register("name", { required: true })}
               containerInputClassName="focus:border border-white/80 w-full"
               label={"Name"}
+              placeholder="e.g. Naruto Uzumaki"
               containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm placeholder:text-gray-600"
             />
             <Input
               {...register("gender", { required: true })}
               containerInputClassName="focus:border border-white/80 w-full"
               label={"Gender"}
+              placeholder="e.g. Male"
               containerClassName="w-full text-gray-400 "
-              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+              className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm placeholder:text-gray-600"
             />
 
             <div className="flex gap-8">
@@ -171,16 +173,18 @@ const AddDataModal = ({
                 {...register("age", { required: true })}
                 containerInputClassName="focus:border border-white/80 w-full"
                 label={"Age"}
+                placeholder="e.g. 15"
                 containerClassName="w-full text-gray-400 "
-                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm placeholder:text-gray-600"
               />
 
               <Input
                 {...register("role", { required: true })}
                 containerInputClassName="focus:border border-white/80 w-full"
                 label={"Role"}
+                placeholder="e.g. Main"
                 containerClassName="w-full text-gray-400 "
-                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm placeholder:text-gray-600"
               />
             </div>
 
@@ -189,15 +193,17 @@ const AddDataModal = ({
                 {...register("day", { required: true })}
                 containerInputClassName="focus:border border-white/80 w-full"
                 label={"Day"}
+                placeholder="e.g. 10"
                 containerClassName="w-full text-gray-400 "
-                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm placeholder:text-gray-600"
               />
               <Input
                 {...register("month", { required: true })}
                 containerInputClassName="focus:border border-white/80 w-full"
                 label={"Month"}
+                placeholder="e.g. 10"
                 containerClassName="w-full text-gray-400 "
-                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm placeholder:text-gray-600"
               />
             </div>
           </div>

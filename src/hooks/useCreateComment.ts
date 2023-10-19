@@ -22,6 +22,8 @@ const useCreateComment: any = () => {
         userId: session?.user?.id,
       };
 
+      console.log(newComment);
+
       const response = await fetch(`http://localhost:8000/comments`, {
         method: "POST",
         headers: {
@@ -29,6 +31,8 @@ const useCreateComment: any = () => {
         },
         body: JSON.stringify(newComment),
       });
+
+      console.log(response);
 
       if (!response.ok) {
         throw new Error("Failed to create comment");

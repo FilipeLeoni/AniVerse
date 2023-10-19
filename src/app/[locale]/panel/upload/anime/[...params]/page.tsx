@@ -92,6 +92,8 @@ export default function UploadPage({
       setValue("trending", data.Media.trending);
       setValue("Season", convert(data.Media.season, "season", { locale }));
       setValue("averageScore", data.Media.averageScore);
+      setValue("color", data.Media.coverImage.color);
+
       setValue(
         "countryOfOrigin",
         convert(data.Media.countryOfOrigin, "country", {
@@ -248,7 +250,7 @@ export default function UploadPage({
     });
     console.log(response);
     if (response.ok) {
-      router.push("/panel/upload");
+      router.push("/panel/upload/anime");
       return response;
     }
     return response;
@@ -278,9 +280,12 @@ export default function UploadPage({
       },
       bannerImage: banner,
       description: data.description,
-      coverImage: coverImage,
+      coverImage: {
+        extraLarge: coverImage,
+        color: data.color,
+      },
       genres: genres,
-      episodes: episodes,
+      totalEpisodes: episodes,
       duration: duration,
       countryOfOrigin: data.countryOfOrigin,
       popularity: popularity,
@@ -398,6 +403,15 @@ export default function UploadPage({
                     state={genres}
                     setState={setGenres}
                     className="!flex-row"
+                  />
+
+                  <Input
+                    containerInputClassName="focus:border border-white/80"
+                    label={"Color"}
+                    defaultValue={data.Media.coverImage.color}
+                    containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                    className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                    {...(register("color"), { max: 100, min: 1 })}
                   />
 
                   <Input
@@ -666,7 +680,7 @@ export default function UploadPage({
           </Button>
           <Button primary className="flex gap-2" type="submit">
             <AiOutlinePlusCircle size={24} />
-            Add Anime
+            Upload Anime
           </Button>
         </div>
       </form>

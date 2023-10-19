@@ -3,7 +3,7 @@ import Table, { TableProps } from "./Table";
 
 interface ServerPaginateTableProps<T extends object = {}>
   extends Partial<TableProps<T>> {
-  pageIndex: number;
+  pageIndex?: number;
   pageSize: number;
   totalCount: number;
 }
@@ -14,13 +14,16 @@ const ServerPaginateTable = <T extends object = {}>({
   totalCount,
   ...props
 }: PropsWithChildren<ServerPaginateTableProps<T>>) => {
+  const pageCount = Math.ceil(totalCount / pageSize);
+
   return (
     // @ts-ignore
+
     <Table
       initialState={{ pageIndex, pageSize }}
       manualPagination
-      pageCount={Math.round(totalCount / pageSize)}
       {...props}
+      pageCount={pageCount ? pageCount : 1}
     />
   );
 };
