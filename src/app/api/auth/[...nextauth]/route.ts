@@ -52,6 +52,8 @@ const authOptions: NextAuthOptions = {
         const userData = await response.json();
         console.log(userData);
         session.user = userData.user;
+        cookies().set("accessToken", userData.backendTokens.accessToken);
+        cookies().set("refreshToken", userData.backendTokens.refreshToken);
         token.accessToken = userData.backendTokens.accessToken;
         token.accessToken = userData.backendTokens.refreshToken;
       }

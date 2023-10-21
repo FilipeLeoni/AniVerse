@@ -27,7 +27,7 @@ const Avatar: React.FC<AvatarProps> = ({ src, className, ...props }) => {
         src={isLoadFailed || !src ? "/avatar-default.png" : src}
         alt="avatar"
         fill
-        className="rounded-full"
+        className="rounded-full object-cover"
       />
     </div>
   );

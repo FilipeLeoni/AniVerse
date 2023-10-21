@@ -1,4 +1,7 @@
 import api from "@/utils/api";
+import Cookies from "js-cookie";
+
+const accessToken = Cookies.get("accessToken");
 
 export const useApi = () => ({
   getUploadedAnimes: async (page: number = 1, pageSize: number = 10) => {
@@ -27,6 +30,20 @@ export const useApi = () => ({
   getAnimeById: async (id: string) => {
     try {
       const response = await api.get(`/anime/${id}`);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getUserById: async (id: string) => {
+    try {
+      const response = await api.get(`/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       console.log(response);
       return response.data;
     } catch (error) {

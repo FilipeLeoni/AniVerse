@@ -1,20 +1,25 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { redirect } from "next-intl/server";
 import { useSession } from "next-auth/react";
 
 import api from "@/utils/api";
-import Cookies from "js-cookie";
 import DetailsBanner from "@/components/shared/DetailsBanner";
 import Image from "next/image";
-import test from "./test.jpg";
+import test from "../test.jpg";
 import Button from "@/components/shared/Button";
 import { AiFillCamera } from "react-icons/ai";
 import Section from "@/components/shared/Section";
 import Avatar from "@/components/shared/Avatar";
 import Description from "@/components/shared/Description";
 import classNames from "classnames";
+import { useQuery } from "@tanstack/react-query";
+import { useApi } from "@/hooks/useApi";
+import Loading from "@/components/shared/Loading";
+import EditProfileModal from "@/components/features/users/EditProfileModal";
+import UpdateBanner from "@/components/features/users/UpdateBanner";
+import UpdateAvatar from "@/components/features/users/UpdateAvatar";
 
 const LISTS = {
   Watch: "Watch",
@@ -24,56 +29,44 @@ const LISTS = {
 type ListKey = keyof typeof LISTS;
 type List = (typeof LISTS)[ListKey];
 
-export default function Profile() {
-  const [example, setExample] = useState<any>();
+export default function Profile({ params }: { params: { id: string } }) {
+  const userId = params.id;
   const [listTab, setListTab] = useState<List>(LISTS.Watch);
 
-  const { data } = useSession();
+  const { data: session } = useSession();
+  const api = useApi();
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["userProfile", userId],
+    queryFn: async () => {
+      const res = api.getUserById(userId);
+      return res;
+    },
+    refetchOnWindowFocus: false,
+  });
 
   const handleListTabChange = (list: List) => () => {
     setListTab(list);
   };
 
-  const session: any = data;
-  const accessToken = Cookies.get("accessToken");
-  console.log(accessToken);
+  const isOwnProfile = useMemo(
+    () => session?.user?.id === user?.id && session?.user?.id !== undefined,
+    [session?.user?.id, user?.id]
+  );
 
-  useEffect(() => {
-    async function fetchData() {
-      console.log(session?.user?.id);
-      try {
-        const response = await api.get(`/user/${session.user.user.id}`, {
-          headers: {
-            authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const responseData = response.data;
-        setExample(responseData);
-      } catch (error) {
-        console.log("Erro ao fazer a requisição:", error);
-      }
-    }
-
-    fetchData();
-  }, [accessToken, session?.user]);
-
-  console.log(example);
-
-  if (session === null) {
-    return redirect("/login");
+  if (isLoading) {
+    return <Loading />;
   }
-
-  console.log(session);
 
   return (
     <div className="w-full min-h-screen">
       <div className="pt-16 md:pt-0 bg-background-800 w-full flex items-center">
         <Section className="px-0 overflow-hidden relative mx-auto w-full h-[200px] md:h-[400px]">
           <div className="relative w-full h-full">
-            {example ? (
+            {user ? (
               // eslint-disable-next-line @next/next/no-img-element
               <Image
-                src={example?.bannerPicture || test}
+                src={user?.bannerPicture || test}
                 fill
                 className="w-full h-full object-cover"
                 alt="profile banner"
@@ -85,42 +78,41 @@ export default function Profile() {
             <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-black to-transparent"></div>
           </div>
 
-          {/* {session && <UpdateBanner user={userProfile} />} */}
+          {session && <UpdateBanner user={user} />}
         </Section>
       </div>
       <Section className="bg-background-800 pb-8 -mt-16 flex flex-col md:flex-row gap-4 md:items-center justify-between pt-6 w-full">
         <div className="relative flex flex-col md:flex-row gap-8">
           <div className="border-4 border-background-800 relative rounded-full w-32 h-32 md:w-44 md:h-44">
             <Avatar
-              src={example?.profilePicture}
+              src={user?.profilePicture}
               className="mx-auto !w-full !h-full"
             />
-            {/* {isOwnProfile && <UpdateAvatar user={user} />} */}
+            {isOwnProfile && <UpdateAvatar user={user} />}
           </div>
 
           <div className="md:pt-16 space-y-2">
             <div className="flex flex-col md:flex-row center gap-4">
-              <h1 className="text-4xl font-bold">{example?.name}</h1>
+              <h1 className="text-4xl font-bold">{user?.name}</h1>
 
               <h3 className="flex items-center text-2xl text-gray-300">
-                @{example?.name}
+                @{user?.role}
               </h3>
             </div>
 
             <Description
               description={
-                example?.bio ||
+                user?.bio ||
                 "This user is busy watching anime so hasn't written anything here yet."
               }
             />
           </div>
         </div>
-
-        {/* {isOwnProfile && (
-            <div>
-              <EditProfileModal user={userProfile} />
-            </div>
-          )} */}
+        {isOwnProfile && (
+          <div>
+            <EditProfileModal user={user} />
+          </div>
+        )}
       </Section>
 
       <Section title="List" className="mt-8 w-full">

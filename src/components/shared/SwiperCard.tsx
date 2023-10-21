@@ -106,12 +106,13 @@ const Card: React.FC<AnimeCardProps> = (props) => {
         >
           <div>
             <AnimatePresence>
-              {isExpanded && (
+              {isDesktop && (
                 <motion.div
                   key={data.bannerImage || data.coverImage?.extraLarge}
                   className={classNames(
                     "absolute h-full w-full border-red-500 overflow-hidden transition-all",
-                    isExpanded && !hasBannerImage ? "z-20" : ""
+                    isExpanded && !hasBannerImage ? "z-20" : "",
+                    isExpanded ? " opacity-100" : "opacity-0"
                   )}
                 >
                   <div
@@ -192,7 +193,8 @@ const Card: React.FC<AnimeCardProps> = (props) => {
               transition={{ duration: 1 }}
               variants={hasBannerImage ? slotVariants : {}}
               className={classNames(
-                "absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full transition-all"
+                "absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full transition-all",
+                isExpanded ? "z-0" : "z-20"
               )}
             >
               <div className=" w-full h-auto">

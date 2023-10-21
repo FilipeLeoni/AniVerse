@@ -21,11 +21,11 @@ export default function UploadData() {
           `http://localhost:8000/anime/search?query=${debouncedQuery}`
         );
         const data = await response.json();
-        return { media: data };
+        return data;
       }
       const trendingResponse = await fetch("http://localhost:8000/anime");
       const data = await trendingResponse.json();
-      return { media: data };
+      return data;
     },
   });
 
@@ -70,7 +70,7 @@ export default function UploadData() {
           <ListSkeleton />
         </div>
       ) : (
-        <List data={data?.media}>
+        <List data={data?.data}>
           {(data: any) => (
             <Card
               data={data}
