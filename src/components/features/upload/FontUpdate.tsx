@@ -1,34 +1,27 @@
 import Button from "@/components/shared/Button";
 import Loading from "@/components/shared/Loading";
 import useUpdateFonts from "@/hooks/useUpdateFonts";
-import { Attachment } from "@/services/upload";
-import { createAttachmentUrl, createFileFromUrl } from "@/utils";
+// import { Attachment } from "@/services/upload";
+// import { createAttachmentUrl, createFileFromUrl } from "@/utils";
 import React, { useState } from "react";
-import { useQuery } from "react-query";
 import FontUpload from "./FontUpload";
 
-interface FontUpdateProps {
-  initialFonts?: Attachment[];
-  episodeSlug: string;
-}
-
-const FontUpdate: React.FC<FontUpdateProps> = ({
-  initialFonts,
-  episodeSlug,
-}) => {
+const FontUpdate: React.FC<any> = ({ initialFonts, episodeSlug }) => {
   const [files, setFiles] = useState<File[]>([]);
 
-  const { data: initialFiles, isLoading: initialFilesLoading } = useQuery<
-    File[]
-  >(["uploaded-font-files", initialFonts], async () => {
-    if (!initialFonts?.length) return [];
+  const initialFiles: any = [];
 
-    return Promise.all<File>(
-      initialFonts.map((file) =>
-        createFileFromUrl(createAttachmentUrl(file.url), file.filename)
-      )
-    );
-  });
+  // const { data: initialFiles, isLoading: initialFilesLoading } = useQuery<
+  //   File[]
+  // >(["uploaded-font-files", initialFonts], async () => {
+  //   if (!initialFonts?.length) return [];
+
+  //   return Promise.all<File>(
+  //     initialFonts.map((file) =>
+  //       createFileFromUrl(createAttachmentUrl(file.url), file.filename)
+  //     )
+  //   );
+  // });
 
   const { mutate: updateFonts, isLoading: updateLoading } =
     useUpdateFonts(episodeSlug);
@@ -37,7 +30,7 @@ const FontUpdate: React.FC<FontUpdateProps> = ({
     updateFonts(files);
   };
 
-  return initialFilesLoading ? (
+  return initialFiles ? (
     <Loading />
   ) : (
     <div className="space-y-2">

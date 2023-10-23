@@ -73,7 +73,10 @@ const Table = <T extends object = {}>({
             // Loop over the header rows
             headerGroups.map((headerGroup, index) => (
               // Apply the header row props
-              <tr key={index} {...headerGroup.getHeaderGroupProps()}>
+              <tr
+                key={`header-group-${index}`}
+                // {...headerGroup.getHeaderGroupProps()}
+              >
                 {
                   // Loop over the headers in each row
                   headerGroup.headers.map((column, columnIndex) => (
@@ -109,13 +112,13 @@ const Table = <T extends object = {}>({
               prepareRow(row);
               return (
                 // Apply the row props
-                <tr key={rowIndex} {...row.getRowProps()}>
+                <tr key={rowIndex + 1}>
                   {
                     // Loop over the rows cells
                     row.cells.map((cell, cellIndex) => {
                       // Apply the cell props
                       return (
-                        <td key={cellIndex} {...cell.getCellProps()}>
+                        <td key={cellIndex}>
                           {
                             // Render the cell contents
                             cell.render("Cell")

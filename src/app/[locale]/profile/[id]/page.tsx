@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { redirect } from "next-intl/server";
 import { useSession } from "next-auth/react";
 
-import api from "@/utils/api";
 import DetailsBanner from "@/components/shared/DetailsBanner";
 import Image from "next/image";
 import test from "../test.jpg";

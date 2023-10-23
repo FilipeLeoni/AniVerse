@@ -79,7 +79,7 @@ const AnimeScheduling: React.FC<AnimeSchedulingProps> = () => {
                     schedules.map((schedule: AiringSchedule) => schedule.media),
                     "id"
                   )}
-                  onEachCard={(card, isExpanded) => {
+                  onEachCard={(card: any, isExpanded: any) => {
                     const cardWithSchedule = schedules.find(
                       (schedule: any) => schedule.media.id === card.id
                     );
