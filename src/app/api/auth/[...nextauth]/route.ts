@@ -37,18 +37,21 @@ const authOptions: NextAuthOptions = {
       if (session) {
         const { email, name, image } = token;
         const provider = account?.provider;
-        const response = await fetch(`${process.env.API_URL_ENV}/auth/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            name,
-            profilePicture: image,
-            provider,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              name,
+              profilePicture: image,
+              provider,
+            }),
+          }
+        );
         const userData = await response.json();
         console.log(userData);
         session.user = userData.user;

@@ -18,12 +18,14 @@ export default function UploadData() {
     queryFn: async () => {
       if (debouncedQuery.trim() !== "") {
         const response = await fetch(
-          `http://localhost:8000/anime/search?query=${debouncedQuery}`
+          `${process.env.NEXT_PUBLIC_API_URL}/anime/search?query=${debouncedQuery}`
         );
         const data = await response.json();
         return data;
       }
-      const trendingResponse = await fetch("http://localhost:8000/anime");
+      const trendingResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/anime`
+      );
       const data = await trendingResponse.json();
       return data;
     },
@@ -42,10 +44,10 @@ export default function UploadData() {
   console.log(data);
 
   return (
-    <div className="p-32">
+    <div>
       <div>
         <div>Hi, Username</div>
-        <h1 className="font-semibold text-4xl">Upload Episode</h1>
+        <h1 className="font-semibold text-4xl">Upload Episode or Edit data</h1>
       </div>
       <div>
         <div></div>

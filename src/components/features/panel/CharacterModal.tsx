@@ -25,8 +25,8 @@ const AddDataModal = ({
       setValue("gender", selectedCharacter?.node?.gender);
       setValue("age", selectedCharacter?.node?.age);
       setValue("role", selectedCharacter?.role);
-      setValue("day", selectedCharacter?.node?.dateOfBirth.day);
-      setValue("month", selectedCharacter?.node?.dateOfBirth.month);
+      setValue("day", selectedCharacter?.node?.dateOfBirth?.day);
+      setValue("month", selectedCharacter?.node?.dateOfBirth?.month);
     } else {
       setSelectedFile(null);
       setValue("name", "");
@@ -76,7 +76,7 @@ const AddDataModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed -top-10 left-0 w-full h-screen flex items-center justify-center z-[9999]">
+    <div className="fixed -top-10 left-0 w-full h-screen flex items-center justify-center z-[9999] p-4">
       <div
         className="absolute w-full h-full bg-black opacity-50"
         onClick={onClose}
@@ -106,16 +106,16 @@ const AddDataModal = ({
         }}
       >
         <h2 className="text-xl font-semibold">Add character</h2>
-        <div className="flex gap-6 h-auto mt-10">
+        <div className="flex gap-16 md:gap-6 h-auto mt-10 md:flex-row flex-col items-center">
           <div className="relative w-full max-w-[205px]">
             <label
               htmlFor="fileInput"
-              className=" text-white  rounded-lg w-full h-auto overflow-hidden"
+              className=" text-white rounded-lg w-full h-auto overflow-hidden"
             >
-              <div className="w-full h-full">
+              <div className="w-full h-full ">
                 {selectedFile ? (
                   <>
-                    <div className="w-full h-full ">
+                    <div className="w-full h-full aspect-w-2 aspect-h-3 ">
                       <Image
                         src={selectedFile}
                         alt="Selected"
@@ -132,8 +132,8 @@ const AddDataModal = ({
                     </Button>
                   </>
                 ) : (
-                  <>
-                    <div className="w-full h-full cursor-pointer bg-neutral-700 rounded-md flex flex-col justify-center items-center gap-4 hover:text-primary-500 hover:bg-neutral-700/80 transition-all">
+                  <div className="aspect-w-2 aspect-h-3">
+                    <div className="w-full h-full cursor-pointer bg-neutral-700 rounded-md flex flex-col justify-center items-center gap-4 hover:text-primary-500 hover:bg-neutral-700/80 transition-all ">
                       <AiOutlinePlus size={64} />
                       Character Image
                     </div>
@@ -145,7 +145,7 @@ const AddDataModal = ({
                         handleFileChange(e);
                       }}
                     />
-                  </>
+                  </div>
                 )}
               </div>
             </label>

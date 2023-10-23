@@ -28,12 +28,14 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         <h2 className="text-xl font-semibold">{message}</h2>
         <div className="flex gap-6 h-auto mt-10">
           <Button
+            primary
             className="bg-red-600 text-white rounded-md px-4 py-2"
             onClick={onConfirm}
           >
             Yes
           </Button>
           <Button
+            secondary
             className="!bg-gray-300 text-gray-700 rounded-md px-4 py-2"
             onClick={onClose}
           >

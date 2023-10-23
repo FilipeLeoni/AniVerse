@@ -10,6 +10,8 @@ import Card from "./Card";
 export default function AddRemoveCard({ label }: any) {
   const [state, setState] = useState<any[]>([]);
 
+  console.log(state);
+
   function handleAnimeSelect(anime: any) {
     if (!state.some((selectedAnime) => selectedAnime.id === anime.id)) {
       setState((prevSelectedAnimes) => [...prevSelectedAnimes, anime]);

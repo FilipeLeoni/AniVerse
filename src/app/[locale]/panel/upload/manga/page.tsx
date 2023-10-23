@@ -36,7 +36,7 @@ export default function UploadMangaData() {
   }, [query]);
 
   return (
-    <div className="p-32">
+    <div>
       <div>
         <div>Hi, Username</div>
         <h1 className="font-semibold text-4xl">Add Manga</h1>

@@ -7,7 +7,7 @@ const useComment: any = (commentId: string) => {
     queryFn: async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/comments/${commentId}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/comments/${commentId}`,
           {
             method: "GET",
             headers: {

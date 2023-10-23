@@ -26,7 +26,7 @@ export default function Chapters({ params }: { params: { id: string } }) {
   console.log(manga);
   return (
     <React.Fragment>
-      <UploadContainer className="!p-24" isVerified={true}>
+      <UploadContainer isVerified={true}>
         {mediaLoading ? (
           <Loading />
         ) : (

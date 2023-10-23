@@ -6,6 +6,7 @@ import List from "@/components/shared/List";
 import ListSkeleton from "@/components/skeletons/ListSkeleton";
 import { getTrendingMedia, searchData } from "@/mocks/queries";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
@@ -36,7 +37,7 @@ export default function UploadData() {
   }, [query]);
 
   return (
-    <div className="p-32">
+    <div>
       <div>
         <div>Hi, Username</div>
         <h1 className="font-semibold text-4xl">Add Anime</h1>
@@ -55,9 +56,9 @@ export default function UploadData() {
           }
           containerClassName="w-full md:w-1/3 mb-8"
         />
-        <div>
+        <Link href={"/panel/upload/anime/create"}>
           <Button primary>Add Data Manually</Button>
-        </div>
+        </Link>
       </div>
       {isLoading ? (
         <div className="mt-4">

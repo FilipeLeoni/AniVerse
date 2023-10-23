@@ -27,7 +27,10 @@ const HorizontalCard = ({
 
   return (
     <div
-      className={classNames("flex h-24 items-center space-x-2 py-2", className)}
+      className={classNames(
+        "flex h-24 items-center space-x-2 py-2 overflow-hidden",
+        className
+      )}
       {...props}
     >
       <div className="w-12 shrink-0">
@@ -62,7 +65,7 @@ const HorizontalCard = ({
           )}
         </DotList>
 
-        <DotList className="text-sm text-gray-300">
+        <DotList className="text-sm text-gray-300 line-clamp-1 flex-nowrap">
           {data.genres?.map((genre) => (
             <span key={genre}>{convert(genre, "genre", { locale })}</span>
           ))}

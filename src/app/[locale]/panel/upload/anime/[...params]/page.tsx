@@ -28,6 +28,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import AddRemoveCard from "@/components/features/panel/AddRemoveCard";
 import { AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 export default function UploadPage({
   params,
@@ -53,10 +54,11 @@ export default function UploadPage({
   const [banner, setBanner] = useState<any | null>(null);
   const [coverImage, setCoverImage] = useState<any | null>(null);
 
+  const animeId = params.params[0];
   const { data, isLoading } = useQuery<any>({
-    queryKey: ["AnimeById", params.params[0]],
+    queryKey: ["AnimeById", animeId],
     queryFn: async () => {
-      const response = await getAnimeById(params.params[0], "ANIME");
+      const response = await getAnimeById(animeId, "ANIME");
       return response.data;
     },
     refetchOnWindowFocus: false,
@@ -241,13 +243,16 @@ export default function UploadPage({
   };
 
   async function SendData(requestBody: any) {
-    const response: any = await fetch("http://localhost:8000/anime", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+    const response: any = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/anime`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
     console.log(response);
     if (response.ok) {
       router.push("/panel/upload/anime");
@@ -267,10 +272,7 @@ export default function UploadPage({
     const favourites = parseInt(data.favourites, 10);
     const trending = parseInt(data.trending, 10);
     const transformedCharacters = transformCharactersData(character);
-
-    console.log(character);
-    console.log(transformedCharacters);
-    console.log(data.isHomeBanner);
+    const referId = parseInt(animeId);
 
     const requestBody = {
       title: {
@@ -284,6 +286,7 @@ export default function UploadPage({
         extraLarge: coverImage,
         color: data.color,
       },
+      referId: referId,
       genres: genres,
       totalEpisodes: episodes,
       duration: duration,
@@ -328,7 +331,7 @@ export default function UploadPage({
         <div className="relative group transition-all">
           <label htmlFor="bannerInput">
             <DetailsBanner image={banner} />
-            <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100  flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-xl">
+            <div className="absolute top-0 left-0 md:opacity-0 group-hover:opacity-100  flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-xl">
               Edit banner image
               <input
                 type="file"
@@ -343,12 +346,12 @@ export default function UploadPage({
           </label>
         </div>
         <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
-          <div className="flex flex-row md:space-x-8">
+          <div className="flex flex-col md:flex-row md:space-x-8">
             <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6 ">
               <div className="relative group mb-2">
                 <label htmlFor="coverInput">
                   <PlainCard src={coverImage} alt={"Test"} />
-                  <div className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-lg">
+                  <div className="absolute top-0 left-0 text-center md:opacity-0 group-hover:opacity-100 flex justify-center items-center w-full bg-black/40 h-full cursor-pointer transition-all font-semibold text-lg">
                     Edit Cover Image
                     <input
                       type="file"
@@ -392,24 +395,24 @@ export default function UploadPage({
             <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4 w-full">
               <div className="flex flex-col items-start space-y-4 pt-20 md:pb-4 w-full">
                 <Input
-                  label={"Title"}
-                  containerClassName="w-full md:w-1/3 mb-8 text-gray-400"
-                  className="px-4 py-1 text-white text-3xl focus:ring-2 focus:ring-primary-500 rounded-sm"
+                  label={"Title (English)"}
+                  containerClassName="md:w-full md:w-1/3 mb-8 text-gray-400"
+                  className="px-4 py-1 text-white md:text-3xl focus:ring-2 focus:ring-primary-500 rounded-sm"
                   {...register("english")}
                 />
-                <div className="flex gap-10 w-full">
+                <div className="flex md:gap-10 md:w-full md:flex-row flex-col pr-5">
                   <AddRemoveItem
                     label="Genres"
                     state={genres}
                     setState={setGenres}
-                    className="!flex-row"
+                    className="!flex-row flex-wrap"
                   />
 
                   <Input
                     containerInputClassName="focus:border border-white/80"
                     label={"Color"}
                     defaultValue={data.Media.coverImage.color}
-                    containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                    containerClassName="md:w-full md:w-1/3 mb-8 text-gray-400 "
                     className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                     {...(register("color"), { max: 100, min: 1 })}
                   />
@@ -419,13 +422,13 @@ export default function UploadPage({
                     label={"Average Score"}
                     type="number"
                     defaultValue={data.Media.averageScore}
-                    containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                    containerClassName="md:w-full md:w-1/3 mb-8 text-gray-400 "
                     className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                     {...(register("averageScore"), { max: 100, min: 1 })}
                   />
                 </div>
 
-                <div className="w-full">
+                <div className="w-full pr-6">
                   <h2 className="font-bold text-gray-400">Description</h2>
                   <textarea
                     className="bg-neutral-800 w-full h-full p-4 rounded-md mt-3 focus:ring-2 focus:ring-primary-500 outline-none"
@@ -483,50 +486,61 @@ export default function UploadPage({
               </div>
             </div>
           </div>
-          <MediaDescription
-            description={description}
-            containerClassName="mt-4 mb-8 md:hidden block"
-            className="text-gray-300 hover:text-gray-100 transition duration-300"
-          />
 
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2 mt-10">
             <Button
               primary
               className="gap-4 w-full justify-center flex md:hidden"
             >
               <BsPlusCircleFill size={22} />
-              Add to list
-            </Button>
-            <Button
-              primary
-              className="flex md:hidden bg-transparent text-white"
-            >
-              <BsFillPlayFill size={24} />
+              Add to Home
             </Button>
           </div>
         </Section>
 
         <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
           <div className="md:col-span-2 xl:h-[max-content] space-y-4">
-            <div className="flex md:hidden flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
-              <InfoItem
-                title={"Country"}
-                value={convert(data.Media.countryOfOrigin, "country", {
+            <div className="flex md:hidden flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar p-4">
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Country"}
+                defaultValue={convert(data.Media.countryOfOrigin, "country", {
                   locale,
                 })}
+                containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("countryOfOrigin")}
               />
-              <InfoItem title={"Total Episodes"} value={data.Media.episodes} />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Total Episodes"}
+                defaultValue={parseInt(data.Media.episodes)}
+                containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("episodes")}
+              />
 
               {data.Media.duration && (
-                <InfoItem
-                  title={"Duration"}
-                  value={`${data.Media.duration} ${"Minutes"}`}
+                <Input
+                  containerInputClassName="focus:border border-white/80"
+                  label={"Duration"}
+                  defaultValue={parseInt(data.Media.duration)}
+                  containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                  className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                  {...register("duration")}
                 />
               )}
 
-              <InfoItem
-                title={"Status"}
-                value={convert(data.Media.status, "status", { locale })}
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Status"}
+                defaultValue={convert(data.Media.status, "status", {
+                  locale,
+                })}
+                containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("status")}
               />
 
               {nextAiringSchedule && (
@@ -537,7 +551,7 @@ export default function UploadPage({
               )}
             </div>
 
-            <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar w-full">
+            <div className="flex flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar w-full p-4">
               <Input
                 containerInputClassName="focus:border border-white/80 w-full"
                 label={"Format"}
@@ -618,13 +632,13 @@ export default function UploadPage({
                 state={synonimus}
                 setState={setSynonimus}
               />
-            </div>
-            <div className="space-y-2 w-full">
-              <AddRemoveItem label="Tags" state={tags} setState={setTags} />
+              <div className="space-y-2 w-full">
+                <AddRemoveItem label="Tags" state={tags} setState={setTags} />
+              </div>
             </div>
           </div>
 
-          <div className="space-y-12 md:col-span-8">
+          <div className="space-y-12 md:col-span-8 ">
             {!!character?.length && (
               <DetailsSection
                 title={"Characters"}
@@ -673,11 +687,14 @@ export default function UploadPage({
           </div>
         </Section>
 
-        <div className="fixed w-full h-16 bg-neutral-900 bottom-0 left-0 flex justify-between items-center px-36 z-50">
-          <Button className="flex gap-2 items-center ">
+        <div className="fixed w-full h-16 bg-neutral-900 bottom-0 left-0 flex justify-between items-center px-4 md:px-36 z-50">
+          <Link
+            className="flex gap-2 items-center"
+            href={"/panel/upload/anime"}
+          >
             <AiOutlineLeftCircle size={20} />
             Back
-          </Button>
+          </Link>
           <Button primary className="flex gap-2" type="submit">
             <AiOutlinePlusCircle size={24} />
             Upload Anime

@@ -167,34 +167,32 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
   };
 
   return (
-    <div className="pt-40">
-      <UploadContainer isVerified={true} className="relative">
-        <div className="flex justify-between mb-5">
-          <h1 className="font-semibold text-2xl">UPLOADED MANGA LIST</h1>
-          <Button primary>
-            <Link href="/upload/anime/create">Search Manga</Link>
-          </Button>
-        </div>
+    <UploadContainer isVerified={true} className="relative">
+      <div className="flex justify-between mb-5">
+        <h1 className="font-semibold text-2xl">UPLOADED MANGA LIST</h1>
+        <Button primary>
+          <Link href="/upload/anime/create">Search Manga</Link>
+        </Button>
+      </div>
 
-        {isLoading ? (
-          <Loading />
-        ) : data?.data?.length ? (
-          <ServerPaginateTable
-            data={data.data}
-            columns={columns}
-            totalCount={data.data.total}
-            pageIndex={pageIndex}
-            pageSize={pageSize}
-            onPageSizeChange={handlePageSizeChange}
-            onPageIndexChange={handlePageIndexChange}
-          />
-        ) : (
-          <h1 className="text-3xl text-center">
-            Você ainda não postou nenhum manga
-          </h1>
-        )}
-      </UploadContainer>
-    </div>
+      {isLoading ? (
+        <Loading />
+      ) : data?.data?.length ? (
+        <ServerPaginateTable
+          data={data.data}
+          columns={columns}
+          totalCount={data.data.total}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
+          onPageIndexChange={handlePageIndexChange}
+        />
+      ) : (
+        <h1 className="text-3xl text-center">
+          Você ainda não postou nenhum manga
+        </h1>
+      )}
+    </UploadContainer>
   );
 };
 

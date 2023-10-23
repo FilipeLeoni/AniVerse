@@ -24,13 +24,16 @@ const useCreateComment: any = () => {
 
       console.log(newComment);
 
-      const response = await fetch(`http://localhost:8000/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newComment),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newComment),
+        }
+      );
 
       console.log(response);
 

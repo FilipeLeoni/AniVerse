@@ -127,7 +127,7 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
 
   async function searchData() {
     try {
-      const response = await fetch("http://localhost:8000/anime", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/anime`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -185,35 +185,35 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
   };
 
   return (
-    <div className="pt-40">
-      <UploadContainer isVerified={true} className="relative">
-        <div className="flex justify-between mb-5">
-          <h1 className="font-semibold text-2xl">UPLOADED ANIME LIST</h1>
+    <UploadContainer isVerified={true} className="relative">
+      <div className="flex justify-between mb-5">
+        <h1 className="font-semibold text-2xl">UPLOADED ANIME LIST</h1>
+        <Link href="/panel/anime/episodes">
           <Button primary onClick={searchData}>
-            search Anime
+            Search Anime
             {/* <Link href="/upload/anime/create">Search Anime</Link> */}
           </Button>
-        </div>
+        </Link>
+      </div>
 
-        {isLoading ? (
-          <Loading />
-        ) : data?.data.length ? (
-          <ServerPaginateTable
-            data={data.data}
-            columns={columns}
-            totalCount={data.total}
-            pageIndex={pageIndex}
-            pageSize={pageSize}
-            onPageSizeChange={handlePageSizeChange}
-            onPageIndexChange={handlePageIndexChange}
-          />
-        ) : (
-          <h1 className="text-3xl text-center">
-            You haven&apos;t posted any anime yet
-          </h1>
-        )}
-      </UploadContainer>
-    </div>
+      {isLoading ? (
+        <Loading />
+      ) : data?.data.length ? (
+        <ServerPaginateTable
+          data={data.data}
+          columns={columns}
+          totalCount={data.total}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
+          onPageIndexChange={handlePageIndexChange}
+        />
+      ) : (
+        <h1 className="text-3xl text-center">
+          You haven&apos;t posted any anime yet
+        </h1>
+      )}
+    </UploadContainer>
   );
 };
 

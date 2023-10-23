@@ -240,13 +240,16 @@ export default function UploadPage({
   };
 
   async function SendData(requestBody: any) {
-    const response: any = await fetch("http://localhost:8000/manga", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+    const response: any = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/manga`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
     console.log(response);
     if (response.ok) {
       router.push("/panel/upload/manga");

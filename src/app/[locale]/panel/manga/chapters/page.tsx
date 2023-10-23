@@ -36,10 +36,10 @@ export default function UploadData() {
   }, [query]);
 
   return (
-    <div className="p-32">
+    <div>
       <div>
         <div>Hi, Username</div>
-        <h1 className="font-semibold text-4xl">Upload Chapter</h1>
+        <h1 className="font-semibold text-4xl">Upload Chapter or Edit data</h1>
       </div>
       <div>
         <div></div>

@@ -51,7 +51,7 @@ export default function UploadCreateChapterManga({
   };
 
   return (
-    <div className="overflow-y-auto pt-32">
+    <div className="overflow-y-auto">
       <UploadContainer className="pb-12 pt-10" isVerified={true}>
         <div className="space-y-16">
           <UploadSection>
@@ -93,7 +93,7 @@ export default function UploadCreateChapterManga({
         </div>
       </UploadContainer>
 
-      <Section className="py-3 flex justify-end gap-2 items-center fixed bottom-0 w-full md:w-4/5 bg-background-800">
+      <Section className="py-3 flex justify-end gap-2 items-center fixed bottom-0 w-full md:w-4/5 bg-background-800 -ml-3">
         <Button onClick={onSubmit} primary>
           Upload
         </Button>

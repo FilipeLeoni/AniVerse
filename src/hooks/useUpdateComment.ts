@@ -15,7 +15,7 @@ const useUpdateComment: any = () => {
     mutationFn: async (payload: any) => {
       try {
         const response = await fetch(
-          `http://localhost:8000/comments/${payload.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/comments/${payload.id}`,
           {
             method: "PUT",
             headers: {
