@@ -30,11 +30,11 @@ import Description from "./Description";
 import Section from "./Section";
 import Skeleton, { SkeletonItem } from "./Skeleton";
 import { useLocale } from "next-intl";
-import { formatDistanceToNow } from "date-fns";
-
+import BookIcon from "./BookIcon";
 interface HomeBannerProps {
   data: Media[];
   isLoading?: boolean;
+  icon?: any;
 }
 
 const bannerVariants = {
@@ -45,14 +45,14 @@ const bannerVariants = {
 
 const transition = [0.33, 1, 0.68, 1];
 
-const HomeBanner: React.FC<HomeBannerProps> = ({ data, isLoading }) => {
+const HomeBanner: React.FC<HomeBannerProps> = ({ data, isLoading, icon }) => {
   return (
     <React.Fragment>
       <BrowserView>
         {isLoading ? (
           <DesktopHomeBannerSkeleton />
         ) : (
-          <DesktopHomeBanner data={data} />
+          <DesktopHomeBanner data={data} icon={icon} />
         )}
       </BrowserView>
 
@@ -153,7 +153,7 @@ const MobileHomeBannerSkeleton = () => (
   </>
 );
 
-const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
+const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
   const [index, setIndex] = useState<number>(0);
   const [showTrailer, setShowTrailer] = useState(false);
 
@@ -257,7 +257,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
 
         <Link href={createMediaDetailsUrl(activeSlide)}>
           <CircleButton
-            LeftIcon={AiFillPlayCircle}
+            LeftIcon={icon}
             outline
             className="absolute left-2/3 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 md:block"
             iconClassName="w-16 h-16"

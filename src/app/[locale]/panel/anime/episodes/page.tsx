@@ -17,11 +17,17 @@ export default function UploadData() {
     queryKey: ["Add", debouncedQuery],
     queryFn: async () => {
       if (debouncedQuery.trim() !== "") {
-        const response = await searchData(debouncedQuery);
-        return response.data;
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/anime/search?query=${debouncedQuery}`
+        );
+        const data = await response.json();
+        return data;
       }
-      const trendingResponse = await getTrendingMedia();
-      return trendingResponse.data;
+      const trendingResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/anime`
+      );
+      const data = await trendingResponse.json();
+      return data;
     },
   });
 
@@ -35,11 +41,13 @@ export default function UploadData() {
     };
   }, [query]);
 
+  console.log(data);
+
   return (
-    <div className="p-8">
+    <div>
       <div>
         <div>Hi, Username</div>
-        <h1 className="font-semibold text-4xl">Add Anime</h1>
+        <h1 className="font-semibold text-4xl">Upload Episode or Edit data</h1>
       </div>
       <div>
         <div></div>
@@ -64,13 +72,11 @@ export default function UploadData() {
           <ListSkeleton />
         </div>
       ) : (
-        <List data={data?.Page.media}>
+        <List data={data?.data}>
           {(data: any) => (
             <Card
               data={data}
-              redirectUrl={`/panel/upload/${data.id}`}
-              isEditCard={true}
-              editName="Add data"
+              redirectUrl={`/panel/anime/episodes/${data.id}`}
             />
           )}
         </List>

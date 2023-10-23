@@ -66,6 +66,10 @@ body {
   }
 }
 
+img {
+  user-select: none;
+}
+
 main {
   @apply overflow-x-hidden;
 }

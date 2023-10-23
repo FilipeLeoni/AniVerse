@@ -32,7 +32,7 @@ import toast from "react-hot-toast";
 export default function UploadPage({
   params,
 }: {
-  params: { params: string[] };
+  params: { animeId: string };
 }) {
   const {
     register,
@@ -53,10 +53,12 @@ export default function UploadPage({
   const [banner, setBanner] = useState<any | null>(null);
   const [coverImage, setCoverImage] = useState<any | null>(null);
 
+  const animeId = parseInt(params.animeId);
+
   const { data, isLoading } = useQuery<any>({
-    queryKey: ["AnimeById", params.params[0]],
+    queryKey: ["AnimeById", animeId],
     queryFn: async () => {
-      const response = await getAnimeById(params.params[0], "ANIME");
+      const response = await getAnimeById(animeId, "ANIME");
       return response.data;
     },
     refetchOnWindowFocus: false,
@@ -239,13 +241,16 @@ export default function UploadPage({
   };
 
   async function SendData(requestBody: any) {
-    const response: any = await fetch("http://localhost:8000/anime", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+    const response: any = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/anime`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
     console.log(response);
     if (response.ok) {
       router.push("/panel/upload");

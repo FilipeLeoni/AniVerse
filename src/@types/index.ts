@@ -9,15 +9,15 @@
 //   [key: string]: string;
 // }
 
-// export type AdditionalUser = User & {
-//   authRole: string;
-//   isVerified: boolean;
-//   avatarUrl: string;
-//   bannerUrl: string;
-//   name: string;
-//   username: string;
-//   bio: string;
-// };
+export type AdditionalUser = {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  profilePicture: string;
+  bannerPicture: string;
+  bio?: string;
+};
 
 // export type MediaDescription = Record<string, string>;
 

@@ -23,7 +23,7 @@ export default function SearchInDatabase({
     queryKey: [`search${label}`, debouncedQuery],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:8000/anime/search?query=${debouncedQuery}`
+        `${process.env.NEXT_PUBLIC_API_URL}/anime/search?query=${debouncedQuery}`
       );
       return res.json();
     },
@@ -133,7 +133,7 @@ export default function SearchInDatabase({
                 >
                   <AnimeCard
                     title={suggestion?.title?.romaji}
-                    image={suggestion.coverImage}
+                    image={suggestion.coverImage.extraLarge}
                     genres={suggestion.coverImage}
                     format={suggestion.format}
                     season={suggestion.season}

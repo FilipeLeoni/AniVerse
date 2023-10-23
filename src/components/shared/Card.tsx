@@ -96,16 +96,10 @@ const Card: React.FC<CardProps> = (props) => {
               <Image
                 src={data.coverImage?.extraLarge as string}
                 fill
-                className="rounded-sm object-cover"
+                className="rounded-md object-cover"
                 alt={title}
               />
               {imageEndSlot}
-
-              {isEditCard && (
-                <div className=" bg-black/50 w-fit h-fit absolute hidden group-hover:flex justify-center items-center ">
-                  <Button primary>{editName}</Button>
-                </div>
-              )}
             </div>
 
             {data.type && className === "relations" && (
@@ -117,7 +111,7 @@ const Card: React.FC<CardProps> = (props) => {
               className="text-base font-semibold line-clamp-2"
               style={{ color: primaryColor }}
             >
-              {title}
+              {title || data?.title?.english}
             </p>
           </React.Fragment>
         }
@@ -139,7 +133,7 @@ const Card: React.FC<CardProps> = (props) => {
             className="text-2xl mb-3 font-semibold line-clamp-1"
             style={{ color: primaryColor }}
           >
-            {title}
+            {title || data?.title?.english}
           </p>
 
           <Description

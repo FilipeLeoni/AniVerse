@@ -1,12 +1,15 @@
 export async function renewAccessToken(refreshToken: string) {
   try {
-    const response = await fetch(`${process.env.API_URL_ENV}/auth/refresh`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Refresh ${refreshToken}`,
-      },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Refresh ${refreshToken}`,
+        },
+      }
+    );
     const data = await response.json();
 
     if (response.status === 200 || 201) {

@@ -36,35 +36,30 @@ const authOptions: NextAuthOptions = {
       if (session) {
         const { email, name, image } = token;
         const provider = account?.provider;
-        console.log("Session exist");
-        try {
-          const response = await fetch(
-            `${process.env.API_URL_ENV}/auth/login`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email,
-                name,
-                profilePicture: image,
-                provider,
-              }),
-            }
-          );
 
-          if (response) {
-            console.log("response", response);
-            const userData = await response.json();
-            console.log(userData);
-            session.user = userData.user;
-            token.accessToken = userData.backendTokens.accessToken;
-            token.accessToken = userData.backendTokens.refreshToken;
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              name,
+              profilePicture: image,
+              provider,
+            }),
           }
-        } catch (error) {
-          console.log(error);
-        }
+        );
+        const userData = await response.json();
+        console.log(userData);
+        session.user = userData.user;
+        cookies().set("accessToken", userData.backendTokens.accessToken);
+        cookies().set("refreshToken", userData.backendTokens.refreshToken);
+        token.accessToken = userData.backendTokens.accessToken;
+        token.accessToken = userData.backendTokens.refreshToken;
+
       }
       if (token) {
         const expiration = getExpirationFromToken(token.accessToken);

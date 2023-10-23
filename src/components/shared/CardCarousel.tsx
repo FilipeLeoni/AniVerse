@@ -3,12 +3,6 @@ import Swiper, { SwiperInstance, SwiperSlide } from "./Swiper";
 import SwiperCard from "./SwiperCard";
 import { isMobile } from "react-device-detect";
 
-interface CardSwiperProps {
-  title?: string;
-  data: any;
-  onEachCard?: (data: any, isHover: boolean) => React.ReactNode;
-}
-
 const getVisibleIndex = (swiper: SwiperInstance) => {
   const { slides } = swiper;
 
@@ -24,140 +18,171 @@ const getVisibleIndex = (swiper: SwiperInstance) => {
   };
 };
 
-const CardCarousel: React.FC<CardSwiperProps> = ({ title, data }: any) => {
+const CardCarousel = ({ title, data }: any) => {
   const [swiper, setSwiper] = useState<SwiperInstance>();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [hoverTimeout, setHoverTimeout] = useState<any>(null);
+  const [lastVisible, setLastVisible] = useState<any>(null);
 
   const HOVER_WIDTH = 3;
-  const DEBOUNCE_DELAY = 300;
 
   const handleSlideHover = (index: number) => () => {
-    if (!swiper || activeIndex === index) return;
+    if (!swiper) return;
 
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-    }
+    const slide = swiper.slides[index] as HTMLElement;
+    const nextSlide = swiper.slides[index + 1] as HTMLElement;
 
-    const timeout = setTimeout(() => {
-      const slide = swiper.slides[index];
-      const nextSlide = swiper.slides[index + 1];
-      const [originalWidth] = swiper.slidesSizesGrid as number[];
+    const isVisible = slide.classList.contains("swiper-slide-visible");
+    if (!isVisible) return;
 
-      const { first: firstVisibleCardIndex, last: lastVisibleCardIndex } =
-        getVisibleIndex(swiper);
+    slide.classList.add("swiper-animating");
 
-      const nonPlaceholderSlides = swiper.slides.filter(
-        (slide: any) => !slide.classList.contains("swiper-placeholder")
-      );
-      let slidesPerGroup = 1;
-      let spaceBetween = 0;
+    const [originalWidth] = swiper.slidesSizesGrid as number[];
 
-      const currentBreakpoint =
-        swiper.params.breakpoints[swiper.currentBreakpoint];
+    let spaceBetween = 0;
+    let slidesPerGroup = 1;
 
-      spaceBetween =
-        currentBreakpoint.spaceBetween || swiper.params.spaceBetween;
-      slidesPerGroup =
-        currentBreakpoint.slidesPerGroup || swiper.params.slidesPerGroup;
+    const currentBreakpoint =
+      swiper.params.breakpoints[swiper.currentBreakpoint];
 
-      const shouldPushSlide =
-        nonPlaceholderSlides.length - (HOVER_WIDTH - 1) >= slidesPerGroup &&
-        (lastVisibleCardIndex - (HOVER_WIDTH - 1) < index ||
-          lastVisibleCardIndex === index);
+    spaceBetween = currentBreakpoint.spaceBetween || swiper.params.spaceBetween;
+    slidesPerGroup =
+      currentBreakpoint.slidesPerGroup || swiper.params.slidesPerGroup;
 
-      if (shouldPushSlide) {
-        if (!nextSlide) {
-          // Add a placeholder slide to push current slide to the left
-          const element = document.createElement("div");
-          element.className = "swiper-slide swiper-placeholder";
-          swiper.updateSlides();
-        }
+    const { first: firstVisibleCardIndex, last: lastVisibleCardIndex } =
+      getVisibleIndex(swiper);
 
-        const newTranslate =
-          -1 *
-          ((firstVisibleCardIndex + HOVER_WIDTH - 1) *
-            (originalWidth + spaceBetween));
+    console.log(firstVisibleCardIndex, lastVisibleCardIndex);
+    setLastVisible(lastVisibleCardIndex);
 
-        swiper.setTransition(300);
-        swiper.setTranslate(newTranslate);
+    const nonPlaceholderSlides = swiper.slides.filter(
+      (slide: any) => !slide.classList.contains("swiper-placeholder")
+    );
+
+    console.log(nonPlaceholderSlides.length);
+
+    const shouldPushSlide =
+      nonPlaceholderSlides.length - (HOVER_WIDTH - 1) >= slidesPerGroup &&
+      (lastVisibleCardIndex - (HOVER_WIDTH - 1) < index ||
+        lastVisibleCardIndex === index);
+
+    if (shouldPushSlide) {
+      console.log("push");
+      if (!nextSlide) {
+        const element = document.createElement("div");
+        console.log("add");
+        element.className = "swiper-slide swiper-placeholder";
+
+        swiper.$wrapperEl?.[0].append(element);
+        swiper.updateSlides();
       }
-      setActiveIndex(index);
 
-      const newWidth = slide.clientWidth * HOVER_WIDTH;
-      slide.style.transition = "width 0.3s";
-      slide.style.width = `${originalWidth * HOVER_WIDTH - 1 + spaceBetween}px`;
-      slide.style.width = `${newWidth}px`;
-      slide?.classList?.add("swiper-animating");
-    }, DEBOUNCE_DELAY);
-    setHoverTimeout(timeout);
+      const newTranslate =
+        -1 *
+        ((firstVisibleCardIndex + HOVER_WIDTH - 1) *
+          (originalWidth + spaceBetween));
+
+      swiper.setTransition(300);
+      swiper.setTranslate(newTranslate);
+    }
+    setActiveIndex(index);
+
+    slide.style.transition = "width 0.3s";
+    slide.style.width = `${originalWidth * HOVER_WIDTH - 1 + spaceBetween}px`;
+    // slide.style.width = `${newWidth}px`;
+    slide?.classList?.add("swiper-animating");
   };
 
   const handleSlideLeave = (index: number) => () => {
     if (!swiper) return;
 
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-    }
-    const slide = swiper.slides[index];
-    const nextSlide = swiper.slides[index + 1];
+    const slide = swiper.slides[index] as HTMLElement;
+    const nextSlide = swiper.slides[index + 1] as HTMLElement;
     const [originalWidth] = swiper.slidesSizesGrid as number[];
 
-    setTimeout(() => {
-      const { first: firstVisibleCardIndex } = getVisibleIndex(swiper);
+    slide.style.width = `${originalWidth}px`;
 
-      let spaceBetween = 0;
-      let slidesPerGroup = 1;
+    let spaceBetween = 0;
+    let slidesPerGroup = 1;
 
-      const revertTranslate = () => {
-        const minTranslate = swiper.minTranslate();
-        const maxTranslate = swiper.maxTranslate();
+    const currentBreakpoint =
+      swiper.originalParams.breakpoints[swiper.currentBreakpoint];
 
-        let newTranslate =
-          -1 *
-          ((firstVisibleCardIndex - (HOVER_WIDTH - 1)) *
-            (originalWidth + spaceBetween));
+    spaceBetween =
+      currentBreakpoint.spaceBetween || swiper.originalParams.spaceBetween;
+    slidesPerGroup =
+      currentBreakpoint.slidesPerGroup || swiper.originalParams.slidesPerGroup;
 
-        if (newTranslate > minTranslate) newTranslate = minTranslate;
-        else if (newTranslate < maxTranslate) newTranslate = maxTranslate;
+    const isAnimating = slide.classList.contains("swiper-animating");
 
-        swiper.setTransition(300);
-        swiper.setTranslate(newTranslate);
-      };
+    console.log(spaceBetween, slidesPerGroup);
 
-      const nonPlaceholderSlides = swiper.slides.filter(
-        (slide: any) => !slide.classList.contains("swiper-placeholder")
-      );
+    if (!isAnimating) return;
 
-      if (nonPlaceholderSlides.length <= slidesPerGroup) {
-        if (
-          index === nonPlaceholderSlides.length - 1 ||
-          index >= nonPlaceholderSlides.length - (HOVER_WIDTH - 1)
-        ) {
-          revertTranslate();
-        }
-      } else if (
-        index === slidesPerGroup * (swiper.snapIndex + 1) - 1 ||
-        index >= slidesPerGroup * (swiper.snapIndex + 1) - (HOVER_WIDTH - 1)
+    const { first: firstVisibleCardIndex } = getVisibleIndex(swiper);
+
+    const revertTranslate = () => {
+      const minTranslate = swiper.minTranslate();
+      const maxTranslate = swiper.maxTranslate();
+
+      let newTranslate =
+        -1 *
+        ((firstVisibleCardIndex - (HOVER_WIDTH - 1)) *
+          (originalWidth + spaceBetween));
+
+      if (newTranslate > minTranslate) newTranslate = minTranslate;
+      else if (newTranslate < maxTranslate) newTranslate = maxTranslate;
+
+      swiper.setTransition(300);
+      swiper.setTranslate(newTranslate);
+    };
+
+    const nonPlaceholderSlides = swiper.slides.filter(
+      (slide: any) => !slide.classList.contains("swiper-placeholder")
+    );
+
+    const shouldPushSlide =
+      nonPlaceholderSlides.length - (HOVER_WIDTH - 1) >= slidesPerGroup &&
+      (lastVisible - (HOVER_WIDTH - 1) < index || lastVisible === index);
+
+    if (nonPlaceholderSlides.length <= slidesPerGroup) {
+      if (
+        index === nonPlaceholderSlides.length - 1 ||
+        index >= nonPlaceholderSlides.length - (HOVER_WIDTH - 1)
       ) {
+        console.log(index);
+
         revertTranslate();
-      } else if (index > slidesPerGroup) {
-        if (
-          index === nonPlaceholderSlides.length - 1 ||
-          index >= nonPlaceholderSlides.length - (HOVER_WIDTH - 1)
-        ) {
-          revertTranslate();
-        }
       }
+    } else if (
+      shouldPushSlide
+      // (nonPlaceholderSlides.length - (HOVER_WIDTH - 1) >= slidesPerGroup &&
+      //   (lastVisibleCardIndex - (HOVER_WIDTH - 1) < index ||
+      //     lastVisibleCardIndex === index)) ||
+      // index === slidesPerGroup * (swiper.snapIndex + 1) - 1 ||
+      // index >= slidesPerGroup * (swiper.snapIndex + 1) - (HOVER_WIDTH - 1)
+    ) {
+      console.log("chamado");
+      revertTranslate();
+    } else if (index > slidesPerGroup) {
+      if (
+        index === nonPlaceholderSlides.length - 1 ||
+        index >= nonPlaceholderSlides.length - (HOVER_WIDTH - 1)
+      ) {
+        console.log(index);
 
-      if (nextSlide?.classList.contains("swiper-placeholder")) {
-        swiper.slides.eq(swiper.slides.length - 1).remove();
-        swiper.update();
+        revertTranslate();
       }
+    }
 
-      slide.style.width = `${originalWidth}px`;
-      setActiveIndex(null);
-    }, DEBOUNCE_DELAY);
+    slide.classList.remove("swiper-animating");
+
+    if (nextSlide?.classList.contains("swiper-placeholder")) {
+      console.log("remove");
+      swiper.slides.eq(swiper.slides.length - 1).remove();
+      swiper.update();
+    }
+
+    setActiveIndex(null);
   };
 
   return (
@@ -194,16 +219,31 @@ const CardCarousel: React.FC<CardSwiperProps> = ({ title, data }: any) => {
           },
         }}
       >
-        {data?.map((item: any, index: any) => (
-          <SwiperSlide
-            key={index}
-            className="slidex"
-            onMouseEnter={handleSlideHover(index)}
-            onMouseLeave={handleSlideLeave(index)}
-          >
-            <SwiperCard isExpanded={activeIndex === index} data={item} />
-          </SwiperSlide>
-        ))}
+        {data.map((item: any, index: any) => {
+          let debounceTimeout: any = null;
+
+          const debounce = (fn: (...args: any[]) => void, wait: number) => {
+            return (...args: any[]) => {
+              const later = () => {
+                debounceTimeout = null;
+                fn(...args);
+              };
+
+              clearTimeout(debounceTimeout);
+              debounceTimeout = setTimeout(later, wait);
+            };
+          };
+
+          return (
+            <SwiperSlide
+              onMouseEnter={debounce(handleSlideHover(index), 200)}
+              onMouseLeave={debounce(handleSlideLeave(index), 200)}
+              key={index}
+            >
+              <SwiperCard isExpanded={activeIndex === index} data={item} />
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );

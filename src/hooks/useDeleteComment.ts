@@ -10,7 +10,7 @@ const useDeleteComment: any = () => {
       console.log(payload);
       try {
         const response = await fetch(
-          `http://localhost:8000/comments/${payload}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/comments/${payload}`,
           {
             method: "DELETE",
             headers: {

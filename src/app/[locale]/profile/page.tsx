@@ -36,27 +36,26 @@ export default function Profile() {
 
   const session: any = data;
   const accessToken = Cookies.get("accessToken");
+  console.log(accessToken);
 
   useEffect(() => {
     async function fetchData() {
+      console.log(session?.user?.id);
       try {
-        const response = await api.get(
-          "/user/f5abec2a-446f-483f-9a43-52adb00cd3cc",
-          {
-            headers: {
-              authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const response = await api.get(`/user/${session.user.user.id}`, {
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+          },
+        });
         const responseData = response.data;
         setExample(responseData);
       } catch (error) {
-        console.error("Erro ao fazer a requisição:", error);
+        console.log("Erro ao fazer a requisição:", error);
       }
     }
 
     fetchData();
-  }, [accessToken]);
+  }, [accessToken, session?.user]);
 
   console.log(example);
 
@@ -93,7 +92,7 @@ export default function Profile() {
         <div className="relative flex flex-col md:flex-row gap-8">
           <div className="border-4 border-background-800 relative rounded-full w-32 h-32 md:w-44 md:h-44">
             <Avatar
-              src={session?.user?.image}
+              src={example?.profilePicture}
               className="mx-auto !w-full !h-full"
             />
             {/* {isOwnProfile && <UpdateAvatar user={user} />} */}

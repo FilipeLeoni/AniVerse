@@ -35,14 +35,21 @@ const containerVariants: Variants = {
       staggerChildren: 0.1,
     },
   },
-  exit: {},
+
+  test: {
+    opacity: 0,
+    transition: { delay: 0.1, ease: "easeInOut", duration: 0.4 },
+  },
+  exit: { opacity: 1 },
 };
 
 const slotVariants: Variants = {
+  initial: { opacity: 0 },
   animate: {
     opacity: 0,
+    transition: { type: "tween", duration: 0.3, delay: 0.3 },
   },
-  exit: { opacity: 1 },
+  exit: { opacity: 1, transition: { ease: "easeInOut", duration: 0.3 } },
 };
 
 const Card: React.FC<AnimeCardProps> = (props) => {
@@ -79,144 +86,144 @@ const Card: React.FC<AnimeCardProps> = (props) => {
   }, []);
 
   const formattedTime = formatTimeDifference(data?.nextAiringEpisode?.airingAt);
+  const hasBannerImage = !!data?.bannerImage;
 
   return (
     <Link href={redirectUrl}>
       <motion.div
         ref={containerRef}
-        variants={containerVariants}
         whileHover={isDesktop ? "animate" : ""}
         animate="exit"
         initial="exit"
       >
         <motion.div
           className={classNames(
-            "transition duration-300 relative cursor-pointer bg-background-900, w-full overflow-hidden",
+            "transition duration-300 relative cursor-pointer bg-background-900, w-full overflow-hidden group",
             className
           )}
           style={{ height: cardSize.height }}
           initial={false}
         >
-          <AnimatePresence>
-            {!isExpanded ? (
-              <div>
+          <div>
+            <AnimatePresence>
+              {isDesktop && (
                 <motion.div
-                  key={data?.coverImage?.extraLarge}
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                  }}
-                  exit={{
-                    opacity: 0,
-                  }}
-                  className="absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full"
-                >
-                  <div className=" w-full h-auto">
-                    <Image
-                      src={data?.coverImage?.extraLarge || ""}
-                      fill
-                      style={{ objectFit: "cover" }}
-                      alt={title as string}
-                    />
-                  </div>
-
-                  {data?.nextAiringEpisode && (
-                    <div className="inset-0 flex flex-col justify-end">
-                      <p className="ml-2 mb-1 py-0.5 px-1 bg-background-700 rounded-md absolute line-clamp-1">
-                        EP {data?.nextAiringEpisode?.episode}: {formattedTime}
-                      </p>
-                    </div>
+                  key={data.bannerImage || data.coverImage?.extraLarge}
+                  className={classNames(
+                    "absolute h-full w-full border-red-500 overflow-hidden transition-all",
+                    isExpanded && !hasBannerImage ? "z-20" : "",
+                    isExpanded ? " opacity-100" : "opacity-0"
                   )}
-                </motion.div>
-              </div>
-            ) : (
-              <div
-                key={data.bannerImage || data.coverImage?.extraLarge}
-                className="absolute h-full w-full border-red-500 overflow-hidden"
-              >
-                <div
-                  className="h-full w-full transition-width"
-                  style={{
-                    width: isExpanded ? "100%" : "auto",
-                    overflow: "hidden",
-                  }}
                 >
-                  <Image
-                    src={
-                      (data.bannerImage as string) ||
-                      (data.coverImage?.extraLarge as string)
-                    }
-                    fill
-                    style={{ objectFit: "cover" }}
-                    className="rounded-sm"
-                    alt={title as string}
-                  />
-                </div>
-                <div className="absolute inset-0 bg-black/60"></div>
-                <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                  <p
-                    className="text-2xl mb-3 font-semibold line-clamp-2"
-                    style={{ color: primaryColor }}
+                  <div
+                    className="h-full w-full transition-all"
+                    style={{
+                      width: isExpanded ? "100%" : "auto",
+                    }}
                   >
-                    {title}
-                  </p>
-
-                  <Description
-                    description={data?.description || ""}
-                    className="text-gray-300 hover:text-gray-100 transition duration-300 line-clamp-5 mb-2"
-                  />
-
-                  <DotList className="mb-2">
-                    {data.genres?.map((genre: any) => (
-                      <span
-                        className="text-sm font-semibold"
-                        style={{
-                          color: primaryColor,
-                        }}
-                        key={genre}
-                      >
-                        {convert(genre, "genre", { locale: locale })}
-                      </span>
-                    ))}
-                  </DotList>
-
-                  <motion.div className="relative z-50 flex items-center space-x-2">
-                    {data.averageScore && (
-                      <TextIcon
-                        LeftIcon={MdTagFaces}
-                        iconClassName="text-green-300"
-                      >
-                        <p>{data.averageScore}%</p>
-                      </TextIcon>
+                    {hasBannerImage && (
+                      <Image
+                        src={data.bannerImage as string}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="rounded-sm"
+                        alt={title as string}
+                      />
                     )}
-
-                    <TextIcon
-                      LeftIcon={AiFillHeart}
-                      iconClassName="text-red-400"
+                  </div>
+                  <div className="absolute inset-0 bg-black/60"></div>
+                  <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                    <p
+                      className="text-2xl mb-3 font-semibold line-clamp-2"
+                      style={{ color: primaryColor }}
                     >
-                      <p>{numberWithCommas(data.favourites)}</p>
-                    </TextIcon>
-                  </motion.div>
+                      {title}
+                    </p>
 
-                  <motion.div
-                    className="mt-4"
-                    transition={{ duration: 0.1 }}
-                    variants={slotVariants}
-                  >
-                    {containerEndSlot}
-                  </motion.div>
-                </div>
+                    <Description
+                      description={data?.description || ""}
+                      className="text-gray-300 hover:text-gray-100 transition duration-300 line-clamp-5 mb-2"
+                    />
+
+                    <DotList className="mb-2">
+                      {data.genres?.map((genre: any) => (
+                        <span
+                          className="text-sm font-semibold"
+                          style={{
+                            color: primaryColor,
+                          }}
+                          key={genre}
+                        >
+                          {convert(genre, "genre", { locale: locale })}
+                        </span>
+                      ))}
+                    </DotList>
+
+                    <motion.div className="relative z-50 flex items-center space-x-2">
+                      {data.averageScore && (
+                        <TextIcon
+                          LeftIcon={MdTagFaces}
+                          iconClassName="text-green-300"
+                        >
+                          <p>{data.averageScore}%</p>
+                        </TextIcon>
+                      )}
+
+                      <TextIcon
+                        LeftIcon={AiFillHeart}
+                        iconClassName="text-red-400"
+                      >
+                        <p>{numberWithCommas(data.favourites)}</p>
+                      </TextIcon>
+                    </motion.div>
+
+                    <motion.div
+                      className="mt-4"
+                      transition={{ duration: 1 }}
+                      variants={slotVariants}
+                    >
+                      {containerEndSlot}
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.div
+              key={data?.coverImage?.extraLarge}
+              transition={{ duration: 1 }}
+              variants={hasBannerImage ? slotVariants : {}}
+              className={classNames(
+                "absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full transition-all",
+                isExpanded ? "z-0" : "z-20"
+              )}
+            >
+              <div className=" w-full h-auto">
+                <Image
+                  src={data?.coverImage?.extraLarge || ""}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  alt={title as string}
+                />
               </div>
-            )}
-          </AnimatePresence>
+
+              {data?.nextAiringEpisode && (
+                <div className="inset-0 flex flex-col justify-end">
+                  <p className="ml-2 mb-1 py-0.5 px-1 bg-background-700 rounded-md absolute line-clamp-1">
+                    EP {data?.nextAiringEpisode?.episode}: {formattedTime}
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          </div>
         </motion.div>
+        <motion.p
+          whileHover={isDesktop ? "test" : ""}
+          className="mt-2 text-base font-semibold line-clamp-2"
+          style={{ color: primaryColor }}
+        >
+          {title}
+        </motion.p>
       </motion.div>
-      <p
-        className="mt-2 text-base font-semibold line-clamp-2"
-        style={{ color: primaryColor }}
-      >
-        {title}
-      </p>
     </Link>
   );
 };

@@ -18,7 +18,7 @@ const useComments = (query: any) => {
     queryFn: async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/comments/anime/${animeId}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/comments/anime/${animeId}`,
           {
             method: "GET",
             headers: {

@@ -100,7 +100,7 @@ const Card: React.FC<any> = (props) => {
             )}
           >
             <Image
-              src={data?.coverImage as string}
+              src={data?.coverImage.extraLarge as string}
               fill
               className="rounded-sm object-cover"
               alt={title}

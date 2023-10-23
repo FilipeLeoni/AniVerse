@@ -393,18 +393,18 @@ export function formatTimeDifference(timestamp: any) {
 // };
 
 // // https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
-// export const humanFileSize = (size: number) => {
-//   if (size === 0) return "0 KB";
+export const humanFileSize = (size: number) => {
+  if (size === 0) return "0 KB";
 
-//   const i = Math.floor(Math.log(size) / Math.log(1024));
+  const i = Math.floor(Math.log(size) / Math.log(1024));
 
-//   // @ts-ignore
-//   const convertedNumber = (size / Math.pow(1024, i)).toFixed(2) * 1;
-//   const units = ["B", "KB", "MB", "GB", "TB"];
-//   const unit = units[i];
+  // @ts-ignore
+  const convertedNumber = (size / Math.pow(1024, i)).toFixed(2) * 1;
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const unit = units[i];
 
-//   return `${convertedNumber} ${unit}`;
-// };
+  return `${convertedNumber} ${unit}`;
+};
 
 // // https://stackoverflow.com/questions/6860853/generate-random-string-for-div-id
 export const randomString = (length: number) => {
@@ -423,19 +423,19 @@ export const randomString = (length: number) => {
   return str;
 };
 
-// export const createFileFromUrl = async (url: string, filename: string) => {
-//   const { data } = await axios.get<Blob>(url, { responseType: "blob" });
+export const createFileFromUrl = async (url: string, filename: string) => {
+  const { data } = await axios.get<Blob>(url, { responseType: "blob" });
 
-//   const extension = url.split(".").pop();
+  const extension = url.split(".").pop();
 
-//   const metadata = {
-//     type: mime.getType(extension) || "text/plain",
-//   };
+  const metadata = {
+    type: mime.getType(extension) || "text/plain",
+  };
 
-//   const file = new File([data], filename, metadata);
+  const file = new File([data], filename, metadata);
 
-//   return file;
-// };
+  return file;
+};
 
 // export const createProxyUrl = (
 //   url: string,

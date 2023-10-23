@@ -2,8 +2,7 @@
 
 import Button from "@/components/shared/Button";
 import Drawer, { DrawerRef } from "@/components/shared/Drawer";
-// import HeaderProfile from "@/components/shared/HeaderProfile";
-// import Logo from "@/components/shared/Logo";
+
 import NavItem from "@/components/shared/NavItem";
 import { DISCORD_URL, FACEBOOK_URL } from "@/constants";
 import classNames from "classnames";
@@ -12,11 +11,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiFillFacebook, AiOutlineSearch } from "react-icons/ai";
 import { FaDiscord } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
-// import LanguageSwitcher from "../shared/LanguageSwitcher";
 import Section from "../shared/Section";
 import { useTranslations } from "next-intl";
 import { signOut, useSession } from "next-auth/react";
 import Cookies from "js-cookie";
+import { usePathname } from "next/navigation";
+import Logo from "../shared/Logo";
 
 const routes = [
   {
@@ -45,6 +45,7 @@ const Header = () => {
   const [isTop, setIsTop] = useState(true);
   const drawerRef = useRef<any>();
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,6 +63,11 @@ const Header = () => {
     Cookies.remove("refreshToken");
   }
 
+  const showHeader =
+    pathname.startsWith("/panel/") || pathname.startsWith("/panel/")
+      ? false
+      : true;
+
   return (
     <nav>
       <Section
@@ -69,7 +75,8 @@ const Header = () => {
           "px-4 md:px-12 flex items-center h-16 fixed top w-full z-50 transition duration-500 text-white",
           !isTop
             ? "bg-background"
-            : "bg-gradient-to-b from-black/80 via-black/60 to-transparent"
+            : "bg-gradient-to-b from-black/80 via-black/60 to-transparent",
+          showHeader ? "flex" : "hidden"
         )}
       >
         <Drawer
@@ -79,11 +86,11 @@ const Header = () => {
           button={<GiHamburgerMenu className="w-6 h-6" />}
         >
           <div>
-            <div>AniVerse</div>
+            <Logo />
 
             <div className="space-y-2">
               {routes.map((route) => (
-                <div onClick={drawerRef.current?.close} key={route.href}>
+                <div onClick={drawerRef.current?.close()} key={route.href}>
                   <NavItem className="block" href={route.href}>
                     {({ isActive }: any) => (
                       <p
@@ -113,7 +120,11 @@ const Header = () => {
 
         <div className="relative h-2/3 w-10 mr-8">
           <NavItem href="/">
-            {() => <div className="!w-full !h-full pt-2">AniVerse</div>}
+            {() => (
+              <div className="!w-full !h-full pt-2">
+                <Logo className="!w-full !h-full" />
+              </div>
+            )}
           </NavItem>
         </div>
 
