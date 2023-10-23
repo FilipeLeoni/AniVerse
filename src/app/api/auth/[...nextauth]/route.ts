@@ -29,14 +29,14 @@ const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      return { ...token, ...user };
+    async jwt({ token }) {
+      return token;
     },
     async session({ session, token, account }: any) {
-      console.log(session, token, account);
       if (session) {
         const { email, name, image } = token;
         const provider = account?.provider;
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
           {
@@ -59,6 +59,7 @@ const authOptions: NextAuthOptions = {
         cookies().set("refreshToken", userData.backendTokens.refreshToken);
         token.accessToken = userData.backendTokens.accessToken;
         token.accessToken = userData.backendTokens.refreshToken;
+
       }
       if (token) {
         const expiration = getExpirationFromToken(token.accessToken);
