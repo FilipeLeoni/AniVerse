@@ -1,9 +1,11 @@
 // import { Attachment, uploadFile } from "@/services/upload";
 // import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-// import { useMutation } from "react-query";
 // import { toast } from "react-toastify";
 
-const useUpdateFonts = (episodeSlug: string) => {
+import { useMutation } from "@tanstack/react-query";
+
+const useUpdateFonts: any = (episodeSlug: string) => {
+  return useMutation({});
   // const id = "update-fonts-id";
   // return useMutation<Attachment[], Error, File[]>(
   //   async (fonts) => {

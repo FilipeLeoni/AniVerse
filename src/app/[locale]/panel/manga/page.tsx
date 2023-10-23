@@ -108,17 +108,6 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(0);
 
-  const queryClient = useQueryClient();
-
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ["MangaAdded"],
-  //   queryFn: async () => {
-  //     const response = await getTrendingMedia("MANGA");
-  //     console.log(response.data);
-  //     return response.data.Page;
-  //   },
-  // });
-
   const api = useApi();
 
   const { data, isLoading } = useQuery({
@@ -129,34 +118,6 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
       return response;
     },
   });
-
-  console.log(data);
-
-  // const { data, isLoading } = useQuery<any>({
-  //   queryKey: ["test"],
-  //   queryFn: async () => {
-  //     if (keyword !== "") {
-  //       const response = await searchData(keyword);
-  //       return response.data;
-  //     } else {
-  //       const response = await getTrendingMedia();
-  //       return response.data;
-  //     }
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   const options = {
-  //     type: MediaType.Anime,
-  //     page: pageIndex + 2,
-  //     perPage: pageSize,
-  //     sourceId,
-  //   };
-
-  //   queryClient.prefetchQuery(["uploaded-media", { options }], () =>
-  //     getUploadedMedia(options)
-  //   );
-  // }, [pageIndex, pageSize, queryClient, sourceId]);
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
@@ -171,7 +132,7 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
       <div className="flex justify-between mb-5">
         <h1 className="font-semibold text-2xl">UPLOADED MANGA LIST</h1>
         <Button primary>
-          <Link href="/upload/anime/create">Search Manga</Link>
+          <Link href="/panel/manga/chapters">Search Manga</Link>
         </Button>
       </div>
 
@@ -189,7 +150,7 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
         />
       ) : (
         <h1 className="text-3xl text-center">
-          Você ainda não postou nenhum manga
+          You haven&apos;t uploaded any manga yet
         </h1>
       )}
     </UploadContainer>

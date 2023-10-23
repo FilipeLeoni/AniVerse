@@ -118,12 +118,9 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
         pageIndex + 1,
         pageSize
       );
-      console.log(response);
       return response;
     },
   });
-
-  console.log(pageIndex);
 
   async function searchData() {
     try {
@@ -144,37 +141,9 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
       return data;
     } catch (error) {
       console.error("Erro na solicitação:", error);
-      throw error; // Rejeita a promessa para que o erro possa ser tratado mais adiante
+      throw error;
     }
   }
-
-  console.log(data);
-
-  // const { data, isLoading } = useQuery<any>({
-  //   queryKey: ["test"],
-  //   queryFn: async () => {
-  //     if (keyword !== "") {
-  //       const response = await searchData(keyword);
-  //       return response.data;
-  //     } else {
-  //       const response = await getTrendingMedia();
-  //       return response.data;
-  //     }
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   const options = {
-  //     type: MediaType.Anime,
-  //     page: pageIndex + 2,
-  //     perPage: pageSize,
-  //     sourceId,
-  //   };
-
-  //   queryClient.prefetchQuery(["uploaded-media", { options }], () =>
-  //     getUploadedMedia(options)
-  //   );
-  // }, [pageIndex, pageSize, queryClient, sourceId]);
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
@@ -210,7 +179,7 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
         />
       ) : (
         <h1 className="text-3xl text-center">
-          You haven&apos;t posted any anime yet
+          You haven&apos;t uploaded any anime yet
         </h1>
       )}
     </UploadContainer>

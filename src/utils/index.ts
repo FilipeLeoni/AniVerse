@@ -15,6 +15,7 @@
 // import { toast } from "react-toastify";
 
 import { Media, MediaSeason, MediaType, Studio } from "@/@types/anilist";
+import axios from "axios";
 import { differenceInMilliseconds, formatDistanceToNow } from "date-fns";
 import dayjs from "dayjs";
 
@@ -428,11 +429,11 @@ export const createFileFromUrl = async (url: string, filename: string) => {
 
   const extension = url.split(".").pop();
 
-  const metadata = {
-    type: mime.getType(extension) || "text/plain",
-  };
+  // const metadata = {
+  //   type: mime.getType(extension) || "text/plain",
+  // };
 
-  const file = new File([data], filename, metadata);
+  const file = new File([data], filename);
 
   return file;
 };

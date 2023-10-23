@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { redirect } from "next-intl/server";
 import { useSession } from "next-auth/react";
 
-import api from "@/utils/api";
+import { Api } from "@/utils/api";
 import Cookies from "js-cookie";
 import DetailsBanner from "@/components/shared/DetailsBanner";
 import Image from "next/image";
@@ -15,6 +15,7 @@ import Section from "@/components/shared/Section";
 import Avatar from "@/components/shared/Avatar";
 import Description from "@/components/shared/Description";
 import classNames from "classnames";
+import { useApi } from "@/hooks/useApi";
 
 const LISTS = {
   Watch: "Watch",
@@ -42,7 +43,7 @@ export default function Profile() {
     async function fetchData() {
       console.log(session?.user?.id);
       try {
-        const response = await api.get(`/user/${session.user.user.id}`, {
+        const response = await Api.get(`/user/${session.user.user.id}`, {
           headers: {
             authorization: `Bearer ${accessToken}`,
           },
