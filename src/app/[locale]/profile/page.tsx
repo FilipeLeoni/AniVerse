@@ -85,8 +85,6 @@ export default function Profile() {
 
             <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-black to-transparent"></div>
           </div>
-
-          {/* {session && <UpdateBanner user={userProfile} />} */}
         </Section>
       </div>
       <Section className="bg-background-800 pb-8 -mt-16 flex flex-col md:flex-row gap-4 md:items-center justify-between pt-6 w-full">
@@ -96,7 +94,6 @@ export default function Profile() {
               src={example?.profilePicture}
               className="mx-auto !w-full !h-full"
             />
-            {/* {isOwnProfile && <UpdateAvatar user={user} />} */}
           </div>
 
           <div className="md:pt-16 space-y-2">
@@ -116,12 +113,6 @@ export default function Profile() {
             />
           </div>
         </div>
-
-        {/* {isOwnProfile && (
-            <div>
-              <EditProfileModal user={userProfile} />
-            </div>
-          )} */}
       </Section>
 
       <Section title="List" className="mt-8 w-full">

@@ -59,4 +59,31 @@ export const useApi = () => ({
       console.log(error);
     }
   },
+
+  getWatchList: async (
+    userId: string,
+    page: number,
+    perPage: number,
+    status: string = ""
+  ) => {
+    try {
+      const response = await Api.get(
+        `/user/${userId}/watchlist?page=${page}&perPage=${perPage}&status=${status}`
+      );
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getStatusById: async (userId: string, animeId: number) => {
+    try {
+      const response = await Api.get(`/user/${userId}/watchlist/${animeId}`);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 });

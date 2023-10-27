@@ -79,6 +79,10 @@ export function numberWithCommas(x: any) {
   return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+export const formatStatusText = (text: string) => {
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+};
+
 // export function parseTime(seconds: string | number) {
 //   seconds = seconds.toString();
 //   let minutes = Math.floor(Number(seconds) / 60).toString();
@@ -120,15 +124,15 @@ export const chunk = <T>(arr: T[], chunkSize: number): T[][] => {
 //   return array.some((element) => text.includes(element));
 // };
 
-// export const getPagination = (page?: number, limit: number = 15) => {
-//   const from = page - 1 > 0 ? limit * (page - 1) + 1 : 0;
-//   const to = page - 1 > 0 ? from + limit : limit;
+export const getPagination = (page: number, limit: number = 15) => {
+  const from = page - 1 > 0 ? limit * (page - 1) + 1 : 0;
+  const to = page - 1 > 0 ? from + limit : limit;
 
-//   return {
-//     from,
-//     to: to - 1,
-//   };
-// };
+  return {
+    from,
+    to: to - 1,
+  };
+};
 
 export const getSeason = () => {
   const month = dayjs().month();

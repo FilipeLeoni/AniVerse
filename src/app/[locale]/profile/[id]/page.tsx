@@ -19,6 +19,7 @@ import Loading from "@/components/shared/Loading";
 import EditProfileModal from "@/components/features/users/EditProfileModal";
 import UpdateBanner from "@/components/features/users/UpdateBanner";
 import UpdateAvatar from "@/components/features/users/UpdateAvatar";
+import WatchList from "@/components/features/users/WatchList";
 
 const LISTS = {
   Watch: "Watch",
@@ -118,7 +119,7 @@ export default function Profile({ params }: { params: { id: string } }) {
         <div className="flex items-center gap-3">
           <Button
             className={classNames(
-              listTab === LISTS.Watch ? "bg-primary-600" : "bg-background-600"
+              listTab === LISTS.Watch ? "!bg-primary-600" : "!bg-background-600"
             )}
             onClick={handleListTabChange(LISTS.Watch)}
           >
@@ -126,7 +127,7 @@ export default function Profile({ params }: { params: { id: string } }) {
           </Button>
           <Button
             className={classNames(
-              listTab === LISTS.Read ? "bg-primary-600" : "bg-background-600"
+              listTab === LISTS.Read ? "!bg-primary-600" : "!bg-background-600"
             )}
             onClick={handleListTabChange(LISTS.Read)}
           >
@@ -134,13 +135,14 @@ export default function Profile({ params }: { params: { id: string } }) {
           </Button>
         </div>
 
-        {/* <div className="mt-8">
-            {listTab === LISTS.Watch ? (
-              <WatchList user={user} />
-            ) : (
-              <ReadList user={user} />
-            )}
-          </div> */}
+        <div className="mt-8 pb-20">
+          {listTab === LISTS.Watch ? (
+            <WatchList user={user} />
+          ) : (
+            <div>dd</div>
+            // <ReadList user={user} />
+          )}
+        </div>
       </Section>
     </div>
   );

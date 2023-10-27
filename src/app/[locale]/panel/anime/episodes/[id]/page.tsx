@@ -15,7 +15,6 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 export default function Params({ params }: { params: { id: number } }) {
   const api = useApi();
   const mediaId = params.id;
-  console.log(mediaId);
   const { data: anime, isLoading: mediaLoading } = useQuery<any>({
     queryKey: ["EpisodeAnime", mediaId],
     queryFn: async () => {
