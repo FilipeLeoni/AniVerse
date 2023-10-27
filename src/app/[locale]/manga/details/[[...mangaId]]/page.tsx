@@ -1,3 +1,4 @@
+import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
 import CharacterConnectionCard from "@/components/shared/CharacterConnectionCard";
@@ -47,13 +48,15 @@ export default async function DetailsPage({
         <div className="flex flex-row md:space-x-8">
           <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6">
             <PlainCard src={data?.Media?.coverImage?.extraLarge} alt={"Test"} />
-            <Button
+            {/* <Button
               primary
               className="gap-4 w-full justify-center md:flex hidden"
             >
               <BsPlusCircleFill size={22} />
               Add to list
-            </Button>
+            </Button> */}
+
+            <AddToListDropdown mediaId={2} type="MANGA" />
           </div>
 
           <div className="flex flex-col justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-4">

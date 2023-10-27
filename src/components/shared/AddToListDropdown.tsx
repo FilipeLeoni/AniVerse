@@ -11,22 +11,31 @@ import { AiFillCheckCircle } from "react-icons/ai";
 import { formatStatusText } from "@/utils";
 
 export default function AddToListDropdown(props: any) {
-  const { animeId } = props;
+  const { mediaId, type } = props;
   const [selected, setSelected] = useState("");
-  const options = ["PLANNING", "WATCHING", "COMPLETED"];
   const { data: session } = useSession();
+
+  const options = [
+    type === "MANGA" ? "READING" : "WATCHING",
+    "PLANNING",
+    "COMPLETED",
+  ];
 
   const userId: any = session?.user?.id;
 
   const api = useApi();
   const { data: status } = useQuery({
-    queryKey: ["watchlistButton", animeId, userId],
+    queryKey: ["watchlistButton", mediaId, userId],
     queryFn: async () => {
-      const res = await api.getStatusById(userId, animeId);
+      const res = await api.getStatusById(userId, mediaId, type);
       setSelected(res.status);
       return res;
     },
   });
+
+  console.log(status);
+  console.log(mediaId);
+  console.log(type);
 
   const { mutate: updateWatchList } = useUpdateWatchlist();
 
@@ -36,7 +45,8 @@ export default function AddToListDropdown(props: any) {
     }
     updateWatchList({
       status,
-      animeId: 1,
+      mediaId: 1,
+      type: type,
     });
   };
 

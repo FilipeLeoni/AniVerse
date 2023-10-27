@@ -26,6 +26,7 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
+    isFetching,
   } = useWatchList(activeTab, user);
 
   const handleFetch = () => {
@@ -33,6 +34,11 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
 
     fetchNextPage();
   };
+
+  console.log(isFetchingNextPage);
+  console.log(isFetching);
+
+  console.log(hasNextPage);
 
   const handleChangeTab: any = (status: Status) => () => {
     setActiveTab(status);
@@ -165,12 +171,6 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
                 );
               }}
             </List>
-
-            {isFetchingNextPage && !isError && (
-              <div className="mt-4">
-                <ListSkeleton />
-              </div>
-            )}
 
             {((totalData?.length && !isFetchingNextPage) || hasNextPage) && (
               <InView onInView={handleFetch} />

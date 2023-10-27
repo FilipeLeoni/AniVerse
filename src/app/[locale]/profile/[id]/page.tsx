@@ -20,6 +20,7 @@ import EditProfileModal from "@/components/features/users/EditProfileModal";
 import UpdateBanner from "@/components/features/users/UpdateBanner";
 import UpdateAvatar from "@/components/features/users/UpdateAvatar";
 import WatchList from "@/components/features/users/WatchList";
+import ReadList from "@/components/features/users/ReadList";
 
 const LISTS = {
   Watch: "Watch",
@@ -64,7 +65,6 @@ export default function Profile({ params }: { params: { id: string } }) {
         <Section className="px-0 overflow-hidden relative mx-auto w-full h-[200px] md:h-[400px]">
           <div className="relative w-full h-full">
             {user ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <Image
                 src={user?.bannerPicture || test}
                 fill
@@ -139,8 +139,7 @@ export default function Profile({ params }: { params: { id: string } }) {
           {listTab === LISTS.Watch ? (
             <WatchList user={user} />
           ) : (
-            <div>dd</div>
-            // <ReadList user={user} />
+            <ReadList user={user} />
           )}
         </div>
       </Section>

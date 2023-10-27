@@ -14,7 +14,7 @@ const useUpdateWatchlist: any = () => {
   const { data: session } = useSession();
 
   return useMutation<any>({
-    mutationKey: ["updateWatchList"],
+    mutationKey: ["updateList"],
     mutationFn: async (payload: any) => {
       const userId = session?.user?.id;
 
@@ -29,7 +29,7 @@ const useUpdateWatchlist: any = () => {
           });
         }
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/${userId}/watchlist/${payload.animeId}}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/list/${userId}/${payload.type}/${payload.mediaId}}`,
           {
             method: "PUT",
             headers: {

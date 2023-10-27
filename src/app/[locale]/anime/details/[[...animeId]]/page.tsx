@@ -59,7 +59,7 @@ export default async function DetailsPage({
               Add to list
             </Button> */}
 
-            <AddToListDropdown animeId={1} />
+            <AddToListDropdown mediaId={1} type="ANIME" />
           </div>
 
           <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4">

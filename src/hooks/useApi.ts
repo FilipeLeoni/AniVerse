@@ -60,15 +60,17 @@ export const useApi = () => ({
     }
   },
 
-  getWatchList: async (
+  getList: async (
     userId: string,
     page: number,
     perPage: number,
-    status: string = ""
+    status: string = "",
+    type: string = "ANIME"
   ) => {
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
     try {
       const response = await Api.get(
-        `/user/${userId}/watchlist?page=${page}&perPage=${perPage}&status=${status}`
+        `/list/${userId}/${type}?page=${page}&perPage=${perPage}&status=${status}`
       );
       console.log(response);
       return response.data;
@@ -77,10 +79,15 @@ export const useApi = () => ({
     }
   },
 
-  getStatusById: async (userId: string, animeId: number) => {
+  getStatusById: async (
+    userId: string,
+    mediaId: number,
+    type: string = "ANIME"
+  ) => {
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
+
     try {
-      const response = await Api.get(`/user/${userId}/watchlist/${animeId}`);
-      console.log(response);
+      const response = await Api.get(`/list/${userId}/${type}/${mediaId}`);
       return response.data;
     } catch (error) {
       console.log(error);
