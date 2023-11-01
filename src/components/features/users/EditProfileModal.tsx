@@ -82,7 +82,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ user }) => {
         secondary
         onClick={handleModalState("open")}
         LeftIcon={BiPencil}
-        className="font-semibold bg-neutral-600"
+        className="font-semibold !bg-neutral-700"
       >
         Edit profile
       </Button>

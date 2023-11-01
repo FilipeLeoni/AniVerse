@@ -25,6 +25,9 @@ import dayjs from "@/lib/dayjs";
 import AiringCountDown from "@/components/shared/AiringCountDown";
 import Comments from "@/components/features/comment/Comments";
 import Reaction from "@/components/features/comment/Reaction";
+import { AnimatePresence, motion } from "framer-motion";
+import Dropdown from "@/components/shared/Dropdown";
+import AddToListDropdown from "@/components/shared/AddToListDropdown";
 
 export default async function DetailsPage({
   params,
@@ -48,13 +51,15 @@ export default async function DetailsPage({
         <div className="flex flex-row md:space-x-8">
           <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6">
             <PlainCard src={data.Media.coverImage.extraLarge} alt={"Test"} />
-            <Button
+            {/* <Button
               primary
               className="gap-4 w-full justify-center md:flex hidden"
             >
               <BsPlusCircleFill size={22} />
               Add to list
-            </Button>
+            </Button> */}
+
+            <AddToListDropdown mediaId={1} type="ANIME" />
           </div>
 
           <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4">
@@ -275,7 +280,7 @@ export default async function DetailsPage({
           <h2 className="text-xl">What do you think?</h2>
           <Reaction />
         </div>
-        <Comments animeId={"1e981fb4-acb8-419e-9ef9-1f6511cdb02d"} />
+        <Comments animeId={"2 "} />
       </Section>
     </div>
   );

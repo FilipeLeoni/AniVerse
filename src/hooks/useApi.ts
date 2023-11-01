@@ -59,4 +59,38 @@ export const useApi = () => ({
       console.log(error);
     }
   },
+
+  getList: async (
+    userId: string,
+    page: number,
+    perPage: number,
+    status: string = "",
+    type: string = "ANIME"
+  ) => {
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
+    try {
+      const response = await Api.get(
+        `/list/${userId}/${type}?page=${page}&perPage=${perPage}&status=${status}`
+      );
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getStatusById: async (
+    userId: string,
+    mediaId: number,
+    type: string = "ANIME"
+  ) => {
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
+
+    try {
+      const response = await Api.get(`/list/${userId}/${type}/${mediaId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 });

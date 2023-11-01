@@ -27,7 +27,6 @@ const MultiValue = ({ index, getValue, ...props }: any) => {
     .map((x: any) => x.label);
 
   return index < maxToShow ? (
-    // @ts-ignore
     <components.MultiValue {...props} />
   ) : index === maxToShow ? (
     <MoreSelectedBadge items={overflow} />
@@ -124,7 +123,7 @@ const Select = React.forwardRef<any, Props>(
           ...styles,
         }}
         hideSelectedOptions={false}
-        noOptionsMessage={() => "Không còn lựa chọn"}
+        noOptionsMessage={() => "No options"}
         components={{ MultiValue, Option, ...components }}
         isClearable
         menuPortalTarget={portalTarget}

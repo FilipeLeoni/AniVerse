@@ -4,6 +4,7 @@ import { AiFillFacebook } from "react-icons/ai";
 import { FaDiscord } from "react-icons/fa";
 import NextLink, { LinkProps } from "next/link";
 import Link from "next/link";
+import Logo from "../shared/Logo";
 
 interface FooterItemProps {
   Icon: React.ComponentType<any>;
@@ -13,7 +14,7 @@ interface FooterItemProps {
 const Footer = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center px-4 md:px-12 py-16 space-y-4">
-      <h1>AniVerse</h1>
+      <Logo />
 
       <div className="flex items-center space-x-4">
         <ContactItem href={DISCORD_URL} Icon={FaDiscord} />
@@ -39,11 +40,11 @@ const Footer = () => {
       </div>
 
       <p className="text-sm text-gray-300 text-center">
-        AniVerse does not store any files on our server, we only linked to the
+        Aniverse does not store any files on our server, we only linked to the
         media which is hosted on 3rd party services.
       </p>
 
-      <p className="text-sm text-gray-300 text-center">© AniVerse.app</p>
+      <p className="text-sm text-gray-300 text-center">© Aniverse.app</p>
     </div>
   );
 };
