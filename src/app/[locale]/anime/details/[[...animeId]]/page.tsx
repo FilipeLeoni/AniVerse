@@ -28,6 +28,9 @@ import Reaction from "@/components/features/comment/Reaction";
 import { AnimatePresence, motion } from "framer-motion";
 import Dropdown from "@/components/shared/Dropdown";
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
+import NetPlayer from "netplayer";
+import Player from "@/components/features/anime/Player/Player";
+import Playerz from "@/components/features/anime/Player/Player";
 
 export default async function DetailsPage({
   params,
@@ -240,6 +243,9 @@ export default async function DetailsPage({
               ))}
             </ul>
           </div>
+        </div>
+        <div>
+          <Playerz />
         </div>
         <div className="space-y-12 md:col-span-8">
           {!!data.Media?.characters?.edges?.length && (

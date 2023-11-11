@@ -30,6 +30,9 @@ export const searchData = async (
                 type
                 genres
                 averageScore
+                trailer {
+                  id
+                }
                 popularity
                 trending
                 favourites
@@ -83,6 +86,9 @@ export const getPopularMedia = async (mediaType: string = "ANIME") => {
                 popularity
                 trending
                 favourites
+                trailer {
+                  id
+                }
                 nextAiringEpisode {
                   airingAt
                   episode
@@ -131,6 +137,9 @@ export const getTrendingMedia = async (mediaType: string = "ANIME") => {
                   averageScore
                   popularity
                   trending
+                  trailer {
+                    id
+                  }
                   favourites
                   nextAiringEpisode {
                     airingAt
@@ -179,6 +188,9 @@ export const getUpdatedMedia: any = async (mediaType: string = "ANIME") => {
                   averageScore
                   popularity
                   trending
+                  trailer {
+                    id
+                  }
                   favourites
                   nextAiringEpisode {
                     airingAt
@@ -227,6 +239,9 @@ export const getFavoriteMedia = async (mediaType: string = "ANIME") => {
                   genres
                   averageScore
                   popularity
+                  trailer {
+                    id
+                  }
                   trending
                   favourites
                   nextAiringEpisode {
@@ -278,6 +293,9 @@ export const getRandomMedia = async () => {
                 averageScore
                 popularity
                 trending
+                trailer {
+                  id
+                }
                 favourites
                 nextAiringEpisode {
                   airingAt

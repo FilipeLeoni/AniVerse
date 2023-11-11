@@ -66,7 +66,7 @@ const SidebarPanel = () => {
           button={<GiHamburgerMenu className="w-8 h-8" />}
         >
           <div>
-            <div>Upload</div>
+            <Logo />
 
             <div className="space-y-2">
               {routes.map((route) => (
@@ -89,7 +89,7 @@ const SidebarPanel = () => {
               ))}
             </div>
           </div>
-          <div className="flex gap-2 items-center justify-center">
+          <div className="flex gap-2 items-center justify-center text-white">
             <AiOutlineLeftCircle size={20} />
             Exit admin panel
           </div>
@@ -97,7 +97,7 @@ const SidebarPanel = () => {
       </div>
       <div
         className={classNames(
-          "fixed w-1/5 bg-neutral-950 h-screen text-white pt-10 px-4",
+          "fixed w-1/5 bg-neutral-950 h-screen text-white pt-10 px-4 flex-col justify-between",
           isOpen ? "" : "hidden md:inline-block"
         )}
       >
@@ -169,6 +169,13 @@ const SidebarPanel = () => {
             Manga
           </Button>
         </div>
+        <Link
+          href={"/anime"}
+          className="flex gap-2 items-center justify-center text-white absolute bottom-10 left-1/2 -translate-x-1/2 rounded pr-6 p-3 hover:bg-neutral-900 cursor-pointer"
+        >
+          <AiOutlineLeftCircle size={20} />
+          Exit admin panel
+        </Link>
       </div>
     </>
   );

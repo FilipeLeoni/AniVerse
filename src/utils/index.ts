@@ -18,6 +18,7 @@ import { Media, MediaSeason, MediaType, Studio } from "@/@types/anilist";
 import axios from "axios";
 import { differenceInMilliseconds, formatDistanceToNow } from "date-fns";
 import dayjs from "dayjs";
+import { stringify } from "querystring";
 
 export const randomElement = <T>(array: T[]): T => {
   const index = Math.floor(Math.random() * array.length);
@@ -296,19 +297,19 @@ export const vietnameseSlug = (str: string) => {
 // export const sleep = (ms: number) =>
 //   new Promise((resolve) => setTimeout(resolve, ms));
 
-// export const debounce = (func: Function, wait: number) => {
-//   let timeout: any;
+export const debounce = (func: Function, wait: number) => {
+  let timeout: any;
 
-//   return (...args: any[]) => {
-//     const later = () => {
-//       timeout = null;
-//       func(...args);
-//     };
+  return (...args: any[]) => {
+    const later = () => {
+      timeout = null;
+      func(...args);
+    };
 
-//     clearTimeout(timeout);
-//     timeout = setTimeout(later, wait);
-//   };
-// };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
 
 // export function convertTime(seconds: string | number) {
 //   seconds = seconds.toString();
@@ -442,36 +443,36 @@ export const createFileFromUrl = async (url: string, filename: string) => {
   return file;
 };
 
-// export const createProxyUrl = (
-//   url: string,
-//   proxy: Proxy,
-//   isPublicProxy?: boolean
-// ) => {
-//   if (isPublicProxy) return `https://corsproxy.io/?${encodeURIComponent(url)}`;
+export const createProxyUrl = (
+  url: string,
+  proxy: any,
+  isPublicProxy?: boolean
+) => {
+  if (isPublicProxy) return `https://corsproxy.io/?${encodeURIComponent(url)}`;
 
-//   const composeHeaders = (
-//     headers: Record<string, string>
-//   ): [string, string][] => {
-//     return Object.entries(headers).map(([key, value]) => [key, value]);
-//   };
+  const composeHeaders = (
+    headers: Record<string, string>
+  ): [string, string][] => {
+    return Object.entries(headers).map(([key, value]) => [key, value]);
+  };
 
-//   const { appendReqHeaders = {}, appendResHeaders = {}, ...rest } = proxy;
+  const { appendReqHeaders = {}, appendResHeaders = {}, ...rest } = proxy;
 
-//   const modifiedAppendReqHeaders = JSON.stringify(
-//     composeHeaders(appendReqHeaders)
-//   );
-//   const modifiedAppendResHeaders = JSON.stringify(
-//     composeHeaders(appendResHeaders)
-//   );
+  const modifiedAppendReqHeaders = JSON.stringify(
+    composeHeaders(appendReqHeaders)
+  );
+  const modifiedAppendResHeaders = JSON.stringify(
+    composeHeaders(appendResHeaders)
+  );
 
-//   const params = stringify({
-//     appendReqHeaders: modifiedAppendReqHeaders,
-//     appendResHeaders: modifiedAppendResHeaders,
-//     ...rest,
-//   });
+  const params = stringify({
+    appendReqHeaders: modifiedAppendReqHeaders,
+    appendResHeaders: modifiedAppendResHeaders,
+    ...rest,
+  });
 
-//   return `${config.proxyServerUrl}/?url=${encodeURIComponent(url)}&${params}`;
-// };
+  return `hi`;
+};
 
 // export const createAttachmentUrl = (url: string) => {
 //   return `${config.nodeServerUrl}/file/${url}`;
