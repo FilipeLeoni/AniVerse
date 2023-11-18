@@ -41,8 +41,6 @@ export default function UploadData() {
     };
   }, [query]);
 
-  console.log(data);
-
   return (
     <div>
       <div>

@@ -10,26 +10,18 @@ import MediaDescription from "@/components/shared/MediaDescription";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
 import { getAnimeById } from "@/mocks/queries";
-import {
-  createStudioDetailsUrl,
-  formatTimeDifference,
-  numberWithCommas,
-} from "@/utils";
+import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
 import { convert, getDescription, getTitle } from "@/utils/data";
 import { useLocale } from "next-intl";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 import dayjs from "@/lib/dayjs";
 import AiringCountDown from "@/components/shared/AiringCountDown";
 import Comments from "@/components/features/comment/Comments";
 import Reaction from "@/components/features/comment/Reaction";
-import { AnimatePresence, motion } from "framer-motion";
-import Dropdown from "@/components/shared/Dropdown";
-import AddToListDropdown from "@/components/shared/AddToListDropdown";
-import NetPlayer from "netplayer";
 
+import AddToListDropdown from "@/components/shared/AddToListDropdown";
 export default async function DetailsPage({
   params,
 }: {
@@ -244,6 +236,15 @@ export default async function DetailsPage({
         </div>
 
         <div className="space-y-12 md:col-span-8">
+          <DetailsSection title={"Episodes"} className="overflow-hidden">
+            {/* {isLoading ? (
+                <div className="h-full w-full flex items-center justify-center">
+                  <Spinner />
+                </div>
+              ) : ( */}
+            {/* <LocaleEpisodeSelector mediaId={anime.id} episodes={episodes} /> */}
+            {/* )} */}
+          </DetailsSection>
           {!!data.Media?.characters?.edges?.length && (
             <DetailsSection
               title={"Characters"}
@@ -282,7 +283,7 @@ export default async function DetailsPage({
           <h2 className="text-xl">What do you think?</h2>
           <Reaction />
         </div>
-        <Comments animeId={"2 "} />
+        <Comments animeId={"2"} />
       </Section>
     </div>
   );

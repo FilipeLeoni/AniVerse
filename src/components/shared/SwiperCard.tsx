@@ -156,7 +156,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                       />
                     ) : showTrailer ? (
                       <motion.div
-                        className="w-full h-full object-cover flex justify-center items-center"
+                        className="w-full h-full object-cover flex justify-center items-center scale-125"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.3 }}

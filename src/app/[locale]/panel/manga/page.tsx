@@ -114,7 +114,6 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
     queryKey: ["MangaAdded"],
     queryFn: async () => {
       const response = await api.getUploadedManga(pageIndex + 1, pageSize);
-      console.log(response);
       return response;
     },
   });

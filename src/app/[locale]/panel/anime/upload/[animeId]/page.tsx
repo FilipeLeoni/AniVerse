@@ -251,7 +251,6 @@ export default function UploadPage({
         body: JSON.stringify(requestBody),
       }
     );
-    console.log(response);
     if (response.ok) {
       router.push("/panel/upload");
       return response;
@@ -270,10 +269,6 @@ export default function UploadPage({
     const favourites = parseInt(data.favourites, 10);
     const trending = parseInt(data.trending, 10);
     const transformedCharacters = transformCharactersData(character);
-
-    console.log(character);
-    console.log(transformedCharacters);
-    console.log(data.isHomeBanner);
 
     const requestBody = {
       title: {
