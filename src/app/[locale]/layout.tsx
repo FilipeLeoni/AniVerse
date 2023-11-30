@@ -7,6 +7,8 @@ import { NextIntlClientProvider, useLocale, useMessages } from "next-intl";
 import Providers from "../providers";
 import Footer from "@/components/partials/Footer";
 import { Toaster } from "react-hot-toast";
+import { WatchHistoryProvider } from "@/contexts/WatchHistoryContext";
+import { VideoProvider } from "@/contexts/GlobalPlayerContext";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -30,13 +32,17 @@ export default function RootLayout({
     <html lang={locale}>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <Providers>
-          <body className={outfit.className}>
-            <NextTopLoader color="#EF4444" />
-            <Header />
-            <main>{children}</main>
-            <Footer />
-            <Toaster />
-          </body>
+          <VideoProvider>
+            <WatchHistoryProvider>
+              <body className={outfit.className}>
+                <NextTopLoader color="#EF4444" />
+                <Header />
+                <main>{children}</main>
+                <Footer />
+                <Toaster />
+              </body>
+            </WatchHistoryProvider>
+          </VideoProvider>
         </Providers>
       </NextIntlClientProvider>
     </html>

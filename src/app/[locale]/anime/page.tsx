@@ -22,7 +22,7 @@ import {
   getTrendingMedia,
   getUpdatedMedia,
 } from "@/mocks/queries";
-import { AiFillPlayCircle, AiOutlineAlipayCircle } from "react-icons/ai";
+import { AiFillPlayCircle } from "react-icons/ai";
 
 interface Anime {
   id: number;

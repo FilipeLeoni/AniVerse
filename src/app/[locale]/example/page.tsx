@@ -1,19 +1,11 @@
 "use client";
+import { useWatchHistory } from "@/contexts/WatchHistoryContext";
 import Player from "netplayer";
 import React from "react";
 
-export default function page() {
-  return (
-    <div>
-      <Player
-        sources={[
-          {
-            file: "https://s22.anime-sama.fr/videos/Blue%20Lock/VF/Blue_Lock_1_VF.mp4",
-          },
-        ]}
-        className="object-contain w-full h-full"
-        autoPlay
-      />
-    </div>
-  );
+export default function Example() {
+  // const watchedEpisodes = JSON.parse(localStorage.getItem("watchedEpisodes"));
+
+  // console.log(watchedEpisodes);
+  return <div>teste</div>;
 }

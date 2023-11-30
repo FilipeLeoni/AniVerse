@@ -1,14 +1,12 @@
 import Select from "@/components/shared/Select";
 import { groupBy, sortObjectByValue } from "@/utils";
 import React, { useLayoutEffect, useMemo, useState } from "react";
-import EpisodeSelector, { EpisodeSelectorProps } from "./EpisodeSelector";
-
-export interface SourceEpisodeSelectorProps extends EpisodeSelectorProps {}
+import EpisodeSelector from "./EpisodeSelector";
 
 const sourcesToOptions = (sources: string[]) =>
   sources.map((source) => ({ value: source, label: source }));
 
-const SourceEpisodeSelector: React.FC<SourceEpisodeSelectorProps> = ({
+const SourceEpisodeSelector: React.FC<any> = ({
   episodes,
   activeEpisode,
   ...episodeSelectorProps
@@ -17,10 +15,13 @@ const SourceEpisodeSelector: React.FC<SourceEpisodeSelectorProps> = ({
 
   const verifiedSources = useMemo(() => {
     const verifiedEpisodes = episodes.filter(
-      (episode) => episode.source.isCustomSource
+      (episode: any) => episode.source.isCustomSource
     );
 
-    const sources = groupBy(verifiedEpisodes, (episode) => episode.source.name);
+    const sources = groupBy(
+      verifiedEpisodes,
+      (episode: any) => episode.source.name
+    );
 
     const sortedSources = sortObjectByValue(
       sources,
@@ -32,12 +33,12 @@ const SourceEpisodeSelector: React.FC<SourceEpisodeSelectorProps> = ({
 
   const nonVerifiedSources = useMemo(() => {
     const nonVerifiedEpisodes = episodes.filter(
-      (episode) => !episode.source.isCustomSource
+      (episode: any) => !episode.source.isCustomSource
     );
 
     const sources = groupBy(
       nonVerifiedEpisodes,
-      (episode) => episode.source.name
+      (episode: any) => episode.source.name
     );
 
     const sortedSources = sortObjectByValue(

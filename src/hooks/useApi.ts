@@ -10,7 +10,6 @@ export const useApi = () => ({
       const response = await Api.get(
         `/anime?page=${page}&pageSize=${pageSize}`
       );
-      console.log(response);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -88,6 +87,15 @@ export const useApi = () => ({
 
     try {
       const response = await Api.get(`/list/${userId}/${type}/${mediaId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getEpisodeById: async (id: number) => {
+    try {
+      const response = await Api.get(`/episodes/${id}`);
       return response.data;
     } catch (error) {
       console.log(error);

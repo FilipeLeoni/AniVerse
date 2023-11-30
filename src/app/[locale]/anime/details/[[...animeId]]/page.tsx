@@ -22,6 +22,7 @@ import Comments from "@/components/features/comment/Comments";
 import Reaction from "@/components/features/comment/Reaction";
 
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
+import EpisodeSelector from "@/components/features/anime/EpisodeSelector";
 export default async function DetailsPage({
   params,
 }: {
@@ -237,13 +238,7 @@ export default async function DetailsPage({
 
         <div className="space-y-12 md:col-span-8">
           <DetailsSection title={"Episodes"} className="overflow-hidden">
-            {/* {isLoading ? (
-                <div className="h-full w-full flex items-center justify-center">
-                  <Spinner />
-                </div>
-              ) : ( */}
-            {/* <LocaleEpisodeSelector mediaId={anime.id} episodes={episodes} /> */}
-            {/* )} */}
+            <EpisodeSelector />
           </DetailsSection>
           {!!data.Media?.characters?.edges?.length && (
             <DetailsSection

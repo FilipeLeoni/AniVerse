@@ -1,180 +1,69 @@
-// import { WatchPlayerProps } from "@/components/features/anime/WatchPlayer";
-// import classNames from "classnames";
-// import {
-//   AnimatePresence,
-//   motion,
-//   useMotionValue,
-//   Variants,
-// } from "framer-motion";
-// import dynamic from "next/dynamic";
-// import { useRouter } from "next/router";
-// import React, {
-//   createContext,
-//   useEffect,
-//   useMemo,
-//   useRef,
-//   useState,
-// } from "react";
-// import { isMobile } from "react-device-detect";
-// import { WatchPlayerContextProps } from "./WatchContext";
+"use client";
 
-// const WatchPlayer = dynamic(
-//   () => import("@/components/features/anime/WatchPlayer"),
-//   {
-//     ssr: false,
-//   }
-// );
+import React, { createContext, useContext, useRef, useEffect } from "react";
 
-// interface PlayerProps extends WatchPlayerProps {
-//   ref?: React.RefObject<HTMLVideoElement>;
-// }
+const VideoContext = createContext<any>(null);
 
-// const ForwardRefPlayer = React.memo(
-//   React.forwardRef<HTMLVideoElement, WatchPlayerProps>((props, ref) => (
-//     <WatchPlayer {...props} videoRef={ref} />
-//   ))
-// );
+export const VideoProvider = ({ children }: any) => {
+  const videoRef: any = useRef(null);
+  const intervalRef: any = useRef(null);
 
-// ForwardRefPlayer.displayName = "ForwardRefPlayer";
+  const handleTimeUpdate = () => {
+    const video: any = videoRef.current;
+    if (video && video.readyState >= 2) {
+      const currentTime = Math.floor(video.currentTime);
+      const animeId = 1; // Substitua pelo ID do anime atual
+      const episodeId = 1; // Substitua pelo ID do episódio atual
 
-// interface ContextProps {
-//   setPlayerState: React.Dispatch<React.SetStateAction<PlayerProps>>;
-//   setPlayerProps: React.Dispatch<React.SetStateAction<WatchPlayerContextProps>>;
-//   playerProps: WatchPlayerContextProps;
-//   isBackground: boolean;
-// }
+      // Salve o tempo assistido no localStorage a cada 10 segundos
+      if (currentTime > 0 && currentTime % 10 === 0) {
+        const storedData = localStorage.getItem("watchedEpisodes");
 
-// const playerVariants: Variants = {
-//   watch: {
-//     width: "100vw",
-//     height: "100vh",
-//   },
-//   background: {
-//     width: 400,
-//     height: 225,
-//   },
-// };
+        const watchedEpisodes = storedData ? JSON.parse(storedData) : [];
 
-// const PlayerContext = createContext<any>(null);
+        const existingEpisodeIndex = watchedEpisodes.findIndex(
+          (episode: any) =>
+            episode.animeId === animeId && episode.episodeId === episodeId
+        );
 
-// const GlobalPlayerContextProvider: React.FC = ({ children }: any) => {
-//   const constraintsRef = useRef<HTMLDivElement>(null);
-//   const [playerState, setPlayerState] = useState<PlayerProps | null>(null);
-//   const [playerProps, setPlayerProps] =
-//     useState<WatchPlayerContextProps | null>(null);
+        if (existingEpisodeIndex !== -1) {
+          watchedEpisodes[existingEpisodeIndex].timestamp = currentTime;
+        } else {
+          watchedEpisodes.push({ animeId, episodeId, timestamp: currentTime });
+        }
 
-//   const x = useMotionValue(0);
-//   const y = useMotionValue(0);
+        console.log(watchedEpisodes);
+        localStorage.setItem(
+          "watchedEpisodes",
+          JSON.stringify(watchedEpisodes)
+        );
+      }
+    }
+  };
 
-//   const router = useRouter();
+  useEffect(() => {
+    const video: any = videoRef.current;
+    if (video) {
+      video.addEventListener("timeupdate", handleTimeUpdate);
 
-//   const shouldPlayInBackground = useMemo(() => {
-//     return !router?.pathname.includes("watch");
-//   }, [router?.pathname]);
+      // Definir um intervalo para verificar a cada segundo
+      intervalRef.current = setInterval(handleTimeUpdate, 1000);
+    }
+    return () => {
+      if (video) {
+        video.removeEventListener("timeupdate", handleTimeUpdate);
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
-//   useEffect(() => {
-//     if (shouldPlayInBackground) return;
+  return (
+    <VideoContext.Provider value={{ videoRef }}>
+      {children}
+    </VideoContext.Provider>
+  );
+};
 
-//     // Set the player position just in case it is dragged
-//     x.set(0);
-//     y.set(0);
-//   }, [shouldPlayInBackground, x, y]);
-
-//   const playerSize = useMemo(() => {
-//     if (!shouldPlayInBackground) {
-//       return {
-//         width: "100vw",
-//         height: "100vh",
-//       };
-//     }
-
-//     if (isMobile) {
-//       return {
-//         width: 320,
-//         height: 180,
-//       };
-//     }
-
-//     return {
-//       width: 400,
-//       height: 225,
-//     };
-//   }, [shouldPlayInBackground]);
-
-//   return (
-//     <PlayerContext.Provider
-//       value={{
-//         setPlayerState,
-//         isBackground: shouldPlayInBackground && !!playerState?.sources,
-//         playerProps,
-//         setPlayerProps,
-//       }}
-//     >
-//       {children}
-
-//       <div
-//         className="fixed inset-0 pointer-events-none"
-//         ref={constraintsRef}
-//       ></div>
-
-//       {!!playerState?.sources ? (
-//         <AnimatePresence initial={false}>
-//           <div
-//             className={classNames(
-//               "fixed shadow-2xl",
-//               shouldPlayInBackground && "bottom-4 right-4 z-[9999]"
-//             )}
-//           >
-//             <motion.div
-//               dragElastic={0}
-//               drag={shouldPlayInBackground}
-//               dragMomentum={false}
-//               dragConstraints={constraintsRef}
-//               style={{
-//                 width: playerSize.width,
-//                 height: playerSize.height,
-//                 x,
-//                 y,
-//               }}
-//             >
-//               <ForwardRefPlayer {...playerState} />
-//             </motion.div>
-//           </div>
-//         </AnimatePresence>
-//       ) : null}
-//     </PlayerContext.Provider>
-//   );
-// };
-
-// export const useGlobalPlayer = (
-//   state: {
-//     playerState?: PlayerProps;
-//     playerProps?: WatchPlayerContextProps;
-//   } = {}
-// ) => {
-//   const { setPlayerState, setPlayerProps, ...rest } =
-//     React.useContext(PlayerContext);
-
-//   useEffect(() => {
-//     if (state?.playerState) {
-//       setPlayerState(state.playerState);
-//     }
-
-//     if (state?.playerProps) {
-//       setPlayerProps(state.playerProps);
-//     }
-
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [
-//     state?.playerState?.sources,
-//     state?.playerProps?.anime,
-//     state?.playerProps?.currentEpisode,
-//   ]);
-
-//   return {
-//     setPlayerState,
-//     ...rest,
-//   };
-// };
-
-// export default GlobalPlayerContextProvider;
+export const useVideo = () => {
+  return useContext(VideoContext);
+};

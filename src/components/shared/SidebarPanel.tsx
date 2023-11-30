@@ -17,6 +17,8 @@ import Drawer from "./Drawer";
 import { GiHamburgerMenu } from "react-icons/gi";
 import NavItem from "./NavItem";
 import Logo from "./Logo";
+import { PiDetective } from "react-icons/pi";
+import { IoCalendarOutline } from "react-icons/io5";
 
 const SidebarPanel = () => {
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
@@ -34,24 +36,37 @@ const SidebarPanel = () => {
   };
 
   const Options = [
-    { name: "Upload Anime", href: "/panel/upload/anime" },
-    { name: "Upload Manga", href: "/panel/upload/manga" },
-    { name: "Upload Episode", href: "/panel/anime/episodes" },
-    { name: "Upload Chapter", href: "/panel/manga/chapters" },
+    { name: "Upload Anime", href: "/panel/upload/anime", icon: "" },
+    { name: "Upload Manga", href: "/panel/upload/manga", icon: "" },
+    { name: "Upload Episode", href: "/panel/anime/episodes", icon: "" },
+    { name: "Upload Chapter", href: "/panel/manga/chapters", icon: "" },
   ];
 
   const routes = [
     {
       name: "Home",
       href: "/panel/home",
+      icon: <AiOutlineHome size={24} />,
     },
     {
       name: "Anime",
       href: "/panel/anime",
+      icon: <AiOutlineVideoCameraAdd size={24} />,
     },
     {
       name: "Manga",
       href: "/panel/manga",
+      icon: <BiImageAdd size={24} />,
+    },
+    {
+      name: "The Thief",
+      href: "/panel/thief",
+      icon: <PiDetective size={24} />,
+    },
+    {
+      name: "Schedule",
+      href: "/panel/schedule",
+      icon: <IoCalendarOutline size={24} />,
     },
     ...Options,
   ];
@@ -69,9 +84,9 @@ const SidebarPanel = () => {
             <Logo />
 
             <div className="space-y-2">
-              {routes.map((route) => (
-                <div onClick={drawerRef.current?.close()} key={route.href}>
-                  <NavItem className="block" href={route.href}>
+              {routes.map(({ name, href }) => (
+                <div onClick={drawerRef.current?.close()} key={href}>
+                  <NavItem className="block" href={href}>
                     {({ isActive }: any) => (
                       <p
                         className={classNames(
@@ -81,7 +96,7 @@ const SidebarPanel = () => {
                             : "border-background-900 text-typography-secondary"
                         )}
                       >
-                        {route.name}
+                        {name}
                       </p>
                     )}
                   </NavItem>
@@ -138,36 +153,20 @@ const SidebarPanel = () => {
           )}
         </div>
         <div className="mt-6 space-y-2">
-          <Button
-            primary
-            className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
-              pathname === "/panel/home" ? "!bg-neutral-600" : "bg-transparent"
-            }`}
-            onClick={() => handleChangePage("/panel/home")}
-          >
-            <AiOutlineHome size={24} />
-            Home
-          </Button>
-          <Button
-            primary
-            className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
-              pathname === "/panel/anime" ? "!bg-neutral-600" : "bg-transparent"
-            }`}
-            onClick={() => handleChangePage("/panel/anime")}
-          >
-            <AiOutlineVideoCameraAdd size={24} />
-            Anime
-          </Button>
-          <Button
-            primary
-            className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
-              pathname === "/panel/manga" ? "!bg-neutral-600" : "bg-transparent"
-            }`}
-            onClick={() => handleChangePage("/panel/manga")}
-          >
-            <BiImageAdd size={24} />
-            Manga
-          </Button>
+          {routes.slice(0, 5).map(({ name, href, icon }) => (
+            <div key={href}>
+              <Button
+                primary
+                className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
+                  pathname === href ? "!bg-neutral-600" : "bg-transparent"
+                }`}
+                onClick={() => handleChangePage(href)}
+              >
+                {icon && icon}
+                {name}
+              </Button>
+            </div>
+          ))}
         </div>
         <Link
           href={"/anime"}
