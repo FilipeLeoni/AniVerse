@@ -72,6 +72,7 @@ const UpdateAvatar: React.FC<UpdateAvatarProps> = ({ user }) => {
   };
 
   const handleUpdateAvatar = async () => {
+    console.log(fileRef.current);
     updateAvatar(fileRef.current, {
       onSuccess: () => {
         setIsPreviewing(false);

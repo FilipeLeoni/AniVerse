@@ -190,15 +190,15 @@ export const TYPES = [
 
 export const COUNTRIES = [
   {
-    value: "JP",
+    value: "Japan",
     label: "Japan",
   },
   {
-    value: "CN",
+    value: "China",
     label: "China",
   },
   {
-    value: "KR",
+    value: "Korea",
     label: "Korea",
   },
 ];

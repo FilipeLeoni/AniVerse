@@ -172,7 +172,7 @@ export default async function DetailsPage({
             />
             <InfoItem title="English" value={data.Media.title.english} />
             <InfoItem title="Native" value={data.Media.title.native} />
-            <InfoItem title="Romanji" value={data.Media.title.romaji} />
+            <InfoItem title="Romanji" value={data.Media.title.romanji} />
             <InfoItem
               title={"Popular"}
               value={numberWithCommas(data.Media.popularity)}

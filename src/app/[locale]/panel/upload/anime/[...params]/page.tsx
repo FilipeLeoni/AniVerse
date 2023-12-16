@@ -92,7 +92,8 @@ export default function UploadPage({
       setValue("popularity", parseInt(data.Media.popularity));
       setValue("favourites", parseInt(data.Media.favourites));
       setValue("trending", data.Media.trending);
-      setValue("Season", convert(data.Media.season, "season", { locale }));
+      setValue("Season", data.Media.season);
+      setValue("seasonYear", data.Media.seasonYear);
       setValue("averageScore", data.Media.averageScore);
       setValue("color", data.Media.coverImage.color);
 
@@ -298,6 +299,7 @@ export default function UploadPage({
       status: data.status,
       format: data.format,
       season: data.season,
+      seasonYear: Number(data.seasonYear),
       characters: transformedCharacters,
       isAdult: data.isAdult,
     };
@@ -619,12 +621,19 @@ export default function UploadPage({
               <Input
                 containerInputClassName="focus:border border-white/80"
                 label={"Season"}
-                defaultValue={`${convert(data.Media.season, "season", {
-                  locale,
-                })} ${data.Media.seasonYear}`}
+                defaultValue={data.Media.season}
                 containerClassName="w-full text-gray-400 "
                 className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                 {...register("season")}
+              />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Season Year"}
+                defaultValue={data.Media?.seasonYear}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("seasonYear")}
               />
 
               <AddRemoveItem

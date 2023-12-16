@@ -1,3 +1,80 @@
+"use client";
+
+import ReadContainer from "@/components/features/manga/Reader/ReadContainer";
+import ReadPanel from "@/components/features/manga/Reader/ReadPanel";
+import Loading from "@/components/shared/Loading";
+import { ReadContextProvider } from "@/contexts/ReadContext";
+import { ReadSettingsContextProvider } from "@/contexts/ReadSettingsContext";
+import { useApi } from "@/hooks/useApi";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useMemo } from "react";
+
+export default function Read({ params }: { params: any }) {
+  console.log(params);
+  const mangaId = params.params[0];
+  const chapterId = params.params[1];
+  console.log(chapterId);
+
+  const api = useApi();
+  const { data: chapter } = useQuery({
+    queryKey: ["chapter", chapterId],
+    queryFn: () => {
+      const response = api.getChapterById(chapterId);
+      return response;
+    },
+  });
+
+  const { data: chapters } = useQuery({
+    queryKey: ["chapters", mangaId],
+    queryFn: () => {
+      const response = api.getMangaChapterById(mangaId);
+      return response;
+    },
+  });
+
+  const currentChapterIndex = useMemo(
+    () =>
+      chapters?.chapters?.findIndex((chapter: any) => chapter.id === chapterId),
+    [chapters, chapterId]
+  );
+
+  const router = useRouter();
+
+  const handleChapterNavigate = useCallback(
+    (chapter: any) => {
+      router.replace(`/manga/read/${chapterId}`);
+    },
+    [chapterId, router]
+  );
+
+  console.log(chapter);
+  console.log(chapters);
+  return (
+    <div>
+      {chapter && (
+        <ReadContextProvider
+          value={{
+            manga: chapter.Manga,
+            currentChapter: chapter,
+            currentChapterIndex: currentChapterIndex,
+            chapters: chapters.chapters,
+            setChapter: handleChapterNavigate,
+            // sourceId,
+            images: chapter?.pages,
+          }}
+        >
+          <ReadSettingsContextProvider>
+            <ReadPanel>
+              <ReadContainer />
+            </ReadPanel>
+          </ReadSettingsContextProvider>
+        </ReadContextProvider>
+      )}
+    </div>
+  );
+}
+
 // import ReadContainer from "@/components/features/manga/Reader/ReadContainer";
 // import Button from "@/components/shared/Button";
 // import Loading from "@/components/shared/Loading";

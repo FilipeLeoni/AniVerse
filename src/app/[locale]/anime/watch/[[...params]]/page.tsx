@@ -8,14 +8,13 @@ import HorizontalCard from "@/components/shared/HorizontalCard";
 import Section from "@/components/shared/Section";
 import { useApi } from "@/hooks/useApi";
 import { useQuery } from "@tanstack/react-query";
-import Player from "netplayer";
-import React, { useMemo } from "react";
+import React from "react";
 import { isMobile } from "react-device-detect";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
 export default function WatchPage({ params }: { params: { params: string } }) {
   const api = useApi();
-  const animeId = Number(params.params[0]);
+  const animeId = params.params[0];
 
   const { data: episode, isLoading: isEpisodeLoading } = useQuery<any>({
     queryKey: ["EpisodeAnime"],
@@ -25,8 +24,6 @@ export default function WatchPage({ params }: { params: { params: string } }) {
     },
   });
 
-  console.log(episode);
-
   const { data: anime, isLoading: mediaLoading } = useQuery<any>({
     queryKey: ["AnimeById"],
     queryFn: async () => {
@@ -35,7 +32,7 @@ export default function WatchPage({ params }: { params: { params: string } }) {
     },
   });
 
-  const { data: related, isLoading: isLoadingRelated } = useQuery<any>({
+  const { data: related } = useQuery<any>({
     queryKey: ["Related"],
     queryFn: async () => {
       const response = await api.getUploadedAnimes();
@@ -47,6 +44,7 @@ export default function WatchPage({ params }: { params: { params: string } }) {
     <div className="flex flex-col w-full h-auto pt-16">
       <div style={{ height: isMobile ? "100%" : "70vh" }} className="relative">
         <VideoPlayer
+          anime={anime?.media}
           episodeData={episode}
           isEpisodeLoading={isEpisodeLoading}
         />
@@ -55,10 +53,13 @@ export default function WatchPage({ params }: { params: { params: string } }) {
       <div className="flex mt-20 flex-wrap lg:flex-nowrap">
         <Section className="">
           <div>
-            <EpisodeSelector />
+            <EpisodeSelector
+              episodes={anime?.media?.episode}
+              currentEpisode={episode}
+            />
           </div>
 
-          <div>
+          <div className="mt-24">
             <h2 className="text-2xl font-medium">Info</h2>
             {!mediaLoading && <MediaDetails media={anime?.media} />}
           </div>

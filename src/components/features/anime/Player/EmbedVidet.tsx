@@ -8,7 +8,7 @@ export default function EmbedVidet() {
         width="100%"
         height="100%"
         allowFullScreen
-      ></iframe>
+      />
     </div>
   );
 }

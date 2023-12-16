@@ -25,8 +25,10 @@ export default function SearchInDatabase({
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/anime/search?query=${debouncedQuery}`
       );
-      return res.json();
+      const results = await res.json();
+      return results.data;
     },
+    initialData: [],
   });
 
   const router = useRouter();
@@ -132,7 +134,7 @@ export default function SearchInDatabase({
                   className="px-4 py-2 cursor-pointer bg-neutral-800 w-full hover:bg-neutral-700"
                 >
                   <AnimeCard
-                    title={suggestion?.title?.romaji}
+                    title={suggestion?.titleRomanji}
                     image={suggestion.coverImage.extraLarge}
                     genres={suggestion.coverImage}
                     format={suggestion.format}

@@ -1,11 +1,11 @@
 import { Api } from "@/utils/api";
 import Cookies from "js-cookie";
+import { UseBrowseOptions } from "./useBrowseAnime";
 
 const accessToken = Cookies.get("accessToken");
 
 export const useApi = () => ({
   getUploadedAnimes: async (page: number = 1, pageSize: number = 10) => {
-    console.log(page);
     try {
       const response = await Api.get(
         `/anime?page=${page}&pageSize=${pageSize}`
@@ -49,9 +49,9 @@ export const useApi = () => ({
     }
   },
 
-  search: async (query: string, type: string) => {
+  search: async (options: UseBrowseOptions) => {
     try {
-      const response = await Api.get(`/anime/search?query=${query}`);
+      const response = await Api.get(`/anime/search?query=`);
       console.log(response);
       return response;
     } catch (error) {
@@ -93,9 +93,54 @@ export const useApi = () => ({
     }
   },
 
-  getEpisodeById: async (id: number) => {
+  getEpisodeById: async (id: string) => {
     try {
       const response = await Api.get(`/episodes/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  // Chapters
+
+  getChapterById: async (id: string) => {
+    try {
+      const response = await Api.get(`chapter/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getMangaChapterById: async (id: string) => {
+    try {
+      const response = await Api.get(`manga/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getSearchResults: async (options: UseBrowseOptions) => {
+    console.log(options);
+    try {
+      const queryParams = Object.entries(options)
+        .filter(
+          ([key, value]) =>
+            value !== undefined &&
+            value !== null &&
+            value !== "" &&
+            value?.length !== 0
+        )
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
+
+      const url = `anime/search?${queryParams}`;
+
+      console.log(url);
+      const response = await Api.get(url);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error);
