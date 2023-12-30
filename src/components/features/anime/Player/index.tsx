@@ -4,7 +4,7 @@ import Loading from "@/components/shared/Loading";
 import { useVideo } from "@/contexts/GlobalPlayerContext";
 import Player, { useInteract } from "netplayer";
 import { useRouter } from "next/navigation";
-import React, { useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { isMobile } from "react-device-detect";
 import Overlay from "./Overlay";
 import { BsArrowLeft } from "react-icons/bs";
@@ -13,6 +13,10 @@ import Controls from "./Controls";
 import NextEpisodeButton from "./NextEpisodeButton";
 import EpisodesButton from "./EpisodesButton";
 import EpisodeSelector from "../EpisodeSelector";
+import useSaveWatched from "@/hooks/useSaveWatched";
+import { parseNumberFromString } from "@/utils";
+import Hls from "netplayer/dist/types/hls.js";
+import { buildAbsoluteURL } from "url-toolkit";
 
 interface IEpisode {
   id: string;
@@ -35,7 +39,183 @@ export default function VideoPlayer({
   isEpisodeLoading: boolean;
   anime: any;
 }) {
-  const { videoRef } = useVideo();
+  // const { videoRef } = useVideo();
+  const videoRef: any = useRef<HTMLVideoElement>(null);
+  const saveWatchedInterval: any = useRef<NodeJS.Timer>(null);
+
+  const saveWatchedMutation = useSaveWatched();
+  const corsServers = ["https://corsproxy.io"];
+
+  // const handleHlsInit = useCallback((hls: Hls, source: any) => {
+  //   // @ts-ignore
+  //   // hls.on("hlsManifestParsed", (_, info) => {
+  //   //   info.levels.forEach((level: any) => {
+  //   //     if (!level?.url?.length) return;
+
+  //   //     level.url = level.url.map((url: any) => {
+  //   //       if (!corsServers.some((server: any) => url.includes(server))) return url;
+
+  //   //       if (url.includes("corsproxy")) {
+  //   //         const targetUrl = decodeURIComponent(
+  //   //           url.replace("https://corsproxy.io/", "")
+  //   //         );
+
+  //   //         const finalUrl = buildAbsoluteURL(source.file, targetUrl, {
+  //   //           alwaysNormalize: true,
+  //   //         });
+
+  //   //         return `https://corsproxy.io/?${encodeURIComponent(finalUrl)}`;
+  //   //       } else if (url.includes(config.proxyServerUrl)) {
+  //   //         const targetUrl = decodeURIComponent(
+  //   //           url.replace(config.proxyServerUrl + "/", "")
+  //   //         );
+
+  //   //         const href = new URL(source.file);
+  //   //         const baseUrl = href.searchParams.get("url");
+
+  //   //         const finalUrl = buildAbsoluteURL(baseUrl, targetUrl, {
+  //   //           alwaysNormalize: true,
+  //   //         });
+
+  //   //         return createProxyUrl(finalUrl, source.proxy);
+  //   //       }
+  //   //     });
+  //   //   });
+  //   // });
+
+  //   // @ts-ignore
+  //   hls.on("hlsFragLoading", (_, { frag }) => {
+  //     if (
+  //       !corsServers.some((server) => frag.url.includes(server)) ||
+  //       frag.relurl.includes("http")
+  //     )
+  //       return;
+
+  //     if (frag.url.includes(config.proxyServerUrl)) {
+  //       const href = new URL(frag.baseurl);
+  //       const targetUrl = href.searchParams.get("url");
+
+  //       const url = buildAbsoluteURL(targetUrl, frag.relurl, {
+  //         alwaysNormalize: true,
+  //       });
+
+  //       href.searchParams.set("url", url);
+
+  //       frag.url = href.toString();
+
+  //       // Free CORS server
+  //     } else if (frag.url.includes("corsproxy")) {
+  //       const targetUrl = decodeURIComponent(
+  //         frag.baseurl.replace("https://corsproxy.io/?", "")
+  //       );
+
+  //       const url = buildAbsoluteURL(targetUrl, frag.relurl, {
+  //         alwaysNormalize: true,
+  //       });
+
+  //       frag.url = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+  //     }
+  //   });
+  // }, []);
+
+  console.log(anime);
+
+  useEffect(() => {
+    const videoEl = videoRef.current;
+
+    if (!videoEl) return;
+
+    const handleSaveTime = () => {
+      if (saveWatchedInterval.current) {
+        clearInterval(saveWatchedInterval.current);
+      }
+      saveWatchedInterval.current = setInterval(() => {
+        const storedHistory = localStorage.getItem("aniverse_history");
+        let watchedEpisodes = [];
+
+        if (storedHistory) {
+          watchedEpisodes = JSON.parse(storedHistory).watchedEpisodes || [];
+        }
+
+        const existingEpisodeIndex = watchedEpisodes.findIndex(
+          (episode: any) => episode.episodeId === episodeData.id
+        );
+
+        if (existingEpisodeIndex !== -1) {
+          watchedEpisodes[existingEpisodeIndex].watchedTime =
+            videoRef.current?.currentTime;
+        } else {
+          watchedEpisodes.unshift({
+            anime: {
+              id: anime.id,
+              title: anime.title.english,
+              thumbnail: anime.bannerImage || anime.coverImage.extraLarge,
+            },
+            episode: {
+              title: episodeData.title,
+              number: episodeData.number,
+              description: episodeData.description,
+              duration: videoRef.current.duration,
+            },
+            episodeId: episodeData.id,
+            watchedTime: videoRef.current?.currentTime,
+            episodeNumber: episodeData.number,
+          });
+        }
+
+        localStorage.setItem(
+          "aniverse_history",
+          JSON.stringify({ watchedEpisodes })
+        );
+        // saveWatchedMutation.mutate({
+        //   media_id: Number(anime.id),
+        //   episode_id: episodeData.id,
+        //   watched_time: videoRef.current?.currentTime,
+        //   episode_number: episodeData?.number,
+        // });
+      }, 10000);
+    };
+
+    videoEl.addEventListener("canplay", handleSaveTime);
+
+    return () => {
+      clearInterval(saveWatchedInterval.current);
+      videoEl.removeEventListener("canplay", handleSaveTime);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [anime, episodeData, videoRef.current]);
+
+  // useEffect(() => {
+  //   const watchedEpisode: any = localStorage.getItem("aniverse_history");
+  //   const watchedEpisodes = JSON.parse(watchedEpisode)?.watchedEpisodes;
+  //   const watchedEpisodeData = watchedEpisodes?.findIndex(
+  //     (episode: any) => episode.episode_id === episodeData.id
+  //   );
+  //   const videoEl = videoRef.current;
+
+  //   if (!videoEl) return;
+
+  //   const currentEpisodeNumber = episodeData.number;
+
+  //   // if (currentEpisodeNumber !== watchedEpisodeData.) return;
+
+  //   const handleVideoPlay = () => {
+  //     videoEl.currentTime = watchedEpisodeData.watchedTime;
+
+  //     videoEl.removeEventListener("canplay", handleVideoPlay);
+  //     videoEl.removeEventListener("timeupdate", handleVideoPlay);
+  //   };
+
+  //   // Only set the video time if the video is ready
+  //   videoEl.addEventListener("canplay", handleVideoPlay);
+  //   // Just in case the video is already played.
+  //   videoEl.addEventListener("timeupdate", handleVideoPlay);
+
+  //   return () => {
+  //     videoEl.removeEventListener("canplay", handleVideoPlay);
+  //     videoEl.removeEventListener("timeupdate", handleVideoPlay);
+  //   };
+  // }, [episodeData, videoRef.current]);
 
   const PlayerControls = React.memo(() => {
     // const {

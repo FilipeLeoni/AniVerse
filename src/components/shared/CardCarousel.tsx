@@ -18,12 +18,22 @@ const getVisibleIndex = (swiper: SwiperInstance) => {
   };
 };
 
-const CardCarousel = ({ title, data }: any) => {
+const CardCarousel = ({ title, data, onEachCard }: any, props: any) => {
   const [swiper, setSwiper] = useState<SwiperInstance>();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [lastVisible, setLastVisible] = useState<any>(null);
 
+  // const {
+  //   onEachCard = (data: any, isHover: any) => (
+  //     <SwiperCard isExpanded={isHover} data={data} />
+  //   ),
+  // } = props;
+
   const HOVER_WIDTH = 3;
+
+  // const defaultCard = (data: any, isHover: any) => (
+  //   <SwiperCard isExpanded={isHover} data={data} />
+  // );
 
   const handleSlideHover = (index: number) => () => {
     if (!swiper) return;
@@ -51,14 +61,11 @@ const CardCarousel = ({ title, data }: any) => {
     const { first: firstVisibleCardIndex, last: lastVisibleCardIndex } =
       getVisibleIndex(swiper);
 
-    console.log(firstVisibleCardIndex, lastVisibleCardIndex);
     setLastVisible(lastVisibleCardIndex);
 
     const nonPlaceholderSlides = swiper.slides.filter(
       (slide: any) => !slide.classList.contains("swiper-placeholder")
     );
-
-    console.log(nonPlaceholderSlides.length);
 
     const shouldPushSlide =
       nonPlaceholderSlides.length - (HOVER_WIDTH - 1) >= slidesPerGroup &&
@@ -66,10 +73,8 @@ const CardCarousel = ({ title, data }: any) => {
         lastVisibleCardIndex === index);
 
     if (shouldPushSlide) {
-      console.log("push");
       if (!nextSlide) {
         const element = document.createElement("div");
-        console.log("add");
         element.className = "swiper-slide swiper-placeholder";
 
         swiper.$wrapperEl?.[0].append(element);
@@ -144,6 +149,7 @@ const CardCarousel = ({ title, data }: any) => {
       nonPlaceholderSlides.length - (HOVER_WIDTH - 1) >= slidesPerGroup &&
       (lastVisible - (HOVER_WIDTH - 1) < index || lastVisible === index);
 
+    console.log();
     if (nonPlaceholderSlides.length <= slidesPerGroup) {
       if (
         index === nonPlaceholderSlides.length - 1 ||
@@ -240,13 +246,19 @@ const CardCarousel = ({ title, data }: any) => {
               onMouseLeave={debounce(handleSlideLeave(index), 200)}
               key={index}
             >
-              <SwiperCard isExpanded={activeIndex === index} data={item} />
+              {onEachCard(item, activeIndex === index)}
             </SwiperSlide>
           );
         })}
       </Swiper>
     </div>
   );
+};
+
+CardCarousel.defaultProps = {
+  onEachCard: (data: any, isHover: any) => (
+    <SwiperCard isExpanded={isHover} data={data} />
+  ),
 };
 
 export default React.memo(CardCarousel);

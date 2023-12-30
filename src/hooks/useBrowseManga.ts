@@ -7,6 +7,7 @@ import {
   MediaType,
 } from "@/@types/anilist";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useApi } from "./useApi";
 // import { removeDup } from "@/utils";d
 
 export interface UseBrowseOptions {
@@ -34,69 +35,29 @@ const useBrowse: any = (options: UseBrowseOptions) => {
     isAdult,
   } = options;
 
-  // return useInfiniteQuery(
+  async function FetchPage(options: UseBrowseOptions) {
+    const api = useApi();
 
-  // ["browse-manga", options],
-  // async ({ pageParam = 1 }) => {
-  //   let translationMediaIds: number[] = [];
+    const res = await api.getMangaSearch({
+      format,
+      genres,
+      keyword,
+      sort,
+      tags,
+      country,
+      status,
+      isAdult,
+    });
+    return res;
+  }
 
-  //   // Search media from translations
-  //   if (keyword) {
-  //     const { data: mediaTranslations } = await supabaseClient
-  //       .from<Translation>("kaguya_translations")
-  //       .select("mediaId")
-  //       .eq("mediaType", MediaType.Manga)
-  //       .textSearch("title", keyword, {
-  //         type: "plain",
-  //       });
-
-  //     if (mediaTranslations?.length) {
-  //       translationMediaIds = removeDup(
-  //         mediaTranslations.map((translation) => translation.mediaId)
-  //       );
-  //     }
-  //   }
-
-  //   const searchData = await getPageMedia({
-  //     type: MediaType.Manga,
-  //     format,
-  //     perPage: limit,
-  //     countryOfOrigin: country,
-  //     sort: [sort],
-  //     status,
-  //     page: pageParam,
-  //     ...(tags?.length && { tag_in: tags }),
-  //     ...(genres?.length && { genre_in: genres }),
-  //     ...(keyword && { search: keyword }),
-  //     isAdult:
-  //       isAdult || genres.includes("Hentai") || genres.includes("Ecchi"),
-  //   });
-
-  //   // If translations are found, search the anime using id_in. Then append to anilist search results.
-  //   if (translationMediaIds?.length) {
-  //     const searchDataWithTranslations = await getPageMedia({
-  //       id_in: translationMediaIds,
-  //       type: MediaType.Manga,
-  //     });
-
-  //     const existingMediaIds = searchData?.media?.map((media) => media.id);
-
-  //     searchDataWithTranslations?.media.forEach((media) => {
-  //       if (!existingMediaIds?.includes(media.id)) {
-  //         searchData?.media?.push(media);
-  //       }
-  //     });
-  //   }
-
-  //   return searchData;
-  // },
-  // {
-  //   getNextPageParam: (lastPage) =>
-  //     lastPage.pageInfo.hasNextPage
-  //       ? lastPage.pageInfo.currentPage + 1
-  //       : null,
-  // }
-  // );
+  return useInfiniteQuery({
+    queryKey: ["browse", options],
+    queryFn: ({ pageParam = 1 }) => FetchPage(options),
+    getNextPageParam: (lastPage: any, allPages: any) => {
+      return lastPage?.length ? allPages?.length + 1 : undefined;
+    },
+  } as any);
 };
 
 export default useBrowse;

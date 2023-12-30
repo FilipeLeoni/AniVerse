@@ -62,6 +62,7 @@ const BrowsePage = ({ query: baseQuery }: any) => {
   // const { t } = useTranslation();
   const { TYPES } = useConstantTranslation();
   const searchParams = useSearchParams();
+  const searchType = searchParams ? searchParams.get("type") : null;
 
   let format: any = undefined;
   let keyword: any = "";
@@ -71,7 +72,7 @@ const BrowsePage = ({ query: baseQuery }: any) => {
   let genres: any = [];
   let tags: any = [];
   let countries: any = [];
-  let type: any = "anime";
+  let type: any = searchType || "anime";
 
   const query: any = {
     format: format as MediaFormat,
@@ -85,6 +86,8 @@ const BrowsePage = ({ query: baseQuery }: any) => {
     type,
   };
 
+  const { replace } = useRouter();
+
   const handleTypeChange = (type: (typeof TYPES)[number]) => {
     const truthyQuery: any = {};
 
@@ -94,12 +97,7 @@ const BrowsePage = ({ query: baseQuery }: any) => {
       truthyQuery[key] = query[key];
     });
 
-    console.log(truthyQuery);
-
-    // router.replace({
-    //   query: { ...truthyQuery, type: type.value },
-    //   pathname: "/browse",
-    // });
+    replace(`/search?type=${type.value}`);
   };
 
   const BrowseComponent = useMemo(() => components[type], [type]);

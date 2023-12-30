@@ -100,23 +100,6 @@ const BrowseList: React.FC<BrowseListProps> = ({
     [data?.pages]
   );
 
-  const router = useRouter();
-
-  console.log(totalData);
-
-  const CreateQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
-      return params.toString();
-    },
-    [searchParams]
-  );
-
   useEffect(() => {
     const values: any = getValues();
     const queryParams: string[] = [];

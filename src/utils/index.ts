@@ -186,9 +186,9 @@ export const parseNumberFromString = (text: string, fallbackNumber = null) => {
 // export const getScrollbarSize = () =>
 //   window.innerWidth - document.documentElement.offsetWidth;
 
-// export const isFalsy = (value: any) => {
-//   return value === undefined || value === null || value === "";
-// };
+export const isFalsy = (value: any) => {
+  return value === undefined || value === null || value === "";
+};
 
 // export const base64ToUint8Array = (base64: string) => {
 //   const padding = "=".repeat((4 - (base64.length % 4)) % 4);

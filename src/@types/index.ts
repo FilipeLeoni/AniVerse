@@ -21,19 +21,19 @@ export type AdditionalUser = {
 
 // export type MediaDescription = Record<string, string>;
 
-// export type SourceConnection = {
-//   id: string;
-//   sourceId: string;
-//   sourceMediaId: string;
-//   mediaId: number;
-//   source: Source;
-//   created_at?: string;
-//   updated_at?: string;
-// };
+export type SourceConnection = {
+  id: string;
+  sourceId: string;
+  sourceMediaId: string;
+  mediaId: number;
+  source: any;
+  created_at?: string;
+  updated_at?: string;
+};
 
-// export interface AnimeSourceConnection extends SourceConnection {
-//   episodes: Episode[];
-// }
+export interface AnimeSourceConnection extends SourceConnection {
+  episodes: any[];
+}
 
 // export interface MangaSourceConnection extends SourceConnection {
 //   chapters: Chapter[];
@@ -106,17 +106,18 @@ export type AdditionalUser = {
 //   clientData?: () => void;
 // }
 
-// export interface Watched {
-//   media: Media;
-//   episode: Episode;
-//   mediaId?: number;
-//   Page: any;
-//   userId: string;
-//   updated_at?: string;
-//   created_at?: string;
-//   watchedTime?: number;
-//   episodeNumber?: number;
-// }
+export interface Watched {
+  media: any;
+  anime: any;
+  episode: any;
+  mediaId?: number;
+  Page: any;
+  userId: string;
+  updated_at?: string;
+  created_at?: string;
+  watchedTime?: number;
+  episodeNumber?: number;
+}
 
 // export interface Read {
 //   media: Media;
@@ -201,21 +202,21 @@ export interface Comment {
 //   proxy?: Proxy;
 // };
 
-// export type BasicRoomUser = {
-//   name?: string | null;
-//   avatarUrl?: string | null;
-//   userId: string;
-//   isGuest?: boolean;
-// };
+export type BasicRoomUser = {
+  name?: string | null;
+  avatarUrl?: string | null;
+  userId: string;
+  isGuest?: boolean;
+};
 
-// export type RoomUser = {
-//   id: string; // Socket id
-//   roomId: number;
-//   peerId: string;
-//   isMicMuted: boolean;
-//   isHeadphoneMuted: boolean;
-//   useVoiceChat: boolean;
-// } & BasicRoomUser;
+export type RoomUser = {
+  id: string; // Socket id
+  roomId: number;
+  peerId: string;
+  isMicMuted: boolean;
+  isHeadphoneMuted: boolean;
+  useVoiceChat: boolean;
+} & BasicRoomUser;
 
 // export type Translation = {
 //   locale: string;
@@ -225,21 +226,21 @@ export interface Comment {
 //   mediaType?: string;
 // };
 
-// export type Room = {
-//   id: number;
-//   hostUser: AdditionalUser;
-//   hostUserId: string;
-//   mediaId: number;
-//   media: Media;
-//   created_at?: string;
-//   episode: Episode;
-//   episodeId: string;
-//   users: RoomUser[];
-//   title?: string;
-//   episodes: Episode[];
-//   visibility: "public" | "private";
-//   translations: Translation[];
-// };
+export type Room = {
+  id: number;
+  hostUser: any;
+  hostUserId: string;
+  mediaId: number;
+  media: any;
+  created_at?: string;
+  episode: any;
+  episodeId: string;
+  users: RoomUser[];
+  title?: string;
+  episodes: any[];
+  visibility: "public" | "private";
+  translations: any[];
+};
 
 // export type Chat = {
 //   body?: string;

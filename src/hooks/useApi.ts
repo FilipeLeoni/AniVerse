@@ -26,12 +26,26 @@ export const useApi = () => ({
     }
   },
 
-  getAnimeById: async (id: number) => {
+  getAnimeById: async (id: number | string) => {
     try {
       const response = await Api.get(`/anime/${id}`);
       return response.data;
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  getAnimeByMediaIds: async (ids: any) => {
+    try {
+      const response = await Api.get("/anime/media/get", {
+        params: {
+          media_ids: ids.join(","),
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   },
 
@@ -116,9 +130,24 @@ export const useApi = () => ({
   getMangaChapterById: async (id: string) => {
     try {
       const response = await Api.get(`manga/${id}`);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  getMangaMediaByIds: async (ids: string[]) => {
+    try {
+      const response = await Api.get("/manga/media/get", {
+        params: {
+          media_ids: ids.join(","),
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   },
 
@@ -137,6 +166,30 @@ export const useApi = () => ({
         .join("&");
 
       const url = `anime/search?${queryParams}`;
+
+      console.log(url);
+      const response = await Api.get(url);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getMangaSearch: async (options: UseBrowseOptions) => {
+    console.log(options);
+    try {
+      const queryParams = Object.entries(options)
+        .filter(
+          ([key, value]) =>
+            value !== undefined &&
+            value !== null &&
+            value !== "" &&
+            value?.length !== 0
+        )
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
+
+      const url = `manga/search?${queryParams}`;
 
       console.log(url);
       const response = await Api.get(url);

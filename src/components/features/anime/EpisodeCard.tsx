@@ -19,11 +19,55 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
   className,
   ...props
 }) => {
+  console.log(duration);
+  console.log(watchedTime);
+  // const watchedPercentage = (watchedTime / duration) * 100;
   const watchProgressPercent = useMemo(
     () => (duration === 0 ? 0 : (watchedTime / duration) * 100),
     [watchedTime, duration]
   );
+  // console.log("Porcentagem assistida:", watchedPercentage.toFixed(2) + "%");
+  // const watchProgressPercent = useMemo(
+  //   () => (duration === 0 ? 0 : (watchedTime / duration) * 100),
+  //   [watchedTime, duration]
+  // );
 
+  // const watchProgressPercent = useMemo(() => {
+  //   if (duration <= 0) return 0; // Evita divisão por zero
+
+  //   let progress = (watchedTime / duration) * 100;
+  //   progress = Math.min(progress, 100); // Limita a porcentagem a 100%
+
+  //   return progress;
+  // }, [watchedTime, duration]);
+
+  // const watchProgressPercent = useMemo(() => {
+  //   let watchedSeconds = watchedTime;
+  //   let durationSeconds = duration;
+
+  //   // Verifica se a duração está em um intervalo aceitável para ser considerada em minutos
+  //   if (durationSeconds > 0 && durationSeconds < 10000) {
+  //     // Se a duração estiver em minutos, converte para segundos
+  //     durationSeconds *= 60;
+  //     console.log("chamado");
+  //   }
+
+  //   // Verifica se o tempo assistido está em um intervalo aceitável para ser considerado em minutos
+  //   if (watchedSeconds > 0 && watchedSeconds < 10000) {
+  //     // Se o tempo assistido estiver em minutos, converte para segundos
+  //     watchedSeconds *= 60;
+  //     console.log("chamado");
+  //   }
+
+  //   if (durationSeconds <= 0) return 0; // Evita divisão por zero
+
+  //   let progress = (watchedSeconds / durationSeconds) * 100;
+  //   progress = Math.min(progress, 100); // Limita a porcentagem a 100%
+
+  //   return progress;
+  // }, [watchedTime, duration]);
+
+  console.log(watchProgressPercent);
   return (
     <div
       className={classNames(
@@ -43,7 +87,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60"></div>
 
         <div className="w-full absolute bottom-0 p-2">
-          <p className="text-lg font-semibold">{episode.name}</p>
+          <p className="text-lg font-semibold">{episode.title}</p>
           <p className="text-sm text-gray-300 -mt-1 line-clamp-1 overflow-ellipsis">
             {episode.description}
           </p>
@@ -58,7 +102,7 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
         </div>
 
         <div
-          className="absolute bottom-0 h-1 bg-primary-500"
+          className="absolute bottom-0 h-1 bg-primary-500 w-full"
           style={{ width: `${watchProgressPercent}%` }}
         />
       </div>

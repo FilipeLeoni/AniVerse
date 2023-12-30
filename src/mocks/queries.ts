@@ -513,3 +513,163 @@ export const getAnimeById = async (id: any, type: any) => {
 
   return response.json();
 };
+
+// export const getCharacterById = async (id: string) => {
+//   const response: any = await fetch(`https://graphql.anilist.co`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Accept: "application/json",
+//     },
+
+//     body: JSON.stringify({
+//       query: `
+//       query ($id: Int) {
+//         Character (id: $id) {
+//           id
+//           name {
+//             full
+//             native
+//             alternative
+//           }
+//           image {
+//             large
+//           }
+//           description
+//           siteUrl
+//           favourites
+//           isFavourite
+//           media {
+//             nodes {
+//               id
+//               title {
+//                 userPreferred
+//               }
+//               bannerImage
+//               coverImage {
+//                 extraLarge
+//                 color
+//               }
+//               averageScore
+//               favourites
+//               genres
+//               description
+//               type
+//             }
+//           }
+//         }
+//       }
+//       `,
+//       variables: {
+//         id,
+//       },
+//     }),
+//   });
+//   console.log(response);
+//   return response.json();
+// };
+
+export const charactersDefaultFields = `
+id
+name {
+  first
+  middle
+  last
+  full
+  native
+  alternative
+  alternativeSpoiler
+  userPreferred
+}
+image {
+  large
+  medium
+}
+description
+gender
+dateOfBirth {
+  year
+  month
+  day
+}
+age
+bloodType
+updatedAt
+favourites
+`;
+
+export const mediaDefaultFields = `
+id
+type
+title {
+  userPreferred
+}
+coverImage {
+  extraLarge
+  large
+  color
+}
+startDate {
+  year
+  month
+  day
+}
+endDate {
+  year
+  month
+  day
+}
+bannerImage
+season
+seasonYear
+description
+type
+format
+status(version: 2)
+episodes
+duration
+chapters
+volumes
+favourites
+trending
+genres
+isAdult
+averageScore
+popularity
+trailer {
+  id
+  site 
+}
+nextAiringEpisode {
+  airingAt
+  episode
+}
+`;
+
+export const getCharacterDetails = async (id: any) => {
+  const response: any = await fetch(`https://graphql.anilist.co`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+
+    body: JSON.stringify({
+      query: `
+      query ($id: Int) {
+        Character (id: $id) {
+          ${charactersDefaultFields}
+      
+        }
+      }
+      `,
+      variables: {
+        id,
+      },
+    }),
+  });
+
+  const test = await response.json();
+  console.log(test.data);
+  return test.data;
+};

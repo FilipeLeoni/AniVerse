@@ -8,13 +8,13 @@ import { ReadSettingsContextProvider } from "@/contexts/ReadSettingsContext";
 import { useApi } from "@/hooks/useApi";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 export default function Read({ params }: { params: any }) {
   console.log(params);
   const mangaId = params.params[0];
   const chapterId = params.params[1];
-  console.log(chapterId);
+  const saveReadTimeout = useRef<NodeJS.Timeout>();
 
   const api = useApi();
   const { data: chapter } = useQuery({
@@ -25,8 +25,8 @@ export default function Read({ params }: { params: any }) {
     },
   });
 
-  const { data: chapters } = useQuery({
-    queryKey: ["chapters", mangaId],
+  const { data: manga, isLoading: isLoadingChapters } = useQuery({
+    queryKey: ["MangaInfo", mangaId],
     queryFn: () => {
       const response = api.getMangaChapterById(mangaId);
       return response;
@@ -35,8 +35,8 @@ export default function Read({ params }: { params: any }) {
 
   const currentChapterIndex = useMemo(
     () =>
-      chapters?.chapters?.findIndex((chapter: any) => chapter.id === chapterId),
-    [chapters, chapterId]
+      manga?.chapters?.findIndex((chapter: any) => chapter.id === chapterId),
+    [manga, chapterId]
   );
 
   const router = useRouter();
@@ -48,8 +48,91 @@ export default function Read({ params }: { params: any }) {
     [chapterId, router]
   );
 
+  // useEffect(() => {
+  //   if (saveReadTimeout.current) {
+  //     clearTimeout(saveReadTimeout.current);
+  //   }
+
+  //   saveReadTimeout.current = setTimeout(() => {
+  //     const storedHistory = localStorage.getItem("aniverse_history");
+  //     let readChapters = [];
+
+  //     if (storedHistory) {
+  //       readChapters = JSON.parse(storedHistory).readChapters || [];
+  //     }
+
+  //     console.log("chamado");
+  //     readChapters.unshift({
+  //       manga: {
+  //         id: mangaId,
+  //         title: manga.title.english,
+  //         coverImage: manga.coverImage.extraLarge || manga.bannerImage,
+  //         bannerImage: manga.bannerImage,
+  //       },
+  //       chapter: {
+  //         id: chapter.id,
+  //         title: chapter.title,
+  //         number: chapter.number,
+  //       },
+  //       readTime: Date.now(),
+  //     });
+  //   }, 10000);
+
+  //   return () => {
+  //     clearTimeout(saveReadTimeout.current);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [chapter, mangaId]);
+
+  useEffect(() => {
+    let saveReadTimeout: any;
+
+    const saveReadChapters = () => {
+      const storedHistory: any = localStorage.getItem("aniverse_history");
+      let readChapters = [];
+
+      if (storedHistory) {
+        readChapters = JSON.parse(storedHistory).readChapters || [];
+      }
+
+      console.log(manga);
+      readChapters.unshift({
+        mangaId: manga.id,
+        chapterId: chapter.id,
+        readTime: Date.now(),
+      });
+
+      localStorage.setItem(
+        "aniverse_history",
+        JSON.stringify({
+          ...(JSON.parse(storedHistory) || {}),
+          readChapters,
+        })
+      );
+    };
+
+    if (saveReadTimeout) {
+      clearTimeout(saveReadTimeout);
+    }
+
+    saveReadTimeout = setTimeout(saveReadChapters, 10000);
+
+    return () => {
+      clearTimeout(saveReadTimeout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapter, mangaId]);
+
+  if (isLoadingChapters || !chapter) {
+    return (
+      <div className="relative w-full min-h-screen">
+        <Loading />
+      </div>
+    );
+  }
+
   console.log(chapter);
-  console.log(chapters);
+  console.log(manga);
   return (
     <div>
       {chapter && (
@@ -58,7 +141,7 @@ export default function Read({ params }: { params: any }) {
             manga: chapter.Manga,
             currentChapter: chapter,
             currentChapterIndex: currentChapterIndex,
-            chapters: chapters.chapters,
+            chapters: manga.chapters,
             setChapter: handleChapterNavigate,
             // sourceId,
             images: chapter?.pages,

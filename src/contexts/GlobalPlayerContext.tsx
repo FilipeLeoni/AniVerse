@@ -9,6 +9,7 @@ export const VideoProvider = ({ children }: any) => {
   const intervalRef: any = useRef(null);
 
   const handleTimeUpdate = () => {
+    console.log("chamado hehe");
     const video: any = videoRef.current;
     if (video && video.readyState >= 2) {
       const currentTime = Math.floor(video.currentTime);
@@ -42,9 +43,12 @@ export const VideoProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
+    console.log("chamado");
+
     const video: any = videoRef.current;
     if (video) {
-      video.addEventListener("timeupdate", handleTimeUpdate);
+      console.log("chamado");
+      video.addEventListener("timeupdate", handleTimeUpdate());
 
       // Definir um intervalo para verificar a cada segundo
       intervalRef.current = setInterval(handleTimeUpdate, 1000);

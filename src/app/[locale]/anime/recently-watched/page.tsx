@@ -10,18 +10,36 @@ import useWatchList from "@/hooks/useWatchList";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
+import { IoArrowBack } from "react-icons/io5";
 
 export default function RecentlyWatched() {
   const api = useApi();
 
-  const { data: related, isLoading } = useQuery<any>({
-    queryKey: ["Watched"],
+  const storedHistory: any = localStorage.getItem("aniverse_history");
+  let related: any = [];
+
+  if (storedHistory) {
+    related = JSON.parse(storedHistory).watchedEpisodes || [];
+  }
+
+  const uniqueAnimeIdsSet = new Set();
+  for (const item of related) {
+    console.log(item);
+    uniqueAnimeIdsSet.add(item.anime.id);
+  }
+  const animeIds = Array.from(uniqueAnimeIdsSet);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["watched", animeIds],
     queryFn: async () => {
-      const response = await api.getUploadedAnimes();
-      return { media: response };
+      const res = await api.getAnimeByMediaIds(animeIds);
+      return res;
     },
   });
+
+  const { back } = useRouter();
 
   return (
     <Section className="min-h-screen">
@@ -32,10 +50,11 @@ export default function RecentlyWatched() {
           </div>
         ) : (
           <React.Fragment>
-            <h1 className="pt-14 text-4xl font-semibold mb-10">
+            <h1 className="pt-14 text-4xl font-semibold mb-10 flex gap-4 items-center">
+              <IoArrowBack onClick={() => back()} className="cursor-pointer" />
               Recently watched
             </h1>
-            <List data={related?.media?.data}>
+            <List data={data}>
               {(node: any) => {
                 const durationTime = node?.duration * 60;
                 const watchProgressPercent =
@@ -86,9 +105,9 @@ export default function RecentlyWatched() {
                                   }`}
                             </p>
 
-                            <p className="mr-2 mb-2 px-1 py-0.5 rounded-md bg-background-700">
-                              {/* {parseTime(node.watchedTime)} */}
-                            </p>
+                            {/* <p className="mr-2 mb-2 px-1 py-0.5 rounded-md bg-background-700">
+                            {parseTime(node.watchedTime)}
+                          </p> */}
                           </div>
 
                           <div

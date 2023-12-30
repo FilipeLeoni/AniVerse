@@ -7,8 +7,50 @@ import classNames from "classnames";
 import EpisodeCard from "./EpisodeCard";
 import Link from "next/link";
 
-function EpisodeSelector({ episodes, currentEpisode }: any) {
+function EpisodeSelector(
+  { episodes, currentEpisode, onEachEpisode, onEachEpisodeThumb }: any,
+  props: any
+) {
   const [thumbStyle, setThumbStyle] = useState("number");
+
+  const defaultOnEachEpisode = (episode: any) => (
+    <Link
+      href={`/anime/watch/${props.mediaId}/${episode.sourceId}/${episode.sourceEpisodeId}`}
+      key={episode.sourceEpisodeId}
+      shallow
+    >
+      <div
+        className={classNames(
+          "rounded-md bg-background-800 col-span-1 aspect-w-2 aspect-h-1 group"
+        )}
+      >
+        <div className="flex items-center justify-center w-full h-full group-hover:bg-white/10 rounded-md transition duration-300">
+          <p>{episode.number}</p>
+        </div>
+      </div>
+    </Link>
+  );
+
+  const defaultOnEachEpisodeThumb = (episode: any) => (
+    <Link
+      key={episode.id}
+      className="aspect-w-1 aspect-h-1 group cursor-pointer"
+      href={`/anime/watch/${episode.id}`}
+    >
+      <EpisodeCard
+        episode={{
+          number: episode.number,
+          name: episode.title,
+          thumbnail: episode.thumbnail,
+          description: episode.description,
+        }}
+        className="cursor-pointer"
+      />
+    </Link>
+  );
+
+  const renderEpisode = onEachEpisode || defaultOnEachEpisode;
+  const renderEpisodeThumb = onEachEpisodeThumb || defaultOnEachEpisodeThumb;
 
   return (
     <div className="flex flex-col pt-4">
@@ -40,7 +82,8 @@ function EpisodeSelector({ episodes, currentEpisode }: any) {
 
           {thumbStyle === "number" ? (
             <div className="grid xl:grid-cols-9 lg:grid-cols-8 md:grid-cols-7 sm:grid-cols-6 grid-cols-4 gap-4">
-              {episodes?.map((episode: any) => (
+              {episodes.map(renderEpisode)}
+              {/* {episodes?.map((episode: any) => (
                 <Link
                   key={episode.id}
                   className="aspect-w-2 aspect-h-1 group cursor-pointer"
@@ -59,11 +102,12 @@ function EpisodeSelector({ episodes, currentEpisode }: any) {
                     </div>
                   </div>
                 </Link>
-              ))}
+              ))} */}
             </div>
           ) : (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 p-2 max-h-[360px] overflow-y-auto">
-              {episodes?.map((episode: any) => (
+              {episodes.map(renderEpisodeThumb)}
+              {/* {episodes?.map((episode: any) => (
                 <Link
                   key={episode.id}
                   className="aspect-w-1 aspect-h-1 group cursor-pointer"
@@ -79,7 +123,7 @@ function EpisodeSelector({ episodes, currentEpisode }: any) {
                     className="cursor-pointer"
                   />
                 </Link>
-              ))}
+              ))} */}
             </div>
           )}
         </>

@@ -11,11 +11,12 @@ import useBrowse, { UseBrowseOptions } from "@/hooks/useBrowseManga";
 import useConstantTranslation from "@/hooks/useConstantTranslation";
 import { MediaSort, MediaType } from "@/@types/anilist";
 import { debounce } from "@/utils";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineSearch } from "react-icons/ai";
 import { COUNTRIES, FORMATS, STATUS } from "@/constants/en";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const initialValues: UseBrowseOptions = {
   format: undefined,
@@ -35,18 +36,25 @@ const BrowseList: React.FC<BrowseListProps> = ({
 }) => {
   const defaultValues = { ...initialValues, ...defaultQuery };
 
+  const searchParams: any = useSearchParams();
+  const searchQuery = searchParams ? searchParams.get("keyword") : null;
+  const searchGenres = searchParams ? searchParams.get("genres") : null;
+  const searchType = searchParams ? searchParams.get("format") : null;
+
   const {
     control,
     register,
     watch,
     setValue,
     reset,
+    getValues,
     formState: { isDirty },
   } = useForm<UseBrowseOptions>({
     defaultValues,
   });
 
-  const router = useRouter();
+  // const router = useRouter();
+  const pathname = usePathname();
   const query: any = watch();
 
   const {
@@ -82,27 +90,51 @@ const BrowseList: React.FC<BrowseListProps> = ({
   );
 
   const totalData = useMemo(
-    () => data?.pages.flatMap((el: any) => el.media),
+    () => data?.pages.flatMap((el: any) => el?.data),
     [data?.pages]
   );
 
   useEffect(() => {
-    if (!isDirty) return;
+    const values: any = getValues();
+    const queryParams: string[] = [];
 
-    // Reset isDirty to false
-    reset(query);
-
-    const truthyQuery: any = {};
-
-    Object.keys(query).forEach((key) => {
-      if (!query[key]) return;
-
-      truthyQuery[key] = query[key];
+    Object.entries(values).forEach(([key, value]) => {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        key !== "sort" &&
+        key !== "isAdult"
+      ) {
+        if (Array.isArray(value) && value.length > 0) {
+          queryParams.push(`${key}=${value.join(",")}`);
+        } else if (!Array.isArray(value)) {
+          queryParams.push(`${key}=${value}`);
+        }
+      }
     });
 
-    router.replace({ query: truthyQuery, pathname: "/browse" });
+    const newUrl =
+      queryParams.length > 0
+        ? `${pathname}?${queryParams.join("&")}`
+        : pathname;
+
+    window.history.pushState({}, "", newUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDirty]);
+  }, [query]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      setValue("keyword", searchQuery);
+    }
+    if (searchGenres) {
+      const genresArray = searchGenres.split(",");
+      setValue("genres", genresArray);
+    }
+    if (searchType) {
+      setValue("format", searchType);
+    }
+  }, [searchQuery, searchGenres, searchType, setValue]);
 
   return (
     <div className="min-h-screen">

@@ -109,8 +109,6 @@ const Card: React.FC<AnimeCardProps> = (props) => {
     }
   };
 
-  console.log(cardSize);
-
   return (
     <Link href={redirectUrl}>
       <motion.div
@@ -123,13 +121,13 @@ const Card: React.FC<AnimeCardProps> = (props) => {
       >
         <motion.div
           className={classNames(
-            "transition duration-300 relative cursor-pointer bg-background-900, w-full overflow-hidden group",
+            "transition duration-300 relative cursor-pointer bg-background-900 h-full w-full overflow-hidden group",
             className
           )}
           style={{ height: cardSize.height }}
           initial={false}
         >
-          <div>
+          <div className="h-full">
             <AnimatePresence>
               {isDesktop && (
                 <motion.div
@@ -141,9 +139,10 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                   )}
                 >
                   <div
-                    className="h-full w-full transition-all"
+                    className="h-full transition-all"
                     style={{
                       width: isExpanded ? "100%" : "auto",
+                      height: "100%",
                     }}
                   >
                     {hasBannerImage && !showTrailer ? (
@@ -151,7 +150,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                         src={data.bannerImage as string}
                         fill
                         style={{ objectFit: "cover" }}
-                        className="rounded-sm"
+                        className="rounded-sm h-full"
                         alt={title as string}
                       />
                     ) : showTrailer ? (
@@ -179,7 +178,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                           className="text-2xl mb-3 font-semibold line-clamp-2"
                           style={{ color: primaryColor }}
                         >
-                          {title}
+                          {title || data?.title?.english}
                         </p>
 
                         <Description
@@ -237,7 +236,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
               transition={{ duration: 1 }}
               variants={hasBannerImage ? slotVariants : {}}
               className={classNames(
-                "absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full transition-all",
+                "absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full transition-all h-full",
                 isExpanded ? "z-0" : "z-20"
               )}
             >
@@ -265,7 +264,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
           className="mt-2 text-base font-semibold line-clamp-2"
           style={{ color: primaryColor }}
         >
-          {title}
+          {title || data?.title?.english}
         </motion.p>
       </motion.div>
     </Link>

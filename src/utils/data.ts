@@ -127,7 +127,7 @@ export const getDescription = (data: Media, locale?: string) => {
 };
 
 export const sortMediaUnit = (data: any[]) => {
-  return data.sort((a, b) => {
+  return data?.sort((a, b) => {
     const aNumber = parseNumbersFromString(a.name, 9999)?.[0];
     const bNumber = parseNumbersFromString(b.name, 9999)?.[0];
 

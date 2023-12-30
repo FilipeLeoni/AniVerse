@@ -53,7 +53,7 @@ const columns: Column<any>[] = [
 
       return (
         <div className="px-6 py-4">
-          <p className="line-clamp-5">{title || originalCell.title.english}</p>
+          <p className="line-clamp-5">{title || originalCell.title?.english}</p>
         </div>
       );
     },

@@ -23,6 +23,8 @@ import {
   getUpdatedMedia,
 } from "@/mocks/queries";
 import { AiFillPlayCircle } from "react-icons/ai";
+import WatchedSection from "@/components/features/anime/WatchedSection";
+import WatchedSwiperSkeleton from "@/components/skeletons/WatchedSwiperSkeleton";
 
 interface Anime {
   id: number;
@@ -79,6 +81,15 @@ export default function AnimePage() {
           icon={AiFillPlayCircle}
         />
       </div>
+
+      {!TrendingAnimeLoading ? (
+        <div className="space-y-8 mb-12">
+          <WatchedSection />
+        </div>
+      ) : (
+        <WatchedSwiperSkeleton />
+      )}
+
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
         {PopularAnimeLoading ? (
           <ListSwiperSkeleton />

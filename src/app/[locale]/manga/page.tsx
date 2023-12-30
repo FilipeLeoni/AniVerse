@@ -23,6 +23,7 @@ import {
   getUpdatedMedia,
 } from "@/mocks/queries";
 import BookIcon from "@/components/shared/BookIcon";
+import ReadSection from "@/components/features/manga/ReadSection";
 
 interface Anime {
   id: number;
@@ -91,6 +92,10 @@ export default function MangaPage() {
           isLoading={TrendingMangaLoading}
           icon={BookIcon}
         />
+      </div>
+
+      <div>
+        <ReadSection />
       </div>
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
         {PopularMangaLoading ? (

@@ -19,7 +19,9 @@ export default function WatchPage({ params }: { params: { params: string } }) {
   const { data: episode, isLoading: isEpisodeLoading } = useQuery<any>({
     queryKey: ["EpisodeAnime"],
     queryFn: async () => {
-      const response = await api.getEpisodeById(animeId);
+      const response = await api.getEpisodeById(
+        "81ef6ca4-1e42-4e40-8ed6-f790b9e50a4a"
+      );
       return response;
     },
   });
@@ -27,7 +29,7 @@ export default function WatchPage({ params }: { params: { params: string } }) {
   const { data: anime, isLoading: mediaLoading } = useQuery<any>({
     queryKey: ["AnimeById"],
     queryFn: async () => {
-      const response = await api.getAnimeById(2);
+      const response = await api.getAnimeById(animeId);
       return { media: response };
     },
   });
@@ -39,6 +41,8 @@ export default function WatchPage({ params }: { params: { params: string } }) {
       return { media: response };
     },
   });
+
+  console.log(episode);
 
   return (
     <div className="flex flex-col w-full h-auto pt-16">
