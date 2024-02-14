@@ -61,7 +61,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     const createSocket = (peerId?: string) => {
       const { origin } = new URL(config.socketServerUrl);
 
-      const socket = io("http://localhost:8000");
+      const socket = io("https://aniverse-79mb.onrender.com");
 
       socket.on("connect", () => {
         console.log(socket.id);
