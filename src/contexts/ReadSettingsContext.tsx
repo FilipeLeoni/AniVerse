@@ -31,7 +31,7 @@ export const ReadSettingsContextProvider: React.FC<any> = ({ children }) => {
 
   useEffect(() => {
     const settings: any =
-      JSON.parse(localStorage.getItem("settings")) || defaultSettings;
+      JSON.parse(localStorage.getItem("settings") as string) || defaultSettings;
 
     setSettings(settings);
   }, []);

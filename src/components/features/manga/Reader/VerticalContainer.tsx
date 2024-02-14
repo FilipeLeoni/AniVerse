@@ -3,6 +3,7 @@ import { useReadPanel } from "@/contexts/ReadPanelContext";
 import { useReadSettings } from "@/contexts/ReadSettingsContext";
 import React, { useEffect, useMemo } from "react";
 import ReadImage from "./ReadImage";
+import { useRouter } from "next/navigation";
 
 const VerticalContainer: React.FC = () => {
   const { currentChapterIndex, chapters, setChapter, images, currentChapter } =
@@ -10,11 +11,14 @@ const VerticalContainer: React.FC = () => {
   const { state, setState } = useReadPanel();
   const { direction } = useReadSettings();
 
+  console.log({
+    currentChapter,
+  });
+
+  const router = useRouter();
+
   const sourceChapters = useMemo(
-    () =>
-      chapters.filter(
-        (chapter: any) => chapter.sourceId === currentChapter.sourceId
-      ),
+    () => chapters.filter((chapter: any) => chapter.id === currentChapter.id),
     [chapters, currentChapter]
   );
 
@@ -23,7 +27,9 @@ const VerticalContainer: React.FC = () => {
   };
 
   const handleChangeChapter = (index: number) => () => {
-    setChapter(sourceChapters[index]);
+    setChapter(chapters[index]);
+
+    router.push(`/manga/read/${currentChapter.mangaId}/${chapters[index].id}`);
   };
 
   useEffect(() => {
@@ -50,13 +56,13 @@ const VerticalContainer: React.FC = () => {
           <ReadImage
             onVisible={handleImageVisible(index)}
             className="mx-auto"
-            image={image.url}
+            image={image}
             data-index={index}
           />
         </div>
       ))}
 
-      {currentChapterIndex < sourceChapters.length - 1 && (
+      {currentChapterIndex < sourceChapters.length && (
         <div className="w-full h-60 p-8">
           <button
             onClick={handleChangeChapter(currentChapterIndex + 1)}

@@ -17,46 +17,12 @@ interface ChapterData {
   readTime: number;
 }
 
-// const useRead = () => {
-//   const storedHistory: any = localStorage.getItem("aniverse_history");
-//   const api = useApi();
-//   const { readChapters } = JSON.parse(storedHistory);
-
-//   const uniqueAnimeIdsSet = new Set();
-//   for (const item of readChapters) {
-//     uniqueAnimeIdsSet.add(item.mangaId);
-//   }
-//   const mangaIds: any[] = Array.from(uniqueAnimeIdsSet);
-
-//   console.log(mangaIds);
-//   return useQuery({
-//     queryKey: ["readChapters"],
-//     queryFn: async () => {
-//       const res = await api.getMangaMediaByIds(mangaIds);
-//       return res;
-//     },
-//   });
-
 const useRead = () => {
-  const storedHistory: any = localStorage.getItem("aniverse_history");
+  // const storedHistory: any = localStorage.getItem("aniverse_history");
+  let storedHistory = localStorage.getItem("aniverse_history") ?? "";
+
   const api = useApi();
-  // const { readChapters } = JSON.parse(storedHistory);
-
-  // console.log(readChapters);
-
-  const readChapters = [
-    { mangaId: 1, chapterId: 1, readTime: 1703441936081 },
-    // { mangaId: 2, chapterId: 1, readTime: 1703441863594 },
-    { mangaId: 3, chapterId: 3, readTime: 1703441936081 },
-    { mangaId: 4, chapterId: 4, readTime: 1703441863594 },
-    // { mangaId: 5, chapterId: 1, readTime: 1703441936081 },
-    // { mangaId: 6, chapterId: 1, readTime: 1703441863594 },
-    // { mangaId: 7, chapterId: 1, readTime: 1703441936081 },
-    // { mangaId: 8, chapterId: 1, readTime: 1703441863594 },
-    // { mangaId: 9, chapterId: 1, readTime: 1703441936081 },
-    // { mangaId: 10, chapterId: 1, readTime: 1703441863594 },
-    // { mangaId: 11, chapterId: 1, readTime: 1703441936081 },
-  ];
+  const { readChapters } = JSON.parse(storedHistory);
 
   const mangaChapterMap: Record<number, number> = {}; // Mapeia mangaId para um único chapterId
 
@@ -83,41 +49,5 @@ const useRead = () => {
     },
   });
 };
-
-// const [readChapters, setReadChapters] = useState<ChapterData[]>([]);
-
-// useEffect(() => {
-//   const storedHistory = localStorage.getItem("aniverse_history");
-//   if (storedHistory) {
-//     const { readChapters: storedReadChapters } = JSON.parse(storedHistory);
-//     if (storedReadChapters) {
-//       setReadChapters(storedReadChapters);
-//     }
-//   }
-// }, []);
-
-// const updateReadChapters = (newChapter: ChapterData) => {
-//   const storedHistory = localStorage.getItem("aniverse_history");
-//   if (storedHistory) {
-//     const { readChapters: storedReadChapters } = JSON.parse(storedHistory);
-//     const updatedChapters = storedReadChapters
-//       ? [newChapter, ...storedReadChapters]
-//       : [newChapter];
-//     localStorage.setItem(
-//       "aniverse_history",
-//       JSON.stringify({ readChapters: updatedChapters })
-//     );
-//     setReadChapters(updatedChapters);
-//   } else {
-//     localStorage.setItem(
-//       "aniverse_history",
-//       JSON.stringify({ readChapters: [newChapter] })
-//     );
-//     setReadChapters([newChapter]);
-//   }
-// };
-
-// return { readChapters, updateReadChapters };
-// };
 
 export default useRead;

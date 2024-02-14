@@ -4,6 +4,8 @@
 // import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 // import axios from "axios";
 
+import { useApi } from "@/hooks/useApi";
+
 // export type FileInfo = {
 //   id?: string | number;
 //   size: number;
@@ -196,28 +198,30 @@
 //   return data.chapter;
 // };
 
-// export const uploadFile = async (
-//   file: File | File[],
-//   ctx?: object | object[]
-// ) => {
-//   const formData = new FormData();
+export const UploadFile = async (
+  file: File | File[],
+  ctx?: object | object[]
+) => {
+  const formData = new FormData();
+  const api = useApi();
+  if (Array.isArray(file)) {
+    file.forEach((f) => formData.append("file", f));
+  } else {
+    formData.append("file", file);
+  }
 
-//   if (Array.isArray(file)) {
-//     file.forEach((f) => formData.append("file", f));
-//   } else {
-//     formData.append("file", file);
-//   }
+  if (ctx) {
+    formData.append("ctx", JSON.stringify(ctx));
+  }
 
-//   if (ctx) {
-//     formData.append("ctx", JSON.stringify(ctx));
-//   }
+  //   const { data } = await client.post<UploadFileResponse>(
+  //     "/upload/file",
+  //     formData
+  //   );
 
-//   const { data } = await client.post<UploadFileResponse>(
-//     "/upload/file",
-//     formData
-//   );
+  const { data }: any = await api.UploadImage(formData);
 
-//   if (!data.success) throw new Error("Upload failed");
+  if (!data?.success) throw new Error("Upload failed");
 
-//   return data.files;
-// };
+  return data;
+};

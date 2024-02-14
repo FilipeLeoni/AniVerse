@@ -133,9 +133,11 @@ const Sidebar = () => {
   //   return sortedSources;
   // }, [chapters]);
 
-  // const handleChangeChapterIndex = (index: number) => () => {
-  //   setChapter(sourceChapters[index]);
-  // };
+  const handleChangeChapterIndex = (index: number) => () => {
+    setChapter(chapters[index]);
+
+    router.push(`/manga/read/${manga.id}/${chapters[index].id}`);
+  };
 
   useEffect(() => {
     const currentChapterEl = document.querySelector(".active-chapter");
@@ -213,7 +215,7 @@ const Sidebar = () => {
             iconClassName="w-8 h-8"
             secondary
             disabled={currentChapterIndex === 0}
-            // onClick={handleChangeChapterIndex(currentChapterIndex - 1)}
+            onClick={handleChangeChapterIndex(currentChapterIndex - 1)}
             shortcutKey="["
           />
 
@@ -255,7 +257,7 @@ const Sidebar = () => {
             iconClassName="w-8 h-8"
             secondary
             // disabled={currentChapterIndex === sourceChapters.length - 1}
-            // onClick={handleChangeChapterIndex(currentChapterIndex + 1)}
+            onClick={handleChangeChapterIndex(currentChapterIndex + 1)}
             shortcutKey="]"
           />
         </div>

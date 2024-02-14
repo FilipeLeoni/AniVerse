@@ -34,13 +34,15 @@ export default function VideoPlayer({
   episodeData,
   isEpisodeLoading,
   anime,
+  ref,
 }: {
   episodeData: IEpisode;
   isEpisodeLoading: boolean;
   anime: any;
+  ref?: any;
 }) {
   // const { videoRef } = useVideo();
-  const videoRef: any = useRef<HTMLVideoElement>(null);
+  const videoRef: any = useRef<HTMLVideoElement>(null) || ref;
   const saveWatchedInterval: any = useRef<NodeJS.Timer>(null);
 
   const saveWatchedMutation = useSaveWatched();

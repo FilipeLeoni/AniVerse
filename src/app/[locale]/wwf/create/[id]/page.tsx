@@ -24,6 +24,7 @@ import { useApi } from "@/hooks/useApi";
 import { useLocale } from "next-intl";
 import EpisodeSelector from "@/components/features/anime/EpisodeSelector";
 import EpisodeCard from "@/components/features/anime/EpisodeCard";
+import { useSession } from "next-auth/react";
 
 interface CreateRoomPageProps {
   media: Media;
@@ -92,20 +93,35 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
     []
   );
 
+  const { data: session } = useSession();
+
   const handleCreateRoom = useCallback(() => {
-    mutate({
-      episodeId: `${chosenEpisode?.sourceId}-${chosenEpisode?.sourceEpisodeId}`,
+    console.log({
+      episodeId: `${chosenEpisode?.id}`,
       mediaId: media?.id,
       visibility,
       title: roomTitle,
+      hostId: session?.user?.id,
+    });
+    mutate({
+      episodeId: chosenEpisode.id,
+      mediaId: media?.id,
+      visibility,
+      title: roomTitle,
+      host: {
+        id: "86daaa9f-26f5-4ac3-916d-ea63510f5296",
+        name: "Filipe",
+        avatar: "example.png",
+      },
+      // hostId: "86daaa9f-26f5-4ac3-916d-ea63510f5296",
     });
   }, [
-    chosenEpisode?.sourceEpisodeId,
-    chosenEpisode?.sourceId,
+    chosenEpisode,
     media?.id,
     mutate,
     visibility,
     roomTitle,
+    session?.user?.id,
   ]);
 
   return (
@@ -121,7 +137,7 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
           </div>
 
           <h3 className="font-semibold text-xl">
-            {mediaTitle || media.title.english}
+            {mediaTitle || media?.title?.english}
           </h3>
 
           <DotList className="mt-2">

@@ -106,8 +106,8 @@ const HorizontalContainer: React.FC = () => {
                 state.activeImageIndex === index ? "opacity-100" : "opacity-10",
                 "transform duration-300"
               )}
-              image={image.url}
-              key={image.image + index}
+              image={image}
+              key={image + index}
               data-index={index}
             />
           ))}

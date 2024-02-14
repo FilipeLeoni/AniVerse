@@ -294,8 +294,8 @@ export const vietnameseSlug = (str: string) => {
   return newStr;
 };
 
-// export const sleep = (ms: number) =>
-//   new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export const debounce = (func: Function, wait: number) => {
   let timeout: any;

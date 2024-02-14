@@ -26,7 +26,7 @@ const ReadSection = () => {
           <SwiperCard
             isExpanded={isHover}
             data={data}
-            redirectUrl={`/anime/read/${data.id}/${data.chapterId}`}
+            redirectUrl={`/manga/read/${data.id}/${data.chapterId}`}
           />
         )}
       />

@@ -15,13 +15,12 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 export default function WatchPage({ params }: { params: { params: string } }) {
   const api = useApi();
   const animeId = params.params[0];
+  const episodeId = params.params[1];
 
   const { data: episode, isLoading: isEpisodeLoading } = useQuery<any>({
     queryKey: ["EpisodeAnime"],
     queryFn: async () => {
-      const response = await api.getEpisodeById(
-        "81ef6ca4-1e42-4e40-8ed6-f790b9e50a4a"
-      );
+      const response = await api.getEpisodeById(episodeId);
       return response;
     },
   });

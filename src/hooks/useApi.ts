@@ -199,4 +199,60 @@ export const useApi = () => ({
       console.log(error);
     }
   },
+  getCharacterById: async (characterId: string) => {
+    try {
+      const response = await Api.get(`character/${characterId}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRoomById: async (roomId: number) => {
+    try {
+      const response = await Api.get(`wwf/${roomId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  UploadImage: async (file: any) => {
+    try {
+      const response = await Api.post(`upload/file`, file);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  createChapter: async ({
+    mangaId,
+    chapterNumber,
+    chapterName,
+    images,
+  }: any) => {
+    try {
+      const response = await Api.post(`/chapter/${mangaId}/create`, {
+        number: chapterNumber,
+        title: chapterName,
+        pages: images,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  // Episodes
+
+  // getEpisodeById: async (episodeId: string) => {
+  //   try {
+  //     const response = await Api.get(`/episodes/${episodeId}`);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
 });

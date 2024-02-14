@@ -36,7 +36,7 @@ export default function RootLayout({
             <WatchHistoryProvider>
               <body className={outfit.className}>
                 <NextTopLoader color="#EF4444" />
-                {/* <Header /> */}
+                <Header />
                 <main>{children}</main>
                 {/* <Footer /> */}
                 <Toaster />

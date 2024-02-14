@@ -23,6 +23,7 @@ import React, { useMemo } from "react";
 import { AiFillHeart } from "react-icons/ai";
 import { BiCake } from "react-icons/bi";
 import { getCharacterDetails } from "@/mocks/queries";
+import { useApi } from "@/hooks/useApi";
 
 const KeyValue: React.FC<{ property: string; value: string }> = ({
   property,
@@ -31,7 +32,7 @@ const KeyValue: React.FC<{ property: string; value: string }> = ({
   <div>
     <b>{property}: </b>
 
-    <span>{value || "Không rõ"}</span>
+    <span>{value || "Unclear"}</span>
   </div>
 );
 
@@ -40,44 +41,43 @@ interface DetailsPageProps {
 }
 
 export default async function DetailsPage({ params }: { params: any }) {
-  console.log(params);
-  const { Character } = await getCharacterDetails(params.params[0]);
+  const api = useApi();
+  const Character = await api.getCharacterById(params.params[0]);
   console.log(Character);
-  console.log(Character.dateOfBirth);
-  //   const { GENDERS } = useConstantTranslation();
+  // const { GENDERS } = useConstantTranslation();
 
   //   const gender = useMemo(
   //     () => GENDERS[Character?.gender?.toLowerCase()] || Character.gender,
   //     [GENDERS, Character.gender]
   //   );
 
-  const birthday: any = () => {
-    if (!Character.dateOfBirth) return null;
-    const dateOfBirth = Character.dateOfBirth;
-    let date = dayjs();
-    let format = [];
+  // const birthday: any = () => {
+  //   if (!Character.dateOfBirth) return null;
+  //   const dateOfBirth = Character.dateOfBirth;
+  //   let date = dayjs();
+  //   let format = [];
 
-    if (Object.keys(dateOfBirth).every((key) => !dateOfBirth[key])) {
-      return null;
-    }
+  //   if (Object.keys(dateOfBirth).every((key) => !dateOfBirth[key])) {
+  //     return null;
+  //   }
 
-    if (!isFalsy(dateOfBirth.day)) {
-      date = date.date(dateOfBirth.day);
-      format.push("DD");
-    }
+  //   if (!isFalsy(dateOfBirth.day)) {
+  //     date = date.date(dateOfBirth.day);
+  //     format.push("DD");
+  //   }
 
-    if (!isFalsy(dateOfBirth.month)) {
-      date = date.month(dateOfBirth.month - 1);
-      format.push("MM");
-    }
+  //   if (!isFalsy(dateOfBirth.month)) {
+  //     date = date.month(dateOfBirth.month - 1);
+  //     format.push("MM");
+  //   }
 
-    if (!isFalsy(dateOfBirth.year)) {
-      date = date.year(dateOfBirth.year);
-      format.push("YYYY");
-    }
+  //   if (!isFalsy(dateOfBirth.year)) {
+  //     date = date.year(dateOfBirth.year);
+  //     format.push("YYYY");
+  //   }
 
-    return date.format(format.join("/"));
-  };
+  //   return date.format(format.join("/"));
+  // };
 
   //   const isBirthday = useMemo(() => {
   //     const date = dayjs();
@@ -105,12 +105,12 @@ export default async function DetailsPage({ params }: { params: any }) {
   //     [media]
   //   );
 
-  const media = Character?.media?.edges.map((edge: any) => edge.node);
+  // const media = Character?.media?.edges.map((edge: any) => edge.node);
 
-  const anime: any = () =>
-    media.filter((media: any) => media.type === MediaType.Anime);
-  const manga: any = () =>
-    media.filter((media: any) => media.type === MediaType.Manga);
+  // const anime: any = () =>
+  //   media.filter((media: any) => media.type === MediaType.Anime);
+  // const manga: any = () =>
+  //   media.filter((media: any) => media.type === MediaType.Manga);
 
   return (
     <>
@@ -125,17 +125,12 @@ export default async function DetailsPage({ params }: { params: any }) {
         <Section className="relative z-10 bg-background-900 pb-4 mb-8">
           <div className="flex flex-col md:flex-row md:space-x-8">
             <div className="shrink-0 relative left-1/2 -translate-x-1/2 md:static md:left-0 md:-translate-x-0 w-[186px] -mt-20 space-y-6">
-              <PlainCard
-                src={Character.image.large}
-                alt={Character.name.userPreferred}
-              />
+              <PlainCard src={Character.image} alt={Character.name} />
             </div>
 
             <div className="space-y-8 text-center md:text-left flex flex-col items-center md:items-start py-4 mt-4">
               <div className="flex flex-col md:flex-row items-center gap-4">
-                <h1 className="text-3xl font-semibold">
-                  {Character.name.userPreferred}
-                </h1>
+                <h1 className="text-3xl font-semibold">{Character.name}</h1>
 
                 <TextIcon
                   iconClassName="text-primary-500"
@@ -151,11 +146,14 @@ export default async function DetailsPage({ params }: { params: any }) {
                 )} */}
               </div>
 
-              {/* <div className="space-y-4">
-                <KeyValue property={"gender"} value={gender} />
-                <KeyValue property={"birthday"} value={birthday} />
-                <KeyValue property={"age"} value={Character.age} />
-              </div> */}
+              <div className="space-y-4">
+                <KeyValue property={"Gender"} value={Character.gender} />
+                <KeyValue
+                  property={"Date of birth"}
+                  value={Character.dateOfBirth}
+                />
+                <KeyValue property={"Age"} value={Character.age} />
+              </div>
             </div>
           </div>
         </Section>
@@ -169,17 +167,21 @@ export default async function DetailsPage({ params }: { params: any }) {
             </DetailsSection>
           )} */}
 
-          {/* {!!anime?.length && (
-            <DetailsSection title="Anime Section">
-              <List data={anime}>{(anime: any) => <Card data={anime} />}</List>
+          {!!Character.animes?.length && (
+            <DetailsSection title="Anime">
+              <List data={Character.animes}>
+                {(anime: any) => <Card data={anime} />}
+              </List>
             </DetailsSection>
           )}
 
-          {!!manga?.length && (
-            <DetailsSection title="Manga Section">
-              <List data={manga}>{(manga: any) => <Card data={manga} />}</List>
+          {!!Character.Manga?.length && (
+            <DetailsSection title="Manga">
+              <List data={Character.Manga}>
+                {(manga: any) => <Card data={manga} />}
+              </List>
             </DetailsSection>
-          )} */}
+          )}
         </Section>
       </div>
     </>

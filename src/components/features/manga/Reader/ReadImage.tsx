@@ -51,7 +51,7 @@ const ReadImage: React.FC<ReadImageProps> = ({
     () =>
       image.useProxy ? createProxyUrl(image.image, image.proxy) : image.image,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [image.image]
+    [image?.image]
   );
 
   // I have to use img instead of Next/Image because I want to image calculate the height itself

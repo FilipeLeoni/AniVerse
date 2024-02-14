@@ -8,11 +8,7 @@ interface FormSelectProps extends Omit<ControllerProps, "render"> {
   label?: string;
 }
 
-const FormSelect: React.FC<FormSelectProps> = ({
-  selectProps,
-  label,
-  ...props
-}) => {
+const FormSelect: any = ({ selectProps, label, ...props }: any) => {
   const { options, isMulti = false } = selectProps;
 
   return (
@@ -31,7 +27,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
               value={selectValue}
               onChange={(val: any) => {
                 const onChangeValue = isMulti
-                  ? val.map((c) => c?.value)
+                  ? val.map((c: any) => c?.value)
                   : val?.value;
 
                 onChange(onChangeValue);

@@ -35,17 +35,21 @@ export default function Read({ params }: { params: any }) {
 
   const currentChapterIndex = useMemo(
     () =>
-      manga?.chapters?.findIndex((chapter: any) => chapter.id === chapterId),
+      manga?.chapters?.findIndex(
+        (chapter: any) => chapter.id === Number(chapterId)
+      ),
     [manga, chapterId]
   );
 
+  console.log(manga?.chapters);
+  console.log(currentChapterIndex);
   const router = useRouter();
 
   const handleChapterNavigate = useCallback(
     (chapter: any) => {
-      router.replace(`/manga/read/${chapterId}`);
+      router.replace(`/manga/read/${mangaId}/${chapterId}`);
     },
-    [chapterId, router]
+    [chapterId, router, mangaId]
   );
 
   // useEffect(() => {
@@ -97,8 +101,8 @@ export default function Read({ params }: { params: any }) {
 
       console.log(manga);
       readChapters.unshift({
-        mangaId: manga.id,
-        chapterId: chapter.id,
+        mangaId: manga?.id,
+        chapterId: chapter?.id,
         readTime: Date.now(),
       });
 
