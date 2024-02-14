@@ -86,14 +86,16 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
 
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60"></div>
 
-        <div className="w-full absolute bottom-0 p-2">
-          <p className="text-lg font-semibold">{episode.title}</p>
+        <div className="w-full absolute bottom-0 px-2 py-4">
+          <p className="text-lg font-medium leading-4 text-gray-100">
+            {episode.title}
+          </p>
           <p className="text-sm text-gray-300 -mt-1 line-clamp-1 overflow-ellipsis">
             {episode.description}
           </p>
         </div>
 
-        <div className="absolute top-3 left-3 px-4 py-1 bg-background-600 rounded-m cursor-pointerd">
+        <div className="absolute top-3 left-3 px-4 py-1 bg-background-600 rounded-m cursor-pointer rounded">
           {episode.number && (
             <p className="text-base line-clamp-1 font-semibold text-gray-300">
               {episode.number}

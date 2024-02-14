@@ -1,9 +1,7 @@
 import EpisodeCard from "@/components/features/anime/EpisodeCard";
 import Swiper, { SwiperProps, SwiperSlide } from "@/components/shared/Swiper";
 import { Watched } from "@/@types";
-import { getTitle } from "@/utils/data";
 import Link from "next/link";
-// import { useRouter } from "next/router";
 import React from "react";
 
 interface WatchedSwiperProps extends SwiperProps {
@@ -11,15 +9,12 @@ interface WatchedSwiperProps extends SwiperProps {
 }
 
 const WatchedSwiper: React.FC<WatchedSwiperProps> = ({ data, ...props }) => {
-  // const { locale } = useRouter();
-
-  console.log(data);
   return (
     <Swiper speed={500} {...props}>
-      {data.map(({ media, episode, watchedTime, anime }, index) => {
+      {data.map(({ media, episode, watchedTime, anime, episodeId }, index) => {
         return (
           <SwiperSlide key={index}>
-            <Link href={`/anime/watch/1/1`}>
+            <Link href={`/anime/watch/${anime?.id}/${episodeId}`}>
               <EpisodeCard
                 episode={{
                   ...episode,

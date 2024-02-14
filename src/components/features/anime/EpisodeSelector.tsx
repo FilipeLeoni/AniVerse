@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { RxDashboard } from "react-icons/rx";
 import { MdInsertPhoto } from "react-icons/md";
 import classNames from "classnames";
@@ -13,15 +13,18 @@ function EpisodeSelector(
 ) {
   const [thumbStyle, setThumbStyle] = useState("number");
 
+  console.log(episodes);
+
   const defaultOnEachEpisode = (episode: any) => (
     <Link
-      href={`/anime/watch/${props.mediaId}/${episode.sourceId}/${episode.sourceEpisodeId}`}
+      href={`/anime/watch/${episode.animeId}/${episode.id}`}
       key={episode.sourceEpisodeId}
       shallow
     >
       <div
         className={classNames(
-          "rounded-md bg-background-800 col-span-1 aspect-w-2 aspect-h-1 group"
+          "rounded-md bg-background-800 col-span-1 aspect-w-2 aspect-h-1 group",
+          episode.id === currentEpisode?.id ? "text-primary-300" : ""
         )}
       >
         <div className="flex items-center justify-center w-full h-full group-hover:bg-white/10 rounded-md transition duration-300">
@@ -35,12 +38,12 @@ function EpisodeSelector(
     <Link
       key={episode.id}
       className="aspect-w-1 aspect-h-1 group cursor-pointer"
-      href={`/anime/watch/${episode.id}`}
+      href={`/anime/watch/${episode.animeId}/${episode.id}`}
     >
       <EpisodeCard
         episode={{
           number: episode.number,
-          name: episode.title,
+          title: episode.title,
           thumbnail: episode.thumbnail,
           description: episode.description,
         }}

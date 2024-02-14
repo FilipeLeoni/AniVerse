@@ -121,48 +121,123 @@ export default function VideoPlayer({
   // }, []);
 
   console.log(anime);
+  // useEffect(() => {
+  //   const videoEl = videoRef.current;
+  //   if (!videoEl) return;
+  //   console.log(videoEl.current);
+
+  //   const watchedEpisodes = JSON.parse(history)?.watchedEpisodes;
+
+  //   if (!watchedEpisodes) return;
+
+  //   console.log(watchedEpisodes);
+  //   console.log(episodeData);
+
+  //   const watchedEpisodeData = watchedEpisodes?.find(
+  //     (episode: any) => episode.episodeId === episodeData?.id
+  //   );
+
+  //   if (watchedEpisodeData) {
+  //     const watchedTime = watchedEpisodeData?.watchedTime;
+
+  //     console.log(watchedEpisodeData?.watchedTime);
+  //     // videoEl.currentTime === watchedTime;
+  //     if (typeof watchedTime === "number") {
+  //       console.log(watchedTime);
+  //       videoEl.currentTime = watchedTime;
+  //       console.log(videoEl.currentTime);
+  //     }
+  //   }
+  // }, [episodeData]);
 
   useEffect(() => {
     const videoEl = videoRef.current;
 
     if (!videoEl) return;
+    const history: any = localStorage.getItem("aniverse_history") ?? "";
+
+    if (history) {
+      const watchedEpisodes = JSON?.parse(history)?.watchedEpisodes || [];
+      const watchedEpisodeData = watchedEpisodes?.find(
+        (episode: any) => episode.episodeId === episodeData?.id
+      );
+
+      if (watchedEpisodeData) {
+        const watchedTime = watchedEpisodeData?.watchedTime;
+
+        if (typeof watchedTime === "number") {
+          videoEl.currentTime = watchedTime || 0;
+        }
+      }
+    }
 
     const handleSaveTime = () => {
       if (saveWatchedInterval.current) {
         clearInterval(saveWatchedInterval.current);
       }
       saveWatchedInterval.current = setInterval(() => {
-        const storedHistory = localStorage.getItem("aniverse_history");
         let watchedEpisodes = [];
 
-        if (storedHistory) {
-          watchedEpisodes = JSON.parse(storedHistory).watchedEpisodes || [];
+        if (history) {
+          watchedEpisodes = JSON.parse(history).watchedEpisodes || [];
         }
 
         const existingEpisodeIndex = watchedEpisodes.findIndex(
           (episode: any) => episode.episodeId === episodeData.id
         );
 
+        const isSameAnime = watchedEpisodes.some(
+          (episode: any) => episode.anime.id === anime.id
+        );
+
+        // const isSameAnime =
+        //   existingEpisodeIndex !== -1 &&
+        //   watchedEpisodes[existingEpisodeIndex]?.anime.id === anime.id;
+
+        console.log(isSameAnime);
         if (existingEpisodeIndex !== -1) {
           watchedEpisodes[existingEpisodeIndex].watchedTime =
             videoRef.current?.currentTime;
         } else {
-          watchedEpisodes.unshift({
-            anime: {
-              id: anime.id,
-              title: anime.title.english,
-              thumbnail: anime.bannerImage || anime.coverImage.extraLarge,
-            },
-            episode: {
-              title: episodeData.title,
-              number: episodeData.number,
-              description: episodeData.description,
-              duration: videoRef.current.duration,
-            },
-            episodeId: episodeData.id,
-            watchedTime: videoRef.current?.currentTime,
-            episodeNumber: episodeData.number,
-          });
+          if (isSameAnime) {
+            const sameAnimeIndex = watchedEpisodes.findIndex(
+              (episode: any) => episode.anime.id === anime.id
+            );
+
+            watchedEpisodes[sameAnimeIndex] = {
+              anime: {
+                id: anime.id,
+                title: anime.title.english,
+                thumbnail: anime.bannerImage || anime.coverImage.extraLarge,
+              },
+              episode: {
+                title: episodeData.title,
+                number: episodeData.number,
+                description: episodeData.description,
+                duration: videoRef.current.duration,
+              },
+              episodeId: episodeData.id,
+              watchedTime: videoRef.current?.currentTime,
+              episodeNumber: episodeData.number,
+            };
+          } else {
+            watchedEpisodes.unshift({
+              anime: {
+                id: anime.id,
+                title: anime.title.english,
+                thumbnail: anime.bannerImage || anime.coverImage.extraLarge,
+              },
+              episode: {
+                title: episodeData.title,
+                number: episodeData.number,
+                description: episodeData.description,
+                duration: videoRef.current.duration,
+              },
+              episodeId: episodeData.id,
+              watchedTime: videoRef.current?.currentTime,
+              episodeNumber: episodeData.number,
+            });
+          }
         }
 
         localStorage.setItem(
