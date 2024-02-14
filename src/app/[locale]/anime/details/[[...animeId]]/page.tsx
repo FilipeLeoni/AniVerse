@@ -10,25 +10,19 @@ import MediaDescription from "@/components/shared/MediaDescription";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
 import { getAnimeById } from "@/mocks/queries";
-import {
-  createStudioDetailsUrl,
-  formatTimeDifference,
-  numberWithCommas,
-} from "@/utils";
+import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
 import { convert, getDescription, getTitle } from "@/utils/data";
 import { useLocale } from "next-intl";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 import dayjs from "@/lib/dayjs";
 import AiringCountDown from "@/components/shared/AiringCountDown";
 import Comments from "@/components/features/comment/Comments";
 import Reaction from "@/components/features/comment/Reaction";
-import { AnimatePresence, motion } from "framer-motion";
-import Dropdown from "@/components/shared/Dropdown";
-import AddToListDropdown from "@/components/shared/AddToListDropdown";
 
+import AddToListDropdown from "@/components/shared/AddToListDropdown";
+import EpisodeSelector from "@/components/features/anime/EpisodeSelector";
 export default async function DetailsPage({
   params,
 }: {
@@ -178,7 +172,7 @@ export default async function DetailsPage({
             />
             <InfoItem title="English" value={data.Media.title.english} />
             <InfoItem title="Native" value={data.Media.title.native} />
-            <InfoItem title="Romanji" value={data.Media.title.romaji} />
+            <InfoItem title="Romanji" value={data.Media.title.romanji} />
             <InfoItem
               title={"Popular"}
               value={numberWithCommas(data.Media.popularity)}
@@ -241,7 +235,11 @@ export default async function DetailsPage({
             </ul>
           </div>
         </div>
+
         <div className="space-y-12 md:col-span-8">
+          <DetailsSection title={"Episodes"} className="overflow-hidden">
+            <EpisodeSelector />
+          </DetailsSection>
           {!!data.Media?.characters?.edges?.length && (
             <DetailsSection
               title={"Characters"}
@@ -280,7 +278,7 @@ export default async function DetailsPage({
           <h2 className="text-xl">What do you think?</h2>
           <Reaction />
         </div>
-        <Comments animeId={"2 "} />
+        <Comments animeId={"2"} />
       </Section>
     </div>
   );

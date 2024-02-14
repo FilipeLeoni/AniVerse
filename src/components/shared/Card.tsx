@@ -70,7 +70,8 @@ const Card: React.FC<CardProps> = (props) => {
 
   const primaryColor = useMemo(
     () =>
-      data.coverImage?.color && isColorVisible(data.coverImage.color, "#3a3939")
+      data?.coverImage?.color &&
+      isColorVisible(data?.coverImage.color, "#3a3939")
         ? data.coverImage.color
         : "white",
     [data]
@@ -94,7 +95,7 @@ const Card: React.FC<CardProps> = (props) => {
               )}
             >
               <Image
-                src={data.coverImage?.extraLarge as string}
+                src={data?.coverImage?.extraLarge as string}
                 fill
                 className="rounded-md object-cover"
                 alt={title}
@@ -102,9 +103,9 @@ const Card: React.FC<CardProps> = (props) => {
               {imageEndSlot}
             </div>
 
-            {data.type && className === "relations" && (
+            {data?.type && className === "relations" && (
               <p className="italic text-gray-200 font-light text-sm mt-2 ">
-                {data.type}
+                {data?.type}
               </p>
             )}
             <p
@@ -120,7 +121,7 @@ const Card: React.FC<CardProps> = (props) => {
         className="z-10 relative p-4 rounded-md shadow-[rgba(0,0,0,0.25)_0px_54px_55px,rgba(0,0,0,0.12)_0px_-12px_30px,rgba(0,0,0,0.12)_0px_4px_6px,rgba(0,0,0,0.17)_0px_12px_13px,rgba(0,0,0,0.09)_0px_-3px_5px]"
       >
         <Image
-          src={data.bannerImage || (data.coverImage?.extraLarge as string)}
+          src={data?.bannerImage || (data?.coverImage?.extraLarge as string)}
           fill
           className="rounded-sm shadow-2xl object-cover"
           alt={title}
@@ -142,7 +143,7 @@ const Card: React.FC<CardProps> = (props) => {
           />
 
           <DotList className="mb-2">
-            {data.genres?.map((genre) => (
+            {data?.genres?.map((genre) => (
               <span
                 className="text-sm font-semibold"
                 style={{
@@ -156,14 +157,14 @@ const Card: React.FC<CardProps> = (props) => {
           </DotList>
 
           <div className="relative z-50 flex items-center space-x-2">
-            {data.averageScore && (
+            {data?.averageScore && (
               <TextIcon LeftIcon={MdTagFaces} iconClassName="text-green-300">
-                <p>{data.averageScore}%</p>
+                <p>{data?.averageScore}%</p>
               </TextIcon>
             )}
 
             <TextIcon LeftIcon={AiFillHeart} iconClassName="text-red-400">
-              <p>{numberWithCommas(data.favourites)}</p>
+              <p>{numberWithCommas(data?.favourites)}</p>
             </TextIcon>
           </div>
         </div>

@@ -63,8 +63,10 @@ const Card: React.FC<AnimeCardProps> = (props) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardSize, setCardSize] = useState({ width: 0, height: 0 });
+  const [showTrailer, setShowTrailer] = useState(false);
 
   const { isDesktop } = useDevice();
+  const hoverTimeoutRef = useRef<any>(null);
 
   const locale = useLocale();
 
@@ -88,6 +90,25 @@ const Card: React.FC<AnimeCardProps> = (props) => {
   const formattedTime = formatTimeDifference(data?.nextAiringEpisode?.airingAt);
   const hasBannerImage = !!data?.bannerImage;
 
+  const handleHover = () => {
+    if (!data?.trailer?.id) {
+      return () => clearTimeout(hoverTimeoutRef.current);
+    }
+
+    hoverTimeoutRef.current = setTimeout(() => {
+      setShowTrailer(true);
+    }, 3000);
+
+    return () => clearTimeout(hoverTimeoutRef.current);
+  };
+
+  const handleMouseLeave = () => {
+    setShowTrailer(false);
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+  };
+
   return (
     <Link href={redirectUrl}>
       <motion.div
@@ -95,16 +116,18 @@ const Card: React.FC<AnimeCardProps> = (props) => {
         whileHover={isDesktop ? "animate" : ""}
         animate="exit"
         initial="exit"
+        onMouseEnter={handleHover}
+        onMouseLeave={handleMouseLeave}
       >
         <motion.div
           className={classNames(
-            "transition duration-300 relative cursor-pointer bg-background-900, w-full overflow-hidden group",
+            "transition duration-300 relative cursor-pointer bg-background-900 h-full w-full overflow-hidden group",
             className
           )}
           style={{ height: cardSize.height }}
           initial={false}
         >
-          <div>
+          <div className="h-full">
             <AnimatePresence>
               {isDesktop && (
                 <motion.div
@@ -116,75 +139,95 @@ const Card: React.FC<AnimeCardProps> = (props) => {
                   )}
                 >
                   <div
-                    className="h-full w-full transition-all"
+                    className="h-full transition-all"
                     style={{
                       width: isExpanded ? "100%" : "auto",
+                      height: "100%",
                     }}
                   >
-                    {hasBannerImage && (
+                    {hasBannerImage && !showTrailer ? (
                       <Image
                         src={data.bannerImage as string}
                         fill
                         style={{ objectFit: "cover" }}
-                        className="rounded-sm"
+                        className="rounded-sm h-full"
                         alt={title as string}
                       />
-                    )}
-                  </div>
-                  <div className="absolute inset-0 bg-black/60"></div>
-                  <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                    <p
-                      className="text-2xl mb-3 font-semibold line-clamp-2"
-                      style={{ color: primaryColor }}
-                    >
-                      {title}
-                    </p>
-
-                    <Description
-                      description={data?.description || ""}
-                      className="text-gray-300 hover:text-gray-100 transition duration-300 line-clamp-5 mb-2"
-                    />
-
-                    <DotList className="mb-2">
-                      {data.genres?.map((genre: any) => (
-                        <span
-                          className="text-sm font-semibold"
-                          style={{
-                            color: primaryColor,
-                          }}
-                          key={genre}
-                        >
-                          {convert(genre, "genre", { locale: locale })}
-                        </span>
-                      ))}
-                    </DotList>
-
-                    <motion.div className="relative z-50 flex items-center space-x-2">
-                      {data.averageScore && (
-                        <TextIcon
-                          LeftIcon={MdTagFaces}
-                          iconClassName="text-green-300"
-                        >
-                          <p>{data.averageScore}%</p>
-                        </TextIcon>
-                      )}
-
-                      <TextIcon
-                        LeftIcon={AiFillHeart}
-                        iconClassName="text-red-400"
+                    ) : showTrailer ? (
+                      <motion.div
+                        className="w-full h-full object-cover flex justify-center items-center scale-125"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                        style={{ pointerEvents: "none" }}
                       >
-                        <p>{numberWithCommas(data.favourites)}</p>
-                      </TextIcon>
-                    </motion.div>
-
-                    <motion.div
-                      className="mt-4"
-                      transition={{ duration: 1 }}
-                      variants={slotVariants}
-                    >
-                      {containerEndSlot}
-                    </motion.div>
+                        <iframe
+                          src={`https://www.youtube.com/embed/${data?.trailer?.id}?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&enablejsapi=1`}
+                          className="w-full h-full"
+                          style={{ objectFit: "cover" }}
+                        />
+                      </motion.div>
+                    ) : null}
                   </div>
+
+                  {!showTrailer && (
+                    <>
+                      <div className="absolute inset-0 bg-black/60"></div>
+                      <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                        <p
+                          className="text-2xl mb-3 font-semibold line-clamp-2"
+                          style={{ color: primaryColor }}
+                        >
+                          {title || data?.title?.english}
+                        </p>
+
+                        <Description
+                          description={data?.description || ""}
+                          className="text-gray-300 hover:text-gray-100 transition duration-300 line-clamp-5 mb-2"
+                        />
+
+                        <DotList className="mb-2">
+                          {data.genres?.map((genre: any) => (
+                            <span
+                              className="text-sm font-semibold"
+                              style={{
+                                color: primaryColor,
+                              }}
+                              key={genre}
+                            >
+                              {convert(genre, "genre", { locale: locale })}
+                            </span>
+                          ))}
+                        </DotList>
+
+                        <motion.div className="relative z-50 flex items-center space-x-2">
+                          {data.averageScore && (
+                            <TextIcon
+                              LeftIcon={MdTagFaces}
+                              iconClassName="text-green-300"
+                            >
+                              <p>{data.averageScore}%</p>
+                            </TextIcon>
+                          )}
+
+                          <TextIcon
+                            LeftIcon={AiFillHeart}
+                            iconClassName="text-red-400"
+                          >
+                            <p>{numberWithCommas(data.favourites)}</p>
+                          </TextIcon>
+                        </motion.div>
+
+                        <motion.div
+                          className="mt-4"
+                          transition={{ duration: 1 }}
+                          variants={slotVariants}
+                        >
+                          {containerEndSlot}
+                        </motion.div>
+                      </div>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -193,7 +236,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
               transition={{ duration: 1 }}
               variants={hasBannerImage ? slotVariants : {}}
               className={classNames(
-                "absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full transition-all",
+                "absolute aspect-w-2 aspect-h-3 rounded-md overflow-hidden w-full transition-all h-full",
                 isExpanded ? "z-0" : "z-20"
               )}
             >
@@ -221,7 +264,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
           className="mt-2 text-base font-semibold line-clamp-2"
           style={{ color: primaryColor }}
         >
-          {title}
+          {title || data?.title?.english}
         </motion.p>
       </motion.div>
     </Link>

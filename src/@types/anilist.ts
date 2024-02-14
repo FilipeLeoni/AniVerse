@@ -107,6 +107,10 @@ export interface Media {
   idMal: Maybe<number>;
   /** The official titles of the media in various languages*/
   title: Maybe<MediaTitle>;
+
+  titleEnglish: Maybe<string>;
+  titleRomanji: Maybe<string>;
+  titleNatives: Maybe<string>;
   /** The type of the media; anime or manga*/
   type: Maybe<MediaType>;
   /** The format the media was released in*/

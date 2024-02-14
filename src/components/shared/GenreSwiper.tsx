@@ -47,7 +47,7 @@ const GenreSwiper: React.FC<GenresSwiperProps> = ({
       freeMode
       {...props}
     >
-      {GENRES.map((genre) => (
+      {GENRES.map((genre: any) => (
         <SwiperSlide key={genre.value}>
           <Link href={`/browse?type=${type}&genres=${genre.value}`}>
             <div

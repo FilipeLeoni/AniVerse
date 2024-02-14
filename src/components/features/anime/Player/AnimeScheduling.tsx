@@ -46,7 +46,7 @@ const AnimeScheduling: React.FC<AnimeSchedulingProps> = () => {
       selectedTabClassName="bg-white !text-black"
     >
       <TabList className="w-5/6 mx-auto flex items-center justify-center flex-wrap gap-x-4 lg:gap-x-8">
-        {DAYSOFWEEK.map((day, index) => {
+        {DAYSOFWEEK.map((day: any, index: any) => {
           const isToday = todayIndex === index;
 
           return (
@@ -64,7 +64,7 @@ const AnimeScheduling: React.FC<AnimeSchedulingProps> = () => {
       </TabList>
 
       <div className="mt-20">
-        {DAYSOFWEEK.map((day) => {
+        {DAYSOFWEEK.map((day: any) => {
           return (
             <TabPanel key={day}>
               {schedulesLoading ? (

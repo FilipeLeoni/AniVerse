@@ -126,11 +126,11 @@ export const getDescription = (data: Media, locale?: string) => {
   return translation.description || data?.description;
 };
 
-// export const sortMediaUnit = (data: any[]) => {
-//   return data.sort((a, b) => {
-//     const aNumber = parseNumbersFromString(a.name, 9999)?.[0];
-//     const bNumber = parseNumbersFromString(b.name, 9999)?.[0];
+export const sortMediaUnit = (data: any[]) => {
+  return data?.sort((a, b) => {
+    const aNumber = parseNumbersFromString(a.name, 9999)?.[0];
+    const bNumber = parseNumbersFromString(b.name, 9999)?.[0];
 
-//     return aNumber - bNumber;
-//   });
-// };
+    return aNumber - bNumber;
+  });
+};

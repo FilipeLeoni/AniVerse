@@ -45,7 +45,7 @@ const HorizontalCard = ({
       <div className="space-y-1 self-start">
         <Link href={redirectUrl}>
           <p className="font-semibold text-white transition duration-300 line-clamp-1 hover:text-primary-300">
-            {title || data?.title?.romaji || data?.title?.english}
+            {title || data?.title?.romanji || data?.title?.english}
           </p>
         </Link>
 

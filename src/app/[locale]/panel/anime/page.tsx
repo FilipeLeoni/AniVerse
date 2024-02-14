@@ -136,7 +136,6 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
       }
 
       const data = await response.json();
-      console.log(data);
 
       return data;
     } catch (error) {

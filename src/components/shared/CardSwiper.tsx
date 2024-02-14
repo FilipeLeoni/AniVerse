@@ -83,6 +83,7 @@ const CardSwiper: React.FC<CardSwiperProps> = ({ data }: any) => {
   // const debouncedSlideHover = debounce(handleSlideHover, DEBOUNCE_DELAY);
   // const debouncedSlideLeave = debounce(handleSlideLeave, DEBOUNCE_DELAY);
 
+  console.log(data);
   return (
     <Swiper
       // onSwiper={(swiper) => {

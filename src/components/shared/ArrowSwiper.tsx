@@ -9,7 +9,7 @@ import {
   SwiperSlide as ReactSwiperSlide,
   SwiperClass,
 } from "swiper/react";
-import "swiper/swiper.min.css";
+// import "swiper/swiper.min.css";
 
 export type SwiperInstance = SwiperClass;
 export interface SwiperProps extends React.ComponentProps<typeof ReactSwiper> {

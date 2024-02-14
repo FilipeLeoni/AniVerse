@@ -24,7 +24,7 @@ export default function UploadLayout({
         </div>
       )}
 
-      <div className="w-full mt-20 md:mt-0 p-4 md:px-32 md:py-12">
+      <div className="w-full mt-20 md:mt-0 p-4 md:px-32 md:py-12 min-h-screen">
         {children}
       </div>
     </div>

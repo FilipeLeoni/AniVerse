@@ -5,6 +5,7 @@ import { FaDiscord } from "react-icons/fa";
 import NextLink, { LinkProps } from "next/link";
 import Link from "next/link";
 import Logo from "../shared/Logo";
+import { usePathname } from "next/navigation";
 
 interface FooterItemProps {
   Icon: React.ComponentType<any>;

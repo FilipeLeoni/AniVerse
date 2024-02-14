@@ -92,7 +92,8 @@ export default function UploadPage({
       setValue("popularity", parseInt(data.Media.popularity));
       setValue("favourites", parseInt(data.Media.favourites));
       setValue("trending", data.Media.trending);
-      setValue("Season", convert(data.Media.season, "season", { locale }));
+      setValue("Season", data.Media.season);
+      setValue("seasonYear", data.Media.seasonYear);
       setValue("averageScore", data.Media.averageScore);
       setValue(
         "countryOfOrigin",
@@ -241,17 +242,14 @@ export default function UploadPage({
   };
 
   async function SendData(requestBody: any) {
-    const response: any = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/anime`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      }
-    );
-    console.log(response);
+    console.log(requestBody);
+    const response: any = await fetch(`http://localhost:8000/anime`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
     if (response.ok) {
       router.push("/panel/upload");
       return response;
@@ -270,10 +268,6 @@ export default function UploadPage({
     const favourites = parseInt(data.favourites, 10);
     const trending = parseInt(data.trending, 10);
     const transformedCharacters = transformCharactersData(character);
-
-    console.log(character);
-    console.log(transformedCharacters);
-    console.log(data.isHomeBanner);
 
     const requestBody = {
       title: {
@@ -295,6 +289,7 @@ export default function UploadPage({
       status: data.status,
       format: data.format,
       season: data.season,
+      seasonYear: data.seasonYear,
       characters: transformedCharacters,
       isAdult: data.isAdult,
     };
@@ -415,7 +410,6 @@ export default function UploadPage({
                     {...(register("averageScore"), { max: 100, min: 1 })}
                   />
                 </div>
-
                 <div className="w-full">
                   <h2 className="font-bold text-gray-400">Description</h2>
                   <textarea
@@ -554,7 +548,7 @@ export default function UploadPage({
               <Input
                 containerInputClassName="focus:border border-white/80"
                 label={"Romanji"}
-                defaultValue={data.Media.title.romaji}
+                defaultValue={data.Media.titleRomaji}
                 containerClassName="w-full text-gray-400 "
                 className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                 {...register("romaji")}
@@ -596,12 +590,19 @@ export default function UploadPage({
               <Input
                 containerInputClassName="focus:border border-white/80"
                 label={"Season"}
-                defaultValue={`${convert(data.Media.season, "season", {
-                  locale,
-                })} ${data.Media.seasonYear}`}
+                defaultValue={data.Media.season}
                 containerClassName="w-full text-gray-400 "
                 className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                 {...register("season")}
+              />
+
+              <Input
+                containerInputClassName="focus:border border-white/80"
+                label={"Season Year"}
+                defaultValue={data.Media?.seasonYear}
+                containerClassName="w-full text-gray-400 "
+                className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                {...register("seasonYear")}
               />
 
               <AddRemoveItem
