@@ -149,7 +149,7 @@ const Header = () => {
           {/* TODO: Create a language switcher */}
           {/* <LanguageSwitcher /> */}
 
-          <NavItem href={"/"}>
+          <NavItem href={"/search"}>
             {({ isActive }: any) => (
               <AiOutlineSearch
                 className={classNames(

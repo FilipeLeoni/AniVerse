@@ -26,9 +26,11 @@ const useRead = () => {
 
   const mangaChapterMap: Record<number, number> = {}; // Mapeia mangaId para um único chapterId
 
-  for (const item of readChapters) {
-    if (!mangaChapterMap[item.mangaId]) {
-      mangaChapterMap[item.mangaId] = item.chapterId; // Associa um único chapterId ao mangaId
+  if (readChapters) {
+    for (const item of readChapters) {
+      if (!mangaChapterMap[item.mangaId]) {
+        mangaChapterMap[item.mangaId] = item.chapterId; // Associa um único chapterId ao mangaId
+      }
     }
   }
 

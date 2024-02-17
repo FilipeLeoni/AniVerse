@@ -9,6 +9,7 @@ import Footer from "@/components/partials/Footer";
 import { Toaster } from "react-hot-toast";
 import { WatchHistoryProvider } from "@/contexts/WatchHistoryContext";
 import { VideoProvider } from "@/contexts/GlobalPlayerContext";
+import "react-modern-calendar-datepicker/lib/DatePicker.css";
 
 const outfit = Outfit({
   subsets: ["latin"],

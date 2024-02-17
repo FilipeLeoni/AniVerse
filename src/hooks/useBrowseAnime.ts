@@ -21,6 +21,7 @@ export interface UseBrowseOptions {
   country?: string;
   status?: MediaStatus;
   isAdult?: boolean;
+  page?: number;
 }
 
 const useBrowse = (options: UseBrowseOptions) => {

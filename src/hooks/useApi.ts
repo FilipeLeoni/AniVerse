@@ -29,6 +29,7 @@ export const useApi = () => ({
   getAnimeById: async (id: number | string) => {
     try {
       const response = await Api.get(`/anime/${id}`);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -199,6 +200,32 @@ export const useApi = () => ({
       console.log(error);
     }
   },
+
+  getCharacterSearch: async (options: UseBrowseOptions) => {
+    console.log(options);
+    try {
+      const queryParams = Object.entries(options)
+        .filter(
+          ([key, value]) =>
+            value !== undefined &&
+            value !== null &&
+            value !== "" &&
+            value?.length !== 0
+        )
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
+
+      const url = `character/search/query?${queryParams}`;
+
+      console.log(url);
+      const response = await Api.get(url);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getCharacterById: async (characterId: string) => {
     try {
       const response = await Api.get(`character/${characterId}`);
@@ -221,6 +248,15 @@ export const useApi = () => ({
   UploadImage: async (file: any) => {
     try {
       const response = await Api.post(`upload/file`, file);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  UpdateUserBanner: async (userId: string, banner: any) => {
+    try {
+      const response = await Api.put(`user/${userId}/banner`, banner);
       return response;
     } catch (error) {
       console.log(error);

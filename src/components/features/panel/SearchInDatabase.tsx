@@ -80,7 +80,7 @@ export default function SearchInDatabase({
 
   const filteredData = data?.filter(
     (suggestion: any) =>
-      !state.some((selectedAnime: any) => selectedAnime.id === suggestion.id)
+      !state?.some((selectedAnime: any) => selectedAnime.id === suggestion.id)
   );
 
   return (
