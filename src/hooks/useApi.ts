@@ -1,8 +1,8 @@
-import { Api } from "@/utils/api";
-import Cookies from "js-cookie";
-import { UseBrowseOptions } from "./useBrowseAnime";
+import { Api } from '@/utils/api';
+import Cookies from 'js-cookie';
+import { UseBrowseOptions } from './useBrowseAnime';
 
-const accessToken = Cookies.get("accessToken");
+const accessToken = Cookies.get('accessToken');
 
 export const useApi = () => ({
   getUploadedAnimes: async (page: number = 1, pageSize: number = 10) => {
@@ -18,7 +18,7 @@ export const useApi = () => ({
 
   getUploadedManga: async (page: number = 1, pageSize: number = 10) => {
     try {
-      const response = await Api.get("/manga");
+      const response = await Api.get('/manga');
       console.log(response);
       return response;
     } catch (error) {
@@ -38,9 +38,9 @@ export const useApi = () => ({
 
   getAnimeByMediaIds: async (ids: any) => {
     try {
-      const response = await Api.get("/anime/media/get", {
+      const response = await Api.get('/anime/media/get', {
         params: {
-          media_ids: ids.join(","),
+          media_ids: ids.join(','),
         },
       });
       return response.data;
@@ -64,6 +64,62 @@ export const useApi = () => ({
     }
   },
 
+  getUserByName: async (userName: string) => {
+    try {
+      const response = await Api.get(`user/username/${userName}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getUserRoleHigh: async (role: string) => {
+    try {
+      const response = await Api.get(`user/roles/${role}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  PutUserRoles: async (userId: string, role: string) => {
+    try {
+      const response = await Api.put(`user/role/update/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        role,
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  putUserBanned: async (uuid: string, status: boolean) => {
+    try {
+      const response = await Api.put(`user/banStatus/${uuid}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        isBanned: status,
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   search: async (options: UseBrowseOptions) => {
     try {
       const response = await Api.get(`/anime/search?query=`);
@@ -78,10 +134,10 @@ export const useApi = () => ({
     userId: string,
     page: number,
     perPage: number,
-    status: string = "",
-    type: string = "ANIME"
+    status: string = '',
+    type: string = 'ANIME'
   ) => {
-    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
+    type === 'ANIME' ? (type = 'watchlist') : (type = 'readinglist');
     try {
       const response = await Api.get(
         `/list/${userId}/${type}?page=${page}&perPage=${perPage}&status=${status}`
@@ -96,9 +152,9 @@ export const useApi = () => ({
   getStatusById: async (
     userId: string,
     mediaId: number,
-    type: string = "ANIME"
+    type: string = 'ANIME'
   ) => {
-    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
+    type === 'ANIME' ? (type = 'watchlist') : (type = 'readinglist');
 
     try {
       const response = await Api.get(`/list/${userId}/${type}/${mediaId}`);
@@ -140,9 +196,9 @@ export const useApi = () => ({
 
   getMangaMediaByIds: async (ids: string[]) => {
     try {
-      const response = await Api.get("/manga/media/get", {
+      const response = await Api.get('/manga/media/get', {
         params: {
-          media_ids: ids.join(","),
+          media_ids: ids.join(','),
         },
       });
       return response.data;
@@ -160,11 +216,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== "" &&
+            value !== '' &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join("&");
+        .join('&');
 
       const url = `anime/search?${queryParams}`;
 
@@ -184,11 +240,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== "" &&
+            value !== '' &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join("&");
+        .join('&');
 
       const url = `manga/search?${queryParams}`;
 
@@ -209,11 +265,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== "" &&
+            value !== '' &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join("&");
+        .join('&');
 
       const url = `character/search/query?${queryParams}`;
 
