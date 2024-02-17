@@ -10,6 +10,7 @@ interface DeleteConfirmationProps extends React.HTMLAttributes<HTMLDivElement> {
   onConfirm?: () => void;
   isLoading?: boolean;
   reference?: React.ReactNode;
+  banned?: boolean;
 }
 
 const BanedConfirmation: React.FC<DeleteConfirmationProps> = (props: any) => {

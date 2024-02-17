@@ -18,7 +18,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import useBanUser from '@/hooks/useBanUser';
 import useModifyRole from '@/hooks/useModifyRole';
 
-export const CardUser: React.FC = ({ user, searchUser }: any) => {
+export const CardUser: React.FC<any> = ({ user, searchUser }: any) => {
   const api = useApi();
 
   const roles = [

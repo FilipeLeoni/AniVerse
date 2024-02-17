@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 
-export default function page() {
+export default function RolesPage() {
   const api = useApi();
 
   const [searchUser, setSearchUser] = useState<any>();
