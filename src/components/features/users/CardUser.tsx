@@ -56,7 +56,7 @@ export const CardUser: React.FC = ({ user, searchUser }: any) => {
 
   return (
     <div className="w-full bg-background-600 rounded-md">
-      <div className="bg-blue-500 w-full h-24 relative  rounded-t-md">
+      <div className="bg-red-500 w-full h-24 relative  rounded-t-md">
         <Image
           src={user?.bannerPicture || coverImage}
           alt="Background Image"
@@ -64,7 +64,7 @@ export const CardUser: React.FC = ({ user, searchUser }: any) => {
           className="object-cover rounded-t-md"
         />
 
-        <div className="bg-green-900 w-28 h-28 rounded-full absolute top-12 left-8">
+        <div className="bg-background-300 w-28 h-28 rounded-full absolute top-12 left-8">
           <Image
             src={user?.profilePicture || profileDefault}
             className="object-cover rounded-full"
