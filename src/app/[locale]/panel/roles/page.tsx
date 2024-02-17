@@ -5,7 +5,9 @@ import { CardUser } from '@/components/features/users/CardUser';
 import AdminCard from '@/components/shared/AdminCard';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
+import Loading from '@/components/shared/Loading';
 import { useApi } from '@/hooks/useApi';
+import useSearchUser from '@/hooks/useSearchUser';
 import { useQuery } from '@tanstack/react-query';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
@@ -14,22 +16,21 @@ export default function page() {
   const api = useApi();
 
   const [searchUser, setSearchUser] = useState<any>();
-  const [resultUser, setResultUser] = useState<any>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [query, setQuery] = useState<any>();
+
+  const {
+    data,
+    isLoading: searchUserLoading,
+    status,
+  } = useSearchUser(searchUser);
 
   const handleSearchUser = async () => {
-    setIsLoading(true);
-    const response = await api.getUserByName(searchUser);
-
-    if (response?.status == 200) {
-      setResultUser(response.data);
-    }
-    setIsLoading(false);
+    setSearchUser(query);
   };
 
   const { data: usersRolesHigh, isLoading: usersRolesHighLoading } =
     useQuery<any>({
-      queryKey: ['TrendingAnime'],
+      queryKey: ['usersRolesHigh'],
       queryFn: async () => {
         const response = await api.getUserRoleHigh('Admin');
         return response?.data;
@@ -37,11 +38,7 @@ export default function page() {
     });
 
   const handleDigit = (e: any) => {
-    setSearchUser(e.target.value);
-
-    if (e.target.value?.length === 0) {
-      setResultUser(null);
-    }
+    setQuery(e.target.value);
   };
 
   return (
@@ -55,32 +52,45 @@ export default function page() {
             LeftIcon={AiOutlineSearch}
             label={'E-mail'}
             placeholder="example@example.com"
-            value={searchUser}
+            value={query}
             onChange={(e: ChangeEvent<HTMLInputElement>) => handleDigit(e)}
             containerClassName="w-full md:w-1/3 mb-8"
+            disabled={searchUserLoading}
           />
           <div>
             <Button
               primary
               onClick={() => handleSearchUser()}
-              isLoading={isLoading}
+              disabled={searchUserLoading}
             >
               Search
             </Button>
           </div>
         </div>
 
-        {resultUser && searchUser?.length > 0 ? (
-          <CardUser user={resultUser} />
-        ) : resultUser === '' ? (
-          <p>Usuário não encontrado</p>
-        ) : (
-          <div className="grid w-full md:grid-cols-2 grid-cols-1 gap-2">
-            {usersRolesHigh?.map((admin: any) => (
-              <AdminCard adminUser={admin} />
-            ))}
-          </div>
-        )}
+        <div className="grid w-full md:grid-cols-2 grid-cols-1 gap-2">
+          {usersRolesHighLoading || searchUserLoading ? (
+            <div className="w-96  h-96 justify-center items-center">
+              <Loading />
+            </div>
+          ) : (
+            <>
+              {data && searchUser?.length > 0 ? (
+                <div className="w-full">
+                  <CardUser user={data} searchUser />
+                </div>
+              ) : !data && searchUser?.length ? (
+                <p>Usuário não encontrado</p>
+              ) : (
+                <>
+                  {usersRolesHigh?.map((admin: any) => (
+                    <AdminCard key={admin.id} adminUser={admin} />
+                  ))}
+                </>
+              )}
+            </>
+          )}
+        </div>
       </UploadContainer>
     </div>
   );

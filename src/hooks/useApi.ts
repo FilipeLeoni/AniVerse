@@ -91,6 +91,21 @@ export const useApi = () => ({
     }
   },
 
+  PutUserRoles: async (userId: string, role: string) => {
+    try {
+      const response = await Api.put(`user/role/update/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        role,
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   putUserBanned: async (uuid: string, status: boolean) => {
     try {
       const response = await Api.put(`user/banStatus/${uuid}`, {

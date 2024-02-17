@@ -3,6 +3,7 @@
 import Button from '@/components/shared/Button';
 import Select from '@/components/shared/Select';
 import { ImBlocked } from 'react-icons/im';
+import toast from 'react-hot-toast';
 
 import Image from '@/components/shared/Image';
 import { useEffect } from 'react';
@@ -13,24 +14,45 @@ import profileDefault from '@/assets/profile-default.jpg';
 import BanedConfirmation from '../panel/BanedConfirmation';
 import { AiFillAlert, AiFillBoxPlot } from 'react-icons/ai';
 import { useApi } from '@/hooks/useApi';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import useBanUser from '@/hooks/useBanUser';
+import useModifyRole from '@/hooks/useModifyRole';
 
-export const CardUser: React.FC = ({ user }: any) => {
+export const CardUser: React.FC = ({ user, searchUser }: any) => {
   const api = useApi();
 
-  const handleBannedUser = async (uuid: any, status: boolean) => {
-    const response = await api.putUserBanned(uuid, status);
+  const roles = [
+    { label: 'Admin', value: 'Admin' },
+    { label: 'Moderator', value: 'Moderator' },
+    { label: 'User', value: 'User' },
+  ];
 
-    console.log(response);
+  const { mutate: updateBanStatus, isLoading: updateBanStatusLoading } =
+    useBanUser();
+
+  const { mutate: updateRole, isLoading: updateRoleLoading } = useModifyRole();
+
+  const handleBanUser = async () => {
+    updateBanStatus({ userId: user?.id, status: !user?.isBanned, searchUser });
   };
 
-  // const { data: usersRolesHigh, isLoading: usersRolesHighLoading } =
-  //   useQuery<any>({
-  //     queryKey: ['TrendingAnime'],
-  //     queryFn: async () => {
-  //       const response = await api.getUserRoleHigh('Admin');
-  //       return response?.data;
-  //     },
-  //   });
+  useQuery<any>({
+    queryKey: ['BannedUser', user.id, !user.isBanned],
+    queryFn: async () => {
+      const response = await api.putUserBanned(user.id, !user.isBanned);
+      console.log(response);
+      return response?.data;
+    },
+    enabled: false,
+  });
+
+  const handleModifyRole = async (e: any) => {
+    if (e) {
+      updateRole({ userId: user.id, role: e.value });
+    } else {
+      toast.error('ERREI FUI MLK');
+    }
+  };
 
   return (
     <div className="w-full bg-background-600 rounded-md">
@@ -66,8 +88,11 @@ export const CardUser: React.FC = ({ user }: any) => {
 
         <div className="flex justify-end mt-12 gap-2">
           <Select
-            options={[]}
-            placeholder="Admin"
+            options={roles}
+            defaultValue={{ label: user?.role, value: user?.role }}
+            onChange={(e) => handleModifyRole(e)}
+            placeholder="Roles"
+            isClearable={false}
             styles={{
               control: (provided) => ({
                 ...provided,
@@ -83,28 +108,27 @@ export const CardUser: React.FC = ({ user }: any) => {
                 banned
                 reference={
                   <Button
-                    primary
-                    className="hover:bg-red-800 items-center justify-center bg-green-400"
-                    secondary
+                    isLoading={updateBanStatusLoading}
+                    className="hover:bg-red-800 items-center justify-center !bg-green-500 "
                   >
                     Unbanned
                   </Button>
                 }
-                onConfirm={() => handleBannedUser(user?.id, !user?.isBanned)}
+                onConfirm={handleBanUser}
               />
             ) : (
               <BanedConfirmation
                 confirmString={user?.name}
                 reference={
                   <Button
+                    isLoading={updateBanStatusLoading}
                     primary
-                    className="hover:bg-red-800 items-center justify-center bg-[#EF4444]"
-                    secondary
+                    className="hover:bg-red-800 items-center justify-center"
                   >
                     Ban
                   </Button>
                 }
-                onConfirm={() => handleBannedUser(user?.id, !user?.isBanned)}
+                onConfirm={handleBanUser}
               />
             )}
           </div>
