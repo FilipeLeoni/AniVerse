@@ -55,8 +55,11 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
   const commentReply = useCommentReply();
   const { data: session } = useSession();
 
-  const { mutate: updateComment } = useUpdateComment();
-  const { mutate: deleteComment } = useDeleteComment({
+  const { mutate: updateComment, status } = useUpdateComment({
+    animeId: comment.animeId,
+    parentId: comment.parentId,
+  });
+  const { mutate: deleteComment, status: deleteStatus } = useDeleteComment({
     animeId: comment.animeId,
     parentId: comment.parentId,
   });
@@ -164,7 +167,7 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
           showActionMenu ? "flex" : "hidden"
         )}
       >
-        {comment.user.id === session?.user?.id && (
+        {comment?.user?.id === session?.user?.id && (
           <Button
             iconClassName="w-5 h-5"
             secondary
@@ -180,7 +183,7 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
           onClick={handleReply}
         />
 
-        {comment.user.id === session?.user?.id && (
+        {comment?.user?.id === session?.user?.id && (
           <DeleteConfirmation
             reference={
               <Button
@@ -194,6 +197,13 @@ const CommentComponent: React.FC<CommentProps> = ({ comment }: any) => {
           />
         )}
       </div>
+
+      {status === "pending" ||
+        (deleteStatus === "pending" && (
+          <div className="absolute inset-0 bg-background-800 bg-opacity-50 flex items-center justify-center">
+            <Loading />
+          </div>
+        ))}
     </div>
   );
 };

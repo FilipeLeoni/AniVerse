@@ -17,6 +17,10 @@ import { signOut, useSession } from "next-auth/react";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
 import Logo from "../shared/Logo";
+import ProfileDropdown from "../features/users/ProfileDropdown";
+import AvatarDropdown from "../features/users/ProfileDropdown";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import NotificationDropdown from "../features/notifications/DropdownNotification";
 
 const routes = [
   {
@@ -146,9 +150,9 @@ const Header = () => {
         </div>
 
         <div className="flex items-center space-x-4 ml-auto">
-          {/* TODO: Create a language switcher */}
-          {/* <LanguageSwitcher /> */}
-
+          <div>
+            <NotificationDropdown />
+          </div>
           <NavItem href={"/search"}>
             {({ isActive }: any) => (
               <AiOutlineSearch
@@ -169,10 +173,8 @@ const Header = () => {
               </Link>
             </div>
           ) : (
-            <div className="flex items-center space-x-2">
-              <Button primary onClick={() => handleSingOut()}>
-                <p className="line-clamp-1">Sair</p>
-              </Button>
+            <div className="flex items-center space-x-2 relative">
+              <AvatarDropdown />
             </div>
           )}
         </div>

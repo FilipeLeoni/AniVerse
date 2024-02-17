@@ -209,11 +209,11 @@ export default function VideoPlayer({
                 id: anime.id,
                 title: anime.title.english,
                 thumbnail: anime.bannerImage || anime.coverImage.extraLarge,
+                totalEpisodes: anime.totalEpisodes,
               },
               episode: {
                 title: episodeData.title,
                 number: episodeData.number,
-                description: episodeData.description,
                 duration: videoRef.current.duration,
               },
               episodeId: episodeData.id,
@@ -422,7 +422,7 @@ export default function VideoPlayer({
           components={components}
           sources={[
             {
-              file: episodeData.video,
+              file: `${"http://localhost:8081"}/${episodeData.video}`,
             },
           ]}
           className="object-contain w-full h-full"

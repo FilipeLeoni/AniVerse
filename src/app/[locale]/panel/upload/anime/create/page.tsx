@@ -76,13 +76,15 @@ export default function UploadPage() {
   };
 
   const transformCharactersData = (characters: any) => {
+    const day = character.node.dateOfBirth.day;
+    const month = character.node.dateOfBirth.month;
     return characters.map((character: any) => ({
       name: character.node.name.userPreferred,
       image: character.node.image.large,
       description: character.node.description,
       gender: character.node.gender,
       age: Number(character.node.age),
-      dateOfBirth: `${character.node.dateOfBirth.day}/${character.node.dateOfBirth.month}`,
+      dateOfBirth: day && month ? `${day}/${month}` : null,
       role: character.role,
     }));
   };

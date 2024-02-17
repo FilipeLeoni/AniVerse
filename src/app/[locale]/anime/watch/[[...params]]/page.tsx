@@ -46,12 +46,12 @@ export default function WatchPage({ params }: { params: { params: string } }) {
   return (
     <div className="flex flex-col w-full h-auto pt-16">
       <div style={{ height: isMobile ? "100%" : "70vh" }} className="relative">
-        {/* <VideoPlayer
+        <VideoPlayer
           anime={anime?.media}
           episodeData={episode}
           isEpisodeLoading={isEpisodeLoading}
-        /> */}
-        <EmbedVidet />
+        />
+        {/* <EmbedVidet /> */}
       </div>
       <div className="flex mt-20 flex-wrap lg:flex-nowrap">
         <Section className="">

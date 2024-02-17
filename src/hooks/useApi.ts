@@ -36,6 +36,16 @@ export const useApi = () => ({
     }
   },
 
+  getMangaById: async (id: number | string) => {
+    try {
+      const response = await Api.get(`/anime/${id}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getAnimeByMediaIds: async (ids: any) => {
     try {
       const response = await Api.get("/anime/media/get", {
@@ -276,6 +286,34 @@ export const useApi = () => ({
         pages: images,
       });
       return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getNotifications: async (userId: string) => {
+    try {
+      const response = await Api.get(`notification/${userId}`);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  seenNotifications: async (userId: string, notifications: any) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/notification/${userId}/seen`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notifications }),
+        }
+      );
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.log(error);
     }
