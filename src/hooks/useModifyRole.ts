@@ -38,6 +38,10 @@ const useModifyRole: any = () => {
       await queryClient.invalidateQueries({
         queryKey: ['usersRolesHigh'],
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['userRolesModerator'],
+      });
     },
     onError: (error) => {
       console.log(error);
