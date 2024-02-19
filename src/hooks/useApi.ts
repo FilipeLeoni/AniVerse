@@ -106,6 +106,21 @@ export const useApi = () => ({
     }
   },
 
+  PutScheduleAnime: async (animeId: string, schedule: string) => {
+    try {
+      const response = await Api.put(`anime/schedule/${animeId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        schedule,
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   putUserBanned: async (uuid: string, status: boolean) => {
     try {
       const response = await Api.put(`user/banStatus/${uuid}`, {

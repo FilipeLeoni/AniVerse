@@ -95,7 +95,7 @@ export default function RolesPage() {
                   <CardUser user={data} searchUser />
                 </div>
               ) : !data && searchUser?.length ? (
-                <p>Usuário não encontrado</p>
+                <p>No results found</p>
               ) : (
                 <Tabs
                   forceRenderTabPanel
