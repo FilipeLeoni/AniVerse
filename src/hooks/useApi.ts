@@ -106,13 +106,17 @@ export const useApi = () => ({
     }
   },
 
-  PutScheduleAnime: async (animeId: string, schedule: string) => {
+  PutScheduleAnime: async (
+    animeId: string,
+    { schedule, episode }: { schedule: any; episode: string }
+  ) => {
     try {
       const response = await Api.put(`anime/schedule/${animeId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
         schedule,
+        episode,
       });
       console.log(response);
       return response;

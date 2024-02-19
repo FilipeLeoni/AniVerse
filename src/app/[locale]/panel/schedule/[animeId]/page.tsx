@@ -1,24 +1,18 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiPlus } from 'react-icons/bi';
-// import MomentUtils from '@date-io/moment';
-// import DateFnsUtils from '@date-io/date-fns';
-// import LuxonUtils from '@date-io/luxon';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-
-import DateFnsUtils from '@date-io/date-fns';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import dayjs from 'dayjs';
+// import 'dayjs/locale/fr'; // Importe o idioma francês (se ainda não estiver importado)
 
 import { useApi } from '@/hooks/useApi';
 
 import Button from '@/components/shared/Button';
 import Loading from '@/components/shared/Loading';
 import MediaDetails from '@/components/features/upload/MediaDetails';
-import Modal from '@/components/shared/Modal';
-import Input from '@/components/shared/Input';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import toast, { Toaster } from 'react-hot-toast';
+import dayjs from 'dayjs';
 
 export default function ScheduleMutate({
   params,
@@ -27,41 +21,41 @@ export default function ScheduleMutate({
 }) {
   const [anime, setAnime] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedDate, handleDateChange] = useState(new Date());
+  const [selectedDate, handleDateChange] = useState<any>();
+  const [episode, setEpisode] = useState<string>('');
 
   const api = useApi();
-  const modalRef = useRef<any>();
 
   const getAnimeById = async () => {
     setIsLoading(true);
     const response = await api.getAnimeById(params.animeId);
     setAnime(response);
+    console.log(response);
 
     setIsLoading(false);
     return response;
   };
 
-  useEffect(() => {
-    console.log(selectedDate);
-  }, [selectedDate]);
+  const handlePutSchedule = async () => {
+    const response = await api.PutScheduleAnime(params.animeId, {
+      schedule: selectedDate,
+      episode,
+    });
 
-  const handlePutSchedule = async (schedule: string) => {
-    const response = api.PutScheduleAnime(params.animeId, '');
-  };
-
-  const handleModalState = (state: 'open' | 'close') => () => {
-    if (state === 'open') {
-      modalRef?.current?.open();
-    } else if (state === 'close') {
-      modalRef?.current?.close();
+    if (response?.status === 201) {
+      getAnimeById();
+      setEpisode('');
+      handleDateChange('');
+    } else {
+      toast.error('Error create schedules, verify episode and schedule date');
     }
+
+    console.log(response);
   };
 
   useEffect(() => {
     getAnimeById();
   }, [params]);
-
-  const color = '#c44242';
 
   return (
     <div>
@@ -81,52 +75,62 @@ export default function ScheduleMutate({
         )}
       </div>
 
-      {!isLoading && anime && (
-        <div className="flex gap-2 justify-end">
-          <input
-            className="h-14 border-[#262626] border rounded-sm bg-background-900 placeholder:text-white px-4"
-            placeholder="Episode"
-          />
+      <div className="mt-4">
+        {!isLoading && anime && (
+          <div className="flex gap-2 justify-end">
+            <input
+              className="h-14 border-[#262626] border rounded-sm bg-background-900 placeholder:text-[#737373] px-4"
+              placeholder="Episode"
+              value={episode}
+              onChange={(e) => setEpisode(e.target.value)}
+            />
 
-          <DateTimePicker
-            className="border border-red-900"
-            sx={{
-              color: 'white',
-              width: 300,
-              background: '#0D0D0D',
-              border: '1px solid #262626',
-              borderRadius: '4px',
-              '& input': { color: 'white' },
-              svg: { color: '#fff' },
-            }}
-          />
+            <DateTimePicker
+              className="border border-red-900"
+              sx={{
+                color: 'white',
+                width: 300,
+                background: '#0D0D0D',
+                border: '1px solid #262626',
+                borderRadius: '4px',
+                '& input': { color: 'white' },
+                svg: { color: '#fff' },
+              }}
+              value={selectedDate}
+              onChange={(newValue: any) => handleDateChange(newValue)}
+            />
 
-          <Button
-            onClick={handleModalState('open')}
-            primary
-            className="gap-2 justify-center md:flex hidden"
-          >
-            Add schedule <BiPlus />
-          </Button>
-        </div>
-      )}
-
-      {anime && (
-        <div className="w-full bg-background-700 mt-4 p-4 rounded-md">
-          <p className="">Episode: </p>
-          <br />
-          <p>Date added on:</p>
-          <p>Created by: </p>
-          <div className="flex gap-2">
-            <p>Date entered: </p>
-            <p className="text-primary-500">{anime?.airingSchedule}</p>
+            <Button
+              onClick={() => handlePutSchedule()}
+              primary
+              className="gap-2 justify-center md:flex hidden"
+            >
+              Add schedule <BiPlus />
+            </Button>
           </div>
-        </div>
-      )}
-      {/* 
-      <Modal ref={modalRef} className="z-10">
-       
-      </Modal> */}
+        )}
+
+        {anime && !isLoading && (
+          <div className="w-full bg-background-700 mt-4 p-4 rounded-md">
+            <div className="flex gap-2">
+              <p>Episode: </p>
+              <p className="text-primary-500">
+                {anime?.airingSchedule?.episode}
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <p>Date entered: </p>
+              <p className="text-primary-500">
+                {dayjs(anime?.airingSchedule?.schedule).format(
+                  'DD/MM/YYYY HH:mm:ss'
+                )}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+      <Toaster />
     </div>
   );
 }
