@@ -34,6 +34,7 @@ export default async function DetailsPage({
   const animeId = params.animeId[0];
   // const { data } = await getAnimeById(params.animeId[0], "ANIME");
   const media = await api.getAnimeById(animeId);
+  const recommendations = await api.getRecommendations(animeId);
   const data = {
     Media: media,
   };
@@ -50,6 +51,16 @@ export default async function DetailsPage({
     console.log("handleNotification");
   };
 
+  console.log(recommendations);
+  console.log(data?.Media?.relations);
+  const relations = [];
+  if (data?.Media?.relations?.animes) {
+    relations.push(...data?.Media?.relations?.animes);
+  }
+  if (data?.Media?.relations?.Manga) {
+    relations.push(...data?.Media?.relations?.Manga);
+  }
+
   return (
     <div className="pb-8">
       <DetailsBanner image={data?.Media?.bannerImage} />
@@ -57,7 +68,7 @@ export default async function DetailsPage({
       <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
         <div className="flex flex-row md:space-x-8">
           <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6">
-            <PlainCard src={data?.Media.coverImage.extraLarge} alt={"Test"} />
+            <PlainCard src={data?.Media?.coverImage?.extraLarge} alt={"Test"} />
             {/* <Button
               primary
               className="gap-4 w-full justify-center md:flex hidden"
@@ -261,7 +272,11 @@ export default async function DetailsPage({
 
         <div className="space-y-12 md:col-span-8">
           <DetailsSection title={"Episodes"} className="overflow-hidden">
-            <EpisodeSelector episodes={data?.Media?.episode} />
+            {data?.Media?.episode.length > 0 ? (
+              <EpisodeSelector episodes={data?.Media?.episode} />
+            ) : (
+              <p className="font-mediun">No episodes available...</p>
+            )}
           </DetailsSection>
           {!!data?.Media?.characters?.length && (
             <DetailsSection
@@ -279,6 +294,21 @@ export default async function DetailsPage({
             </DetailsSection>
           )}
 
+          {!!relations?.length && (
+            <DetailsSection title={"Relations"}>
+              <List data={relations}>
+                {(node: any) => <Card data={node} className="relations" />}
+              </List>
+            </DetailsSection>
+          )}
+
+          {!!recommendations?.length && (
+            <DetailsSection title={"Recomendations"}>
+              <List data={recommendations}>
+                {(node: any) => <Card data={node} />}
+              </List>
+            </DetailsSection>
+          )}
           {/* {!!data?.Media?.relations?.nodes?.length && (
             <DetailsSection title={"Relations"}>
               <List data={data?.Media.relations.nodes}>

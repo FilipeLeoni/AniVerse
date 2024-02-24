@@ -24,23 +24,23 @@ import NotificationDropdown from "../features/notifications/DropdownNotification
 
 const routes = [
   {
-    title: "anime",
+    title: "Anime",
     href: "/anime",
   },
   {
-    title: "manga",
+    title: "Manga",
     href: "/manga",
   },
   {
-    title: "anime_scene_search",
-    href: "/scene-search",
+    title: "Watch with friends",
+    href: "/wwf",
   },
   {
     title: "anime_theme",
     href: "/themes",
   },
   {
-    title: "airing_schedule",
+    title: "Airing Schedule",
     href: "/schedule",
   },
 ];
@@ -105,7 +105,7 @@ const Header = () => {
                             : "border-background-900 text-typography-secondary"
                         )}
                       >
-                        {t(route.title)}
+                        {route.title}
                       </p>
                     )}
                   </NavItem>
@@ -142,7 +142,7 @@ const Header = () => {
                     isActive && "text-primary-300"
                   )}
                 >
-                  {t(route.title)}
+                  {route.title}
                 </p>
               )}
             </NavItem>
@@ -150,9 +150,11 @@ const Header = () => {
         </div>
 
         <div className="flex items-center space-x-4 ml-auto">
-          <div>
-            <NotificationDropdown />
-          </div>
+          {session?.user && (
+            <div>
+              <NotificationDropdown />
+            </div>
+          )}
           <NavItem href={"/search"}>
             {({ isActive }: any) => (
               <AiOutlineSearch

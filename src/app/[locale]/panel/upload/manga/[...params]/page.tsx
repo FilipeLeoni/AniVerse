@@ -52,6 +52,7 @@ export default function UploadPage({
   const [selectedFile, setSelectedFile] = useState<any | null>(null);
   const [banner, setBanner] = useState<any | null>(null);
   const [coverImage, setCoverImage] = useState<any | null>(null);
+  const [relations, setRelations] = useState([]);
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ["MangaById", params.params[0]],
@@ -289,6 +290,7 @@ export default function UploadPage({
       genres: genres,
       totalChapters: chapters,
       countryOfOrigin: data.countryOfOrigin,
+      relations: relations,
       //   popularity: popularity,
       //   favourites: data.favourites,
       //   trending: data.trending,
@@ -649,11 +651,11 @@ export default function UploadPage({
             </AnimatePresence>
 
             <div className="w-full">
-              <AddRemoveCard label={"Relations"} />
-            </div>
-
-            <div className="w-full">
-              <AddRemoveCard label={"Recommendations"} />
+              <AddRemoveCard
+                label={"Relations"}
+                state={relations}
+                setState={setRelations}
+              />
             </div>
           </div>
         </Section>

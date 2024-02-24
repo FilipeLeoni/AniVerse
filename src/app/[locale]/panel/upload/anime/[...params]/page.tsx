@@ -698,13 +698,13 @@ export default function UploadPage({
               />
             </div>
 
-            <div className="w-full">
+            {/* <div className="w-full">
               <AddRemoveCard
                 label={"Recommendations"}
                 state={recommendations}
                 setState={setRecommendations}
               />
-            </div>
+            </div> */}
           </div>
         </Section>
 

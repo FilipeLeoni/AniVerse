@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import { useLocale } from "next-intl";
 import useSeenNotifications from "@/hooks/useSeenNotifications";
 import useNotifications from "@/hooks/useNotifications";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 const convertToReadNotifcations = (notifications: Partial<Notification>[]) => {
   return notifications.map((notification: any) => ({
@@ -148,6 +149,8 @@ const NotificationDropdown = () => {
     [notifications, user?.id]
   );
 
+  dayjs.extend(relativeTime);
+
   const handlePopupClick = async () => {
     seenNotifications(notifications);
     mutate(notifications);
@@ -212,7 +215,7 @@ const NotificationDropdown = () => {
       showArrow
       reference={
         <div className="relative">
-          <MdNotifications className="w-6 h-6" />
+          <MdNotifications className="w-6 h-6 hover:text-primary-300 transition-colors" />
 
           {unreadCount > 0 && (
             <div className="flex items-center justify-center absolute w-4 h-4 -top-1 -right-1 text-xs text-white font-semibold bg-primary-500 rounded-full">

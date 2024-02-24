@@ -1,4 +1,6 @@
 import HorizontalCard from "@/components/shared/HorizontalCard";
+import { authOptions } from "@/utils/AuthOptions";
+import { getServerSession } from "next-auth";
 import React from "react";
 import { AiOutlineRead, AiOutlineVideoCamera } from "react-icons/ai";
 
@@ -15,10 +17,12 @@ export default async function PanelHome() {
   );
 
   const data = await res.json();
+  const session = await getServerSession(authOptions);
 
+  console.log(session);
   return (
     <div className="w-full flex flex-col gap-4 pl-32">
-      <h1 className="text-3xl font-semibold">Hi</h1>
+      <h1 className="text-3xl font-semibold">Hi, {session?.user?.name}</h1>
       <div className="flex w-full gap-4 flex-wrap">
         <div className="bg-neutral-900/60 rounded-md flex-1 h-auto lg:w-1/2 p-5 ">
           <AiOutlineVideoCamera size={32} />

@@ -28,7 +28,7 @@ export default async function DetailsPage({
   const api = useApi();
   const mangaId = params.mangaId[0];
   // const { data } = await getAnimeById(params.mangaId[0], "MANGA");
-  const media = await api.getAnimeById(mangaId);
+  const media = await api.getMangaById(mangaId);
   const data = {
     Media: media,
   };
@@ -45,6 +45,19 @@ export default async function DetailsPage({
 
     return dayjs.unix(nextAiringSchedule.airingAt).locale(locale).fromNow();
   };
+
+  console.log(data);
+  // const relations = [
+  //   ...data?.Media?.relations?.animes,
+  //   ...data?.Media?.relations?.Manga,
+  // ];
+  const relations = [];
+  if (data?.Media?.relations?.animes) {
+    relations.push(...data?.Media?.relations?.animes);
+  }
+  if (data?.Media?.relations?.Manga) {
+    relations.push(...data?.Media?.relations?.Manga);
+  }
 
   return (
     <div className="pb-8">
@@ -187,7 +200,7 @@ export default async function DetailsPage({
               value={numberWithCommas(data?.Media?.trending)}
             />
 
-            <InfoItem
+            {/* <InfoItem
               title="Studio"
               value={data?.Media?.studios.nodes.map((studio: any) => (
                 <Link
@@ -198,7 +211,7 @@ export default async function DetailsPage({
                   <p>{studio.name}</p>
                 </Link>
               ))}
-            />
+            /> */}
 
             <InfoItem
               title={"Season"}
@@ -237,12 +250,12 @@ export default async function DetailsPage({
           </div>
         </div>
         <div className="space-y-12 md:col-span-8">
-          {!!data.Media?.characters?.edges?.length && (
+          {!!data.Media?.characters?.length && (
             <DetailsSection
               title={"Characters"}
               className="grid w-full grid-cols-1 gap-4 md:grid-cols-2"
             >
-              {data?.Media?.characters.edges.map(
+              {data?.Media?.characters.map(
                 (characterEdge: any, index: number) => (
                   <CharacterConnectionCard
                     characterEdge={characterEdge}
@@ -253,21 +266,21 @@ export default async function DetailsPage({
             </DetailsSection>
           )}
 
-          {!!data.Media?.relations?.nodes?.length && (
+          {!!relations?.length && (
             <DetailsSection title={"Relations"}>
-              <List data={data?.Media?.relations.nodes}>
+              <List data={relations}>
                 {(node: any) => <Card data={node} className="relations" />}
               </List>
             </DetailsSection>
           )}
 
-          {!!data.Media?.recommendations?.nodes?.length && (
+          {/* {!!data.Media?.recommendations?.nodes?.length && (
             <DetailsSection title={"Recomendations"}>
               <List data={data?.Media?.recommendations.nodes}>
                 {(node: any) => <Card data={node.mediaRecommendation} />}
               </List>
             </DetailsSection>
-          )}
+          )} */}
         </div>
       </Section>
     </div>

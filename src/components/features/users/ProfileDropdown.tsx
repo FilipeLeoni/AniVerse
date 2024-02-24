@@ -7,6 +7,7 @@ import { createPopper } from "@popperjs/core";
 import { FaRegUser } from "react-icons/fa";
 import { MdExitToApp } from "react-icons/md";
 import Link from "next/link";
+import { FiUpload } from "react-icons/fi";
 
 const AvatarDropdown = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -71,6 +72,8 @@ const AvatarDropdown = () => {
     };
   }, [dropdownVisible]);
 
+  console.log(session?.user);
+
   return (
     <div className="avatar-dropdown w-full cursor-pointer">
       <div
@@ -100,6 +103,15 @@ const AvatarDropdown = () => {
                 Profile
               </div>
             </Link>
+
+            {session?.user?.role === "Admin" && (
+              <Link href={`/panel/home`}>
+                <div className="p-2 hover:bg-neutral-700 rounded-md flex items-center gap-2 font-medium cursor-pointer">
+                  <FiUpload />
+                  Upload
+                </div>
+              </Link>
+            )}
             <div onClick={() => signOut()}>
               <div className="p-2 hover:bg-neutral-800 rounded-md flex items-center gap-2 font-medium cursor-pointer">
                 <MdExitToApp size={19} />
