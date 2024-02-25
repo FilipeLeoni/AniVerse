@@ -116,6 +116,39 @@ export const useApi = () => ({
     }
   },
 
+  PutScheduleAnime: async (
+    animeId: string,
+    { schedule, episode }: { schedule: any; episode: string }
+  ) => {
+    try {
+      console.log({
+        schedule,
+        episode,
+      });
+      // const response = await Api.put(`anime/schedule/${animeId}`, {
+      //   // headers: {
+      //   //   Authorization: `Bearer ${accessToken}`,
+      //   // },
+      //   schedule: "2024-02-19T03:00:00.000Z",
+      //   episode: 12,
+      // });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/anime/schedule/${animeId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ schedule, episode }),
+        }
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   putUserBanned: async (uuid: string, status: boolean) => {
     try {
       const response = await Api.put(`user/banStatus/${uuid}`, {

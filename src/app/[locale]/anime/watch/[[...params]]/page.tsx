@@ -34,7 +34,7 @@ export default function WatchPage({ params }: { params: { params: string } }) {
   });
 
   const { data: related } = useQuery<any>({
-    queryKey: ["Related"],
+    queryKey: ["getAddedAnimes"],
     queryFn: async () => {
       const response = await api.getUploadedAnimes();
       return { media: response };
