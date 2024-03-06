@@ -42,10 +42,8 @@ const useUpdateComment: any = () => {
         mentioned_user_ids: payload.mentionedUserIds,
       }));
     },
-    onSettled: async () => {
-      queryClient.invalidateQueries({
-        queryKey: ["comments"],
-      });
+    onSuccess: async (data: any, params: any) => {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
     onError: (error) => {
       console.log(error);

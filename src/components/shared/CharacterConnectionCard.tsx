@@ -16,6 +16,7 @@ const CharacterConnectionCard: React.FC<CharacterCardProps> = ({
 }) => {
   const locale = useLocale();
 
+  console.log(characterEdge);
   const id = characterEdge?.id;
   const name = characterEdge?.name;
   const formattedName = name ? name.replaceAll(" ", "-") : "";

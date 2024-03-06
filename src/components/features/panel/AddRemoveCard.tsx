@@ -8,13 +8,15 @@ import List from "@/components/shared/List";
 import Card from "./Card";
 
 export default function AddRemoveCard({ label, state, setState }: any) {
+  // const [state, setState] = useState<any[]>([]);
+
   console.log(state);
 
   function handleAnimeSelect(anime: any) {
     if (!state?.some((selectedAnime: any) => selectedAnime.id === anime.id)) {
       setState((prevSelectedAnimes: any) => [...prevSelectedAnimes, anime]);
     } else {
-      console.log("Anime alredy added to list.");
+      console.log("Este anime já foi adicionado à lista.");
     }
   }
 

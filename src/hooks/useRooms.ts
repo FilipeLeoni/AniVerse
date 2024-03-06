@@ -3,17 +3,11 @@
 // import { toast } from "react-toastify";
 
 import { useQuery } from "@tanstack/react-query";
-import { useApi } from "./useApi";
 
 const useRooms: any = () => {
-  const api = useApi();
   return useQuery(
     {
       queryKey: ["rooms"],
-      queryFn: async () => {
-        const response = await api.getActiveRooms();
-        return response?.data;
-      },
     }
     // "rooms",
     // async () => {

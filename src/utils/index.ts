@@ -480,17 +480,20 @@ export const createProxyUrl = (
 
 export const createMediaDetailsUrl = (media: Media | any) => {
   if (media?.type === MediaType.Anime) {
+    console.log(media);
     return `/anime/details/${media.id}/${vietnameseSlug(
       media?.title?.english
     )}`;
   }
 
-  return `/manga/details/${media?.id}/${vietnameseSlug(media?.title?.english)}`;
+  return `/manga/details/${media?.id}/${vietnameseSlug(
+    media?.title?.userPreferred
+  )}`;
 };
 
 export const createCharacterDetailsUrl = (character: any) => {
   return `/characters/details/${character.id}/${vietnameseSlug(
-    character?.name
+    character?.name?.userPreferred
   )}`;
 };
 
