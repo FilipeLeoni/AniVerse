@@ -19,6 +19,7 @@ import { useLocale } from "next-intl";
 import Link from "next/link";
 import React from "react";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
+import { FaRegBell } from "react-icons/fa";
 
 export default async function DetailsPage({
   params,
@@ -75,7 +76,20 @@ export default async function DetailsPage({
               Add to list
             </Button> */}
 
-            <AddToListDropdown mediaId={2} type="MANGA" />
+            {/* <AddToListDropdown mediaId={2} type="MANGA" /> */}
+
+            <div className="flex gap-1">
+              <div className="flex-1">
+                <AddToListDropdown mediaId={data.Media.id} type="MANGA" />
+              </div>
+              <div
+                className="flex justify-center items-center cursor-pointer hover:bg-background-400 px-3 rounded-md"
+                // onClick={() => handleNotification()}
+              >
+                <FaRegBell size={20} />
+              </div>
+            </div>
+            {/* </div> */}
           </div>
 
           <div className="flex flex-col justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-4">

@@ -57,7 +57,7 @@ const Option: React.ComponentType<
   );
 };
 
-const Select = React.forwardRef<any, Props>(
+const Select = React.forwardRef<any, any>(
   ({ components, styles, ...props }, ref) => {
     const [portalTarget, setPortalTarget] = React.useState<HTMLElement>();
 

@@ -19,7 +19,6 @@ export default async function PanelHome() {
   const data = await res.json();
   const session = await getServerSession(authOptions);
 
-  console.log(session);
   return (
     <div className="w-full flex flex-col gap-4 pl-32">
       <h1 className="text-3xl font-semibold">Hi, {session?.user?.name}</h1>

@@ -353,6 +353,25 @@ export const useApi = () => ({
     }
   },
 
+  UploadVideo: async (file: any) => {
+    try {
+      const response = await Api.post(`episodes/upload`, file, {
+        onUploadProgress: (progressEvent: any) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+
+          console.log(percentCompleted);
+          // setUploadProgress(percentCompleted);
+          // setUploadStatus(`Enviando... ${percentCompleted}%`);
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   UpdateUserBanner: async (userId: string, banner: any) => {
     try {
       const response = await Api.put(`user/${userId}/banner`, banner);
