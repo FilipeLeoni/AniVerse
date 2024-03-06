@@ -1,12 +1,10 @@
 "use client";
-import { useWatchHistory } from "@/contexts/WatchHistoryContext";
+
 import Player from "netplayer";
 import React from "react";
 
-export default function Example() {
-  // const watchedEpisodes = JSON.parse(localStorage.getItem("watchedEpisodes"));
-
-  // console.log(watchedEpisodes);
+export default function Examples({ params }: { params: { animeId: string } }) {
+  console.log(params);
   return (
     <div>
       <Player
@@ -21,8 +19,6 @@ export default function Example() {
         className="object-contain w-full h-full"
         autoPlay
       />
-
-      <div>dwdwdw</div>
     </div>
   );
 }

@@ -10,15 +10,16 @@ interface UseCommentsQuery {
 }
 
 const useComments = (query: any) => {
-  const { animeId, parentId = null, type } = query;
+  const { animeId, parentId = null, sortBy } = query;
   const queryClient = useQueryClient();
 
-  const data = useQuery({
-    queryKey: ["comments", { animeId, parentId }],
+  console.log(sortBy);
+  const { data, isLoading } = useQuery({
+    queryKey: ["comments", { animeId, parentId, sortBy }],
     queryFn: async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/comments/anime/${animeId}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/comments/anime/${animeId}?sortBy=${sortBy}`,
           {
             method: "GET",
             headers: {
@@ -37,14 +38,16 @@ const useComments = (query: any) => {
     },
   });
 
+  console.log(data);
+
   useEffect(() => {
-    if (data.isSuccess) {
-      queryClient.setQueryData(["comments", { animeId, parentId }], data.data);
+    if (data) {
+      queryClient.setQueryData(["comments", { animeId, parentId }], data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.isSuccess, data.data, animeId, parentId]);
+  }, [data, animeId, parentId]);
 
-  return data;
+  return { data, isLoading };
 };
 
 export default useComments;

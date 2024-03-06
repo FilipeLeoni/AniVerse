@@ -24,14 +24,17 @@ import Reaction from "@/components/features/comment/Reaction";
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import EpisodeSelector from "@/components/features/anime/EpisodeSelector";
 import { useApi } from "@/hooks/useApi";
+import { FaRegBell } from "react-icons/fa";
 export default async function DetailsPage({
   params,
 }: {
   params: { animeId: string };
 }) {
   const api = useApi();
+  const animeId = params.animeId[0];
   // const { data } = await getAnimeById(params.animeId[0], "ANIME");
-  const media = await api.getAnimeById(params.animeId[0]);
+  const media = await api.getAnimeById(animeId);
+  const recommendations = await api.getRecommendations(animeId);
   const data = {
     Media: media,
   };
@@ -44,14 +47,28 @@ export default async function DetailsPage({
     ?.sort((a: any, b: any) => a.episode - b.episode)
     .find((schedule: any) => dayjs.unix(schedule.airingAt).isAfter(dayjs()));
 
+  const handleNotification = () => {
+    console.log("handleNotification");
+  };
+
+  console.log(recommendations);
+  console.log(data?.Media?.relations);
+  const relations = [];
+  if (data?.Media?.relations?.animes) {
+    relations.push(...data?.Media?.relations?.animes);
+  }
+  if (data?.Media?.relations?.Manga) {
+    relations.push(...data?.Media?.relations?.Manga);
+  }
+
   return (
     <div className="pb-8">
-      <DetailsBanner image={data?.Media.bannerImage} />
+      <DetailsBanner image={data?.Media?.bannerImage} />
 
       <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
         <div className="flex flex-row md:space-x-8">
           <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6">
-            <PlainCard src={data?.Media.coverImage.extraLarge} alt={"Test"} />
+            <PlainCard src={data?.Media?.coverImage?.extraLarge} alt={"Test"} />
             {/* <Button
               primary
               className="gap-4 w-full justify-center md:flex hidden"
@@ -60,7 +77,17 @@ export default async function DetailsPage({
               Add to list
             </Button> */}
 
-            <AddToListDropdown mediaId={data.Media.id} type="ANIME" />
+            <div className="flex gap-1">
+              <div className="flex-1">
+                <AddToListDropdown mediaId={data.Media.id} type="ANIME" />
+              </div>
+              <div
+                className="flex justify-center items-center cursor-pointer hover:bg-background-400 px-3 rounded-md"
+                // onClick={() => handleNotification()}
+              >
+                <FaRegBell size={20} />
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4">
@@ -71,7 +98,7 @@ export default async function DetailsPage({
 
             <div className="flex flex-col items-start space-y-4 md:py-4 max-w-fit">
               <p className="text-2xl md:text-3xl font-semibold max-w-full">
-                {title}
+                {data.Media.title.english}
               </p>
 
               <div className="overflow-ellipsis line-clamp-1">
@@ -83,11 +110,11 @@ export default async function DetailsPage({
                   ))}
                 </DotList>
               </div>
-              {/* <MediaDescription
-                description={description}
+              <MediaDescription
+                description={data?.Media?.description}
                 containerClassName="mt-4 mb-8 hidden md:block"
                 className="text-gray-300 hover:text-gray-100 transition duration-300"
-              /> */}
+              />
               <div id="mal-sync" className="hidden md:block"></div>
             </div>
 
@@ -121,11 +148,11 @@ export default async function DetailsPage({
             </div>
           </div>
         </div>
-        {/* <MediaDescription
-          description={description}
+        <MediaDescription
+          description={data?.Media?.description}
           containerClassName="mt-4 mb-8 md:hidden block"
           className="text-gray-300 hover:text-gray-100 transition duration-300"
-        /> */}
+        />
 
         <div className="flex gap-2 mt-2">
           <Button
@@ -245,7 +272,11 @@ export default async function DetailsPage({
 
         <div className="space-y-12 md:col-span-8">
           <DetailsSection title={"Episodes"} className="overflow-hidden">
-            <EpisodeSelector episodes={data?.Media?.episode} />
+            {data?.Media?.episode.length > 0 ? (
+              <EpisodeSelector episodes={data?.Media?.episode} />
+            ) : (
+              <p className="font-mediun">No episodes available...</p>
+            )}
           </DetailsSection>
           {!!data?.Media?.characters?.length && (
             <DetailsSection
@@ -263,6 +294,21 @@ export default async function DetailsPage({
             </DetailsSection>
           )}
 
+          {!!relations?.length && (
+            <DetailsSection title={"Relations"}>
+              <List data={relations}>
+                {(node: any) => <Card data={node} className="relations" />}
+              </List>
+            </DetailsSection>
+          )}
+
+          {!!recommendations?.length && (
+            <DetailsSection title={"Recomendations"}>
+              <List data={recommendations}>
+                {(node: any) => <Card data={node} />}
+              </List>
+            </DetailsSection>
+          )}
           {/* {!!data?.Media?.relations?.nodes?.length && (
             <DetailsSection title={"Relations"}>
               <List data={data?.Media.relations.nodes}>
@@ -285,7 +331,7 @@ export default async function DetailsPage({
           <h2 className="text-xl">What do you think?</h2>
           <Reaction />
         </div>
-        <Comments animeId={"2"} />
+        <Comments animeId={animeId} />
       </Section>
     </div>
   );

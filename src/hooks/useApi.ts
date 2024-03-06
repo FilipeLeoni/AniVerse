@@ -1,11 +1,11 @@
-import { Api } from '@/utils/api';
-import Cookies from 'js-cookie';
-import { UseBrowseOptions } from './useBrowseAnime';
+import { Api } from "@/utils/api";
+import Cookies from "js-cookie";
+import { UseBrowseOptions } from "./useBrowseAnime";
 
-const accessToken = Cookies.get('accessToken');
+const accessToken = Cookies.get("accessToken");
 
 export const useApi = () => ({
-  getUploadedAnimes: async (page: number = 1, pageSize: number = 10) => {
+  getUploadedAnimes: async (page: number = 1, pageSize: number = 50) => {
     try {
       const response = await Api.get(
         `/anime?page=${page}&pageSize=${pageSize}`
@@ -18,7 +18,7 @@ export const useApi = () => ({
 
   getUploadedManga: async (page: number = 1, pageSize: number = 10) => {
     try {
-      const response = await Api.get('/manga');
+      const response = await Api.get("/manga");
       console.log(response);
       return response;
     } catch (error) {
@@ -36,11 +36,21 @@ export const useApi = () => ({
     }
   },
 
+  getMangaById: async (id: number | string) => {
+    try {
+      const response = await Api.get(`/manga/${id}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getAnimeByMediaIds: async (ids: any) => {
     try {
-      const response = await Api.get('/anime/media/get', {
+      const response = await Api.get("/anime/media/get", {
         params: {
-          media_ids: ids.join(','),
+          media_ids: ids.join(","),
         },
       });
       return response.data;
@@ -106,6 +116,39 @@ export const useApi = () => ({
     }
   },
 
+  PutScheduleAnime: async (
+    animeId: string,
+    { schedule, episode }: { schedule: any; episode: string }
+  ) => {
+    try {
+      console.log({
+        schedule,
+        episode,
+      });
+      // const response = await Api.put(`anime/schedule/${animeId}`, {
+      //   // headers: {
+      //   //   Authorization: `Bearer ${accessToken}`,
+      //   // },
+      //   schedule: "2024-02-19T03:00:00.000Z",
+      //   episode: 12,
+      // });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/anime/schedule/${animeId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ schedule, episode }),
+        }
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   putUserBanned: async (uuid: string, status: boolean) => {
     try {
       const response = await Api.put(`user/banStatus/${uuid}`, {
@@ -134,10 +177,10 @@ export const useApi = () => ({
     userId: string,
     page: number,
     perPage: number,
-    status: string = '',
-    type: string = 'ANIME'
+    status: string = "",
+    type: string = "ANIME"
   ) => {
-    type === 'ANIME' ? (type = 'watchlist') : (type = 'readinglist');
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
     try {
       const response = await Api.get(
         `/list/${userId}/${type}?page=${page}&perPage=${perPage}&status=${status}`
@@ -152,9 +195,9 @@ export const useApi = () => ({
   getStatusById: async (
     userId: string,
     mediaId: number,
-    type: string = 'ANIME'
+    type: string = "ANIME"
   ) => {
-    type === 'ANIME' ? (type = 'watchlist') : (type = 'readinglist');
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
 
     try {
       const response = await Api.get(`/list/${userId}/${type}/${mediaId}`);
@@ -196,9 +239,9 @@ export const useApi = () => ({
 
   getMangaMediaByIds: async (ids: string[]) => {
     try {
-      const response = await Api.get('/manga/media/get', {
+      const response = await Api.get("/manga/media/get", {
         params: {
-          media_ids: ids.join(','),
+          media_ids: ids.join(","),
         },
       });
       return response.data;
@@ -216,11 +259,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== '' &&
+            value !== "" &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join('&');
+        .join("&");
 
       const url = `anime/search?${queryParams}`;
 
@@ -240,11 +283,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== '' &&
+            value !== "" &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join('&');
+        .join("&");
 
       const url = `manga/search?${queryParams}`;
 
@@ -265,11 +308,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== '' &&
+            value !== "" &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join('&');
+        .join("&");
 
       const url = `character/search/query?${queryParams}`;
 
@@ -310,6 +353,25 @@ export const useApi = () => ({
     }
   },
 
+  UploadVideo: async (file: any) => {
+    try {
+      const response = await Api.post(`episodes/upload`, file, {
+        onUploadProgress: (progressEvent: any) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+
+          console.log(percentCompleted);
+          // setUploadProgress(percentCompleted);
+          // setUploadStatus(`Enviando... ${percentCompleted}%`);
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   UpdateUserBanner: async (userId: string, banner: any) => {
     try {
       const response = await Api.put(`user/${userId}/banner`, banner);
@@ -337,6 +399,34 @@ export const useApi = () => ({
     }
   },
 
+  getNotifications: async (userId: string) => {
+    try {
+      const response = await Api.get(`notification/${userId}`);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  seenNotifications: async (userId: string, notifications: any) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/notification/${userId}/seen`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notifications }),
+        }
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   // Episodes
 
   // getEpisodeById: async (episodeId: string) => {
@@ -347,4 +437,22 @@ export const useApi = () => ({
   //     console.log(error);
   //   }
   // },
+
+  getActiveRooms: async () => {
+    try {
+      const response = await Api.get("wwf");
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRecommendations: async (animeId: string) => {
+    try {
+      const response = await Api.get(`anime/recommendation/${animeId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 });

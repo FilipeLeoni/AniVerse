@@ -54,7 +54,7 @@ const ChatBar = () => {
     (text: string) => {
       if (!text) return;
 
-      socket.emit("sendMessage", text);
+      socket.emit("sendMessage", { roomId: roomUser.roomId, text });
 
       setChats((prev) => [
         ...prev,

@@ -65,6 +65,7 @@ const useVideoSync = () => {
     if (!player) return;
 
     const handleCanPlay = () => {
+      console.log("chamado");
       socket.on("currentTime", (currentTime: number) => {
         player.currentTime = currentTime;
       });

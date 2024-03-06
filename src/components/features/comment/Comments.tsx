@@ -16,6 +16,7 @@ import useComments from "@/hooks/useComments";
 import useCreateComment from "@/hooks/useCreateComment";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import classNames from "classnames";
 
 interface CommentsProps {
   parentId?: string;
@@ -23,14 +24,14 @@ interface CommentsProps {
 }
 
 const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
-  const { data, isLoading } = useComments({ parentId, animeId });
+  const [sortBy, setSortBy] = useState("desc");
+  const { data, isLoading } = useComments({ parentId, animeId, sortBy });
   const [commentState, setCommentState] = useState<any>({});
   const commentReply = useCommentReply();
   const { data: session } = useSession();
-  const user = useUser();
   const editorRef = useRef<EditorType>(null);
 
-  const { mutate: createComment, isLoading: createCommentLoading } =
+  const { mutate: createComment, status: createCommentLoading } =
     useCreateComment();
 
   useEffect(() => {
@@ -44,7 +45,6 @@ const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
   }, [commentReply?.replyingTo]);
 
   const handleEditorSubmit: any = (content: string) => {
-    console.log(content);
     createComment({
       animeId,
       parentId,
@@ -68,7 +68,7 @@ const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
             defaultContent={commentState.defaultContent}
             autofocus={!!commentReply?.replyingTo}
             onSubmit={handleEditorSubmit}
-            isLoading={createCommentLoading}
+            isLoading={createCommentLoading === "pending"}
           />
         ) : (
           <div className="bg-neutral-900 p-3 text-neutral-300">
@@ -83,14 +83,50 @@ const Comments: React.FC<CommentsProps> = ({ parentId = null, animeId }) => {
         )}
       </div>
       <div className="flex w-full gap-3 justify-end mt-4 mb-6">
-        <p className="hover:text-primary-400 cursor-pointer">Most recent</p>
-        <p className="hover:text-primary-400 cursor-pointer">Oldest</p>
+        <p
+          className={classNames(
+            "hover:text-primary-400 cursor-pointer",
+            sortBy === "desc" && "text-primary-400"
+          )}
+          onClick={() => setSortBy("desc")}
+        >
+          Most recent
+        </p>
+        <p
+          className={classNames(
+            "hover:text-primary-400 cursor-pointer",
+            sortBy === "asc" && "text-primary-400"
+          )}
+          onClick={() => setSortBy("asc")}
+        >
+          Oldest
+        </p>
       </div>
-      <div>
-        {data &&
+      <div className="w-full">
+        {createCommentLoading === "pending" && (
+          <div className="relative mb-20 mt-4 w-full bg-red-500 flex justify-center items-center">
+            <div className="absolut rigth-1/2 bg-background-800  flex items-center justify-center">
+              <Loading />
+            </div>
+          </div>
+        )}
+
+        {/* <Loading /> */}
+
+        {isLoading ? (
+          <div className="relative w-full h-20">
+            <Loading className="w-8 h-8" />
+          </div>
+        ) : (
+          data &&
           data.map((comment: any) => (
             <CommentComponent key={comment.id} comment={comment} />
-          ))}
+          ))
+        )}
+        {/* {data &&
+          data.map((comment: any) => (
+            <CommentComponent key={comment.id} comment={comment} />
+          ))} */}
       </div>
     </div>
   );

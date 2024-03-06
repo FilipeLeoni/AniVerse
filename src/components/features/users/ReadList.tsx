@@ -97,7 +97,8 @@ const ReadList: React.FC<ReadListProps> = ({ user }) => {
                       <React.Fragment>
                         <div className="z-[5] flex flex-col justify-end absolute inset-0">
                           <p className="w-max ml-2 mb-2 px-1 py-0.5 rounded-md bg-background-700">
-                            {node.readChapter} / {node.chapters || "??"}
+                            {node.readChapter || 0} /{" "}
+                            {node.manga.totalChapters || "??"}
                           </p>
                         </div>
 
