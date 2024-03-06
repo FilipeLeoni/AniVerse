@@ -13,77 +13,27 @@ import classNames from "classnames";
 import RoomPlayer from "@/components/features/wwf/RoomPage/RoomPlayer";
 import Sidebar from "@/components/features/wwf/RoomPage/Sidebar";
 import GuestRegister from "@/components/features/wwf/RoomPage/GuestRegister";
-import { useUser } from "@/contexts/UserContext";
-import Player from "netplayer";
 
 export default function RoomPage({ params }: { params: { roomId: string } }) {
   const roomId = params.roomId;
   console.log(roomId);
-  // const user = useUser();
-  // console.log(user);
   const [socket, setSocket] = useState<Socket>();
   const [peer, setPeer] = useState<Peer>();
-  const { data, isLoading } = useRoom(Number(roomId));
+  const { data } = useRoom(Number(roomId));
   const queryClient = useQueryClient();
-  const [sessionLoaded, setSessionLoaded] = useState(false);
 
-  const { data: session, status } = useSession();
-  // console.log(session);
+  const { data: session } = useSession();
 
-  // const session = {
-  //   user: {
-  //     id: "471ff954-0c70-4c8d-a5b9-a0b73624fd4f",
-  //     email: "razante.2@outlook.com",
-  //     name: "Razantexzzzz",
-  //     role: "Admin",
-  //     profilePicture:
-  //       "http://localhost:8000/uploads/cute-robot-working-on-a-laptop-3d-render-technology-concept-ai-generated-free-photo.jpg-1708215842545-865568615.jpg",
-  //     bannerPicture:
-  //       "http://localhost:8000/uploads/robot-call-center-communication-with-artificial-intelligence-made-with-generative-ai_155027-4384.webp-1708215881894-912651367.webp",
-  //     bio: "<p>Eu sou o reeiiiii!!!</p>",
-  //     createdAt: "2024-02-11T16:18:41.583Z",
-  //     updatedAt: "2024-02-18T00:24:41.917Z",
-  //     isBanned: false,
-  //   },
-  //   expires: "2024-03-20T02:30:15.102Z",
-  //   name: "Razante",
-  //   email: "razante.2@outlook.com",
-  //   picture:
-  //     "https://lh3.googleusercontent.com/a/ACg8ocKL2GNcqN1Jw1UyrcMF_QSE92nNAikB6gxhxtFd1ut6=s96-c",
-  //   sub: "101768579349033483698",
-  //   iat: 1708309770,
-  //   exp: 1710901770,
-  //   jti: "af20e320-7564-4619-8bf4-14d5efeea789",
-  //   accessToken:
-  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhemFudGUuMkBvdXRsb29rLmNvbSIsInN1YiI6eyJuYW1lIjoiUmF6YW50ZXh6enp6In0sImlhdCI6MTcwODMwOTgxNSwiZXhwIjoxNzA4OTE0NjE1fQ._6xq7Y6DmBW2pI15JnjbzIxmaHWFi4plOoF7A6XxESQ",
-  // };
-  // const [basicRoomUser, setBasicRoomUser] = useState<BasicRoomUser>({
-  //   userId: session?.user?.id as string,
-  //   avatarUrl: session?.user?.profilePicture as string,
-  //   name: session?.user?.name || "tester",
-  //   isGuest: false,
-  // });
+  console.log(session?.user?.id);
   const [basicRoomUser, setBasicRoomUser] = useState<BasicRoomUser>({
-    userId: "", // Inicialmente vazio até que os dados do usuário estejam disponíveis
-    avatarUrl: "",
-    name: "",
+    userId: session?.user?.id as string,
+    avatarUrl: session?.user?.profilePicture as string,
+    name: session?.user?.name || "tester",
     isGuest: false,
   });
-
-  useEffect(() => {
-    if (session?.user && !sessionLoaded) {
-      console.log("chamado");
-      setBasicRoomUser({
-        userId: session.user.id,
-        avatarUrl: session.user.profilePicture || "",
-        name: session.user.name,
-        isGuest: false,
-      });
-      setSessionLoaded(true);
-    }
-  }, [session]);
-
   const [roomUser, setRoomUser] = useState<any>(null);
+
+  console.log(basicRoomUser);
 
   const handleGuestRegister = useCallback((name: string) => {
     setBasicRoomUser({
@@ -99,8 +49,6 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   };
 
   useEffect(() => {
-    if (!basicRoomUser.name) return;
-    if (socket) return;
     let newSocket: Socket | null = null;
     let newPeer: Peer | null = null;
 
@@ -113,10 +61,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
     const createSocket = (peerId?: string) => {
       const { origin } = new URL(config.socketServerUrl);
 
-      // const socket = io("http://localhost:8000");
-      const socket = io("http://localhost:8000", {
-        query: { roomId },
-      });
+      const socket = io("https://aniverse-79mb.onrender.com");
 
       socket.on("connect", () => {
         console.log(socket.id);
@@ -238,12 +183,29 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
       newSocket?.disconnect();
       newPeer?.disconnect();
     };
-  }, [roomId, basicRoomUser]);
+  }, [queryClient, roomId, basicRoomUser]);
+
+  useEffect(() => {
+    setBasicRoomUser({
+      userId: session?.user?.id as string,
+      avatarUrl: session?.user?.profilePicture as string,
+      name: session?.user?.name || "tester",
+      isGuest: false,
+    });
+  }, [session]);
 
   console.log(socket);
-
   return (
     <React.Fragment>
+      {/* <Head
+        title={`${title || mediaTitle} - Kaguya`}
+        description={t("head_description", {
+          mediaTitle,
+          username: data.hostUser.name,
+        })}
+        image={data.media.bannerImage || data.media.coverImage.extraLarge}
+      /> */}
+
       {!basicRoomUser?.name || !basicRoomUser?.userId ? (
         <GuestRegister onRegister={handleGuestRegister} />
       ) : socket ? (
@@ -275,24 +237,12 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
           Loading...
         </div>
       )}
-    </React.Fragment>
 
-    // <div>
-    //   <Player
-    //     // ref={playerRef}
-    //     sources={[
-    //       {
-    //         file: "https://s22.anime-sama.fr/videos/Solo%20Leveling/Saison%201/VF/Solo_Leveling_1_VF.mp4",
-    //       },
-    //     ]}
-    //     // subtitles={data?.subtitles || []}
-    //     // fonts={data?.fonts || []}
-    //     className="object-contain w-full h-full"
-    //     // components={components}
-    //     // hotkeys={hotkeys}
-    //     // thumbnail={data?.thumbnail}
-    //     autoPlay
-    //   />
-    // </div>
+      {/* ) : (
+        <div className="py-20 flex items-center justify-center w-full h-screen">
+          Loading...
+        </div> */}
+      {/* )} */}
+    </React.Fragment>
   );
 }

@@ -31,8 +31,10 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onChange }) => {
   //   // return data.map((hosting: any) => ({ value: hosting.id, label: hosting.name }));
   // }, [data, isLoading]);
 
-  const handleSelectChange = ({ value }: { value?: string }) => {
-    console.log(value);
+  const handleSelectChange = ({ value }: { value: string }) => {
+    setHostingId(value);
+
+    onChange?.({ video: textAreaRef.current.value, hostingId: value });
   };
 
   // const selectedHosting = useMemo(() => {
@@ -41,17 +43,6 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onChange }) => {
 
   //   return data.find((hosting: any) => hosting.id === hostingId);
   // }, [data, hostingId, isLoading]);
-
-  const options = [
-    {
-      value: "archive",
-      label: "Archive",
-    },
-    {
-      value: "link",
-      label: "Link",
-    },
-  ];
 
   return (
     <div className="relative">
@@ -63,8 +54,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onChange }) => {
       <React.Fragment>
         <div className="flex justify-end">
           <Select
-            options={options}
-            placeholder="Type"
+            // options={selectValue as any}
+            placeholder="Hosting"
             onChange={handleSelectChange as any}
           />
         </div>
