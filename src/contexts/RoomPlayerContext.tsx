@@ -20,7 +20,6 @@ interface RoomPlayerContextProviderProps {
 const RoomPlayerContext = React.createContext<any | null>(null);
 
 export const RoomPlayerContextProvider = ({ children, value }: any) => {
-  console.log("chamado");
   return (
     <RoomPlayerContext.Provider value={value}>
       {children}

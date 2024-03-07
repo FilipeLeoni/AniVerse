@@ -164,9 +164,7 @@ const SidebarPanel = () => {
               <Button
                 primary
                 className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
-                  pathname.startsWith(href)
-                    ? "!bg-neutral-600"
-                    : "bg-transparent"
+                  pathname === href ? "!bg-neutral-600" : "bg-transparent"
                 }`}
                 onClick={() => handleChangePage(href)}
               >

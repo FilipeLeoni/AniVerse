@@ -13,8 +13,6 @@ export default function AnimeCard({
 }: any) {
   const locale = useLocale();
   const genres = ["Adventure", "Action", "Comedy"];
-
-  console.log(title);
   return (
     <div className="flex gap-4 w-full p-2">
       <div className="">

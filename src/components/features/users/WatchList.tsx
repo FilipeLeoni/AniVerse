@@ -18,7 +18,7 @@ interface WatchListProps {
 
 const WatchList: React.FC<WatchListProps> = ({ user }) => {
   const [activeTab, setActiveTab] = useState<Status>(STATUS.All);
-  const [watchedEpisodes, setWatchedEpisodes] = useState<any>([]);
+  const [watchedEpisodes, setWatchedEpisodes] = useState<any[]>([]);
 
   const {
     data: watchList,
@@ -109,16 +109,15 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
           <React.Fragment>
             <List data={totalData}>
               {(node: any) => {
-                console.log(node);
+                const durationTime = node?.duration * 60;
 
                 const watchedEpisode = watchedEpisodes.find(
                   (episode: any) => episode.anime.id === node.animeId
                 );
-                const durationTime = watchedEpisode?.episode?.duration;
                 const watchProgressPercent =
                   durationTime === 0
                     ? 0
-                    : (watchedEpisode?.watchedTime / 2000) * 100;
+                    : (watchedEpisode?.episode.duration / 2000) * 100;
 
                 const now = dayjs();
 
@@ -173,11 +172,7 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
 
                           <div
                             className="h-1 bg-primary-500"
-                            style={{
-                              width: watchProgressPercent
-                                ? `${watchProgressPercent}%`
-                                : 0,
-                            }}
+                            style={{ width: `${watchProgressPercent}%` }}
                           />
                         </div>
 
