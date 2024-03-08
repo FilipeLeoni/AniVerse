@@ -1,30 +1,30 @@
-'use client';
+"use client";
 
-import Button from '@/components/shared/Button';
-import Select from '@/components/shared/Select';
-import { ImBlocked } from 'react-icons/im';
-import toast from 'react-hot-toast';
+import Button from "@/components/shared/Button";
+import Select from "@/components/shared/Select";
+import { ImBlocked } from "react-icons/im";
+import toast from "react-hot-toast";
 
-import Image from '@/components/shared/Image';
-import { useEffect } from 'react';
-import Description from '@/components/shared/Description';
+import Image from "@/components/shared/Image";
+import { useEffect } from "react";
+import Description from "@/components/shared/Description";
 
-import coverImage from '@/assets/cover-background.png';
-import profileDefault from '@/assets/profile-default.jpg';
-import BanedConfirmation from '../panel/BanedConfirmation';
-import { AiFillAlert, AiFillBoxPlot } from 'react-icons/ai';
-import { useApi } from '@/hooks/useApi';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import useBanUser from '@/hooks/useBanUser';
-import useModifyRole from '@/hooks/useModifyRole';
+import coverImage from "@/assets/cover-background.png";
+import profileDefault from "@/assets/profile-default.jpg";
+import BanedConfirmation from "../panel/BanedConfirmation";
+import { AiFillAlert, AiFillBoxPlot } from "react-icons/ai";
+import { useApi } from "@/hooks/useApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import useBanUser from "@/hooks/useBanUser";
+import useModifyRole from "@/hooks/useModifyRole";
 
 export const CardUser: React.FC<any> = ({ user, searchUser }: any) => {
   const api = useApi();
 
   const roles = [
-    { label: 'Admin', value: 'Admin' },
-    { label: 'Moderator', value: 'Moderator' },
-    { label: 'User', value: 'User' },
+    { label: "Admin", value: "Admin" },
+    { label: "Moderator", value: "Moderator" },
+    { label: "User", value: "User" },
   ];
 
   const { mutate: updateBanStatus, isLoading: updateBanStatusLoading } =
@@ -37,7 +37,7 @@ export const CardUser: React.FC<any> = ({ user, searchUser }: any) => {
   };
 
   useQuery<any>({
-    queryKey: ['BannedUser', user.id, !user.isBanned],
+    queryKey: ["BannedUser", user.id, !user.isBanned],
     queryFn: async () => {
       const response = await api.putUserBanned(user.id, !user.isBanned);
       console.log(response);
@@ -50,7 +50,7 @@ export const CardUser: React.FC<any> = ({ user, searchUser }: any) => {
     if (e) {
       updateRole({ userId: user.id, role: e.value });
     } else {
-      toast.error('ERREI FUI MLK');
+      toast.error("ERREI FUI MLK");
     }
   };
 
@@ -93,12 +93,14 @@ export const CardUser: React.FC<any> = ({ user, searchUser }: any) => {
             onChange={(e) => handleModifyRole(e)}
             placeholder="Roles"
             isClearable={false}
-            styles={{
-              control: (provided) => ({
-                ...provided,
-                backgroundColor: '#1a1a1a',
-              }),
-            }}
+            styles={
+              {
+                control: (provided: any) => ({
+                  ...provided,
+                  backgroundColor: "#1a1a1a",
+                }),
+              } as any
+            }
           />
 
           <div>

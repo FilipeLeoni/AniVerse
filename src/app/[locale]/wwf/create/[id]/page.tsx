@@ -173,14 +173,15 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
                   //   value={VISIBILITY_MODES?.find()}
                   onChange={(newValue: any) => setVisibility(newValue.value)}
                   styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#1a1a1a",
-                      ...(!isMobile && {
-                        minWidth: "12rem",
-                        maxWidth: "14rem",
-                      }),
-                    }),
+                    control: (provided: any) =>
+                      ({
+                        ...provided,
+                        backgroundColor: "#1a1a1a",
+                        ...(!isMobile && {
+                          minWidth: "12rem",
+                          maxWidth: "14rem",
+                        }),
+                      } as any),
                   }}
                 />
 

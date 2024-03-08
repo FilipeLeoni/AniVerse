@@ -78,50 +78,52 @@ const Select = React.forwardRef<any, Props>(
             primary20: "#fecaca",
           },
         })}
-        styles={{
-          control: (provided) => {
-            return {
-              ...provided,
-              backgroundColor: "#1a1a1a",
-              minWidth: "12rem",
-              maxWidth: "14rem",
-            };
-          },
-          menu: (provided) => {
-            return { ...provided, backgroundColor: "#1a1a1a" };
-          },
-          menuPortal: (provided) => ({ ...provided, zIndex: 9999 }),
-          singleValue: (provided) => {
-            return { ...provided, color: "#fff" };
-          },
-          multiValue: (provided) => {
-            return {
-              ...provided,
-              backgroundColor: "#262626",
-              maxWidth: "70%",
-            };
-          },
-          multiValueLabel: (provided) => {
-            return { ...provided, color: "white" };
-          },
-          multiValueRemove: (provided) => {
-            return {
-              ...provided,
-              color: "gray",
-              ":hover": {
-                backgroundColor: "transparent",
-                color: "white",
-              },
-              transition: "all 300ms",
-            };
-          },
+        styles={
+          {
+            control: (provided: any) => {
+              return {
+                ...provided,
+                backgroundColor: "#1a1a1a",
+                minWidth: "12rem",
+                maxWidth: "14rem",
+              };
+            },
+            menu: (provided: any) => {
+              return { ...provided, backgroundColor: "#1a1a1a" };
+            },
+            menuPortal: (provided: any) => ({ ...provided, zIndex: 9999 }),
+            singleValue: (provided: any) => {
+              return { ...provided, color: "#fff" };
+            },
+            multiValue: (provided: any) => {
+              return {
+                ...provided,
+                backgroundColor: "#262626",
+                maxWidth: "70%",
+              };
+            },
+            multiValueLabel: (provided: any) => {
+              return { ...provided, color: "white" };
+            },
+            multiValueRemove: (provided: any) => {
+              return {
+                ...provided,
+                color: "gray",
+                ":hover": {
+                  backgroundColor: "transparent",
+                  color: "white",
+                },
+                transition: "all 300ms",
+              };
+            },
 
-          input: (provided) => {
-            return { ...provided, color: "white" };
-          },
+            input: (provided: any) => {
+              return { ...provided, color: "white" };
+            },
 
-          ...styles,
-        }}
+            ...styles,
+          } as any
+        }
         hideSelectedOptions={false}
         noOptionsMessage={() => "No options"}
         components={{ MultiValue, Option, ...components }}
