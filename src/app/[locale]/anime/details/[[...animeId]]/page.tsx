@@ -9,10 +9,7 @@ import List from "@/components/shared/List";
 import MediaDescription from "@/components/shared/MediaDescription";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
-import { getAnimeById } from "@/mocks/queries";
-import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
-import { convert, getDescription, getTitle } from "@/utils/data";
-import { useLocale } from "next-intl";
+import { numberWithCommas } from "@/utils";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 import Link from "next/link";
 import React from "react";
@@ -30,15 +27,12 @@ export default async function DetailsPage({
   params: { animeId: string };
 }) {
   const api = useApi();
+  const animeId = params.animeId[0];
   // const { data } = await getAnimeById(params.animeId[0], "ANIME");
-  const media = await api.getAnimeById(params.animeId[0]);
+  const media = await api.getAnimeById(animeId);
   const data = {
     Media: media,
   };
-  console.log(data);
-  const locale = useLocale();
-  const title = getTitle(data?.Media, locale);
-  const description = getDescription(data?.Media, locale);
 
   const nextAiringSchedule = data?.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
@@ -71,33 +65,26 @@ export default async function DetailsPage({
 
             <div className="flex flex-col items-start space-y-4 md:py-4 max-w-fit">
               <p className="text-2xl md:text-3xl font-semibold max-w-full">
-                {title}
+                {data?.Media?.title?.english}
               </p>
 
               <div className="overflow-ellipsis line-clamp-1">
                 <DotList>
                   {data?.Media.genres.map((genre: any) => (
-                    <span key={genre}>
-                      {convert(genre, "genre", { locale })}
-                    </span>
+                    <span key={genre}>{genre}</span>
                   ))}
                 </DotList>
               </div>
-              {/* <MediaDescription
-                description={description}
+              <MediaDescription
+                description={data?.Media?.description}
                 containerClassName="mt-4 mb-8 hidden md:block"
                 className="text-gray-300 hover:text-gray-100 transition duration-300"
-              /> */}
+              />
               <div id="mal-sync" className="hidden md:block"></div>
             </div>
 
             <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0">
-              <InfoItem
-                title={"Country"}
-                value={convert(data?.Media.countryOfOrigin, "country", {
-                  locale,
-                })}
-              />
+              <InfoItem title={"Country"} value={data?.Media.countryOfOrigin} />
               <InfoItem title={"Total Episodes"} value={data?.Media.episodes} />
 
               {data?.Media.duration && (
@@ -107,10 +94,7 @@ export default async function DetailsPage({
                 />
               )}
 
-              <InfoItem
-                title={"Status"}
-                value={convert(data?.Media.status, "status", { locale })}
-              />
+              <InfoItem title={"Status"} value={data?.Media.status} />
 
               {nextAiringSchedule && (
                 <AiringCountDown
@@ -121,11 +105,11 @@ export default async function DetailsPage({
             </div>
           </div>
         </div>
-        {/* <MediaDescription
-          description={description}
+        <MediaDescription
+          description={data?.Media?.description}
           containerClassName="mt-4 mb-8 md:hidden block"
           className="text-gray-300 hover:text-gray-100 transition duration-300"
-        /> */}
+        />
 
         <div className="flex gap-2 mt-2">
           <Button
@@ -144,12 +128,7 @@ export default async function DetailsPage({
       <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
         <div className="md:col-span-2 xl:h-[max-content] space-y-4">
           <div className="flex md:hidden flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
-            <InfoItem
-              title={"Country"}
-              value={convert(data?.Media.countryOfOrigin, "country", {
-                locale,
-              })}
-            />
+            <InfoItem title={"Country"} value={data?.Media.countryOfOrigin} />
             <InfoItem title={"Total Episodes"} value={data?.Media.episodes} />
 
             {data?.Media.duration && (
@@ -159,10 +138,7 @@ export default async function DetailsPage({
               />
             )}
 
-            <InfoItem
-              title={"Status"}
-              value={convert(data?.Media.status, "status", { locale })}
-            />
+            <InfoItem title={"Status"} value={data?.Media.status} />
 
             {nextAiringSchedule && (
               <AiringCountDown
@@ -173,13 +149,10 @@ export default async function DetailsPage({
           </div>
 
           <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
-            <InfoItem
-              title={"Format"}
-              value={convert(data?.Media.format, "format", { locale })}
-            />
-            <InfoItem title="English" value={data?.Media.title.english} />
-            <InfoItem title="Native" value={data?.Media.title.native} />
-            <InfoItem title="Romanji" value={data?.Media.title.romanji} />
+            <InfoItem title={"Format"} value={data?.Media?.format} />
+            <InfoItem title="English" value={data?.Media?.title?.english} />
+            <InfoItem title="Native" value={data?.Media?.title?.native} />
+            <InfoItem title="Romanji" value={data?.Media?.title?.romanji} />
             <InfoItem
               title={"Popular"}
               value={numberWithCommas(data?.Media.popularity)}
@@ -208,9 +181,7 @@ export default async function DetailsPage({
 
             <InfoItem
               title={"Season"}
-              value={`${convert(data?.Media.season, "season", { locale })} ${
-                data?.Media.seasonYear
-              }`}
+              value={`${data?.Media.season} ${data?.Media.seasonYear}`}
             />
             <InfoItem
               title={"Synonimus"}
@@ -281,11 +252,11 @@ export default async function DetailsPage({
         </div>
       </Section>
       <Section className="mt-24">
-        <div className="w-full flex flex-col items-center justify-center mb-20 gap-6">
+        {/* <div className="w-full flex flex-col items-center justify-center mb-20 gap-6">
           <h2 className="text-xl">What do you think?</h2>
           <Reaction />
-        </div>
-        <Comments animeId={"2"} />
+        </div> */}
+        <Comments animeId={animeId} />
       </Section>
     </div>
   );
