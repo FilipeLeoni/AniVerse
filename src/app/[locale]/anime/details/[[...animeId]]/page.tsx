@@ -1,3 +1,5 @@
+"use client";
+
 import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
 import CharacterConnectionCard from "@/components/shared/CharacterConnectionCard";
@@ -21,7 +23,8 @@ import Reaction from "@/components/features/comment/Reaction";
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import EpisodeSelector from "@/components/features/anime/EpisodeSelector";
 import { useApi } from "@/hooks/useApi";
-export default async function DetailsPage({
+import { useQuery } from "@tanstack/react-query";
+export default function DetailsPage({
   params,
 }: {
   params: { animeId: string };
@@ -29,7 +32,24 @@ export default async function DetailsPage({
   const api = useApi();
   const animeId = params.animeId[0];
   // const { data } = await getAnimeById(params.animeId[0], "ANIME");
-  const media = await api.getAnimeById(animeId);
+  // const media = await api.getAnimeById(animeId);
+
+  const { data: media, isLoading } = useQuery({
+    queryKey: ["getAnimeById", animeId],
+    queryFn: async () => {
+      const media = await api.getAnimeById(animeId);
+      return media;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   const data = {
     Media: media,
   };
