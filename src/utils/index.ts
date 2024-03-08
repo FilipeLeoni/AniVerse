@@ -486,14 +486,12 @@ export const createMediaDetailsUrl = (media: Media | any) => {
     )}`;
   }
 
-  return `/manga/details/${media?.id}/${vietnameseSlug(
-    media?.title?.userPreferred
-  )}`;
+  return `/manga/details/${media?.id}/${vietnameseSlug(media?.title?.english)}`;
 };
 
 export const createCharacterDetailsUrl = (character: any) => {
   return `/characters/details/${character.id}/${vietnameseSlug(
-    character?.name?.userPreferred
+    character?.name
   )}`;
 };
 

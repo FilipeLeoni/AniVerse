@@ -119,8 +119,6 @@ const CardCarousel = ({ title, data, onEachCard }: any, props: any) => {
 
     const isAnimating = slide.classList.contains("swiper-animating");
 
-    console.log(spaceBetween, slidesPerGroup);
-
     if (!isAnimating) return;
 
     const { first: firstVisibleCardIndex } = getVisibleIndex(swiper);

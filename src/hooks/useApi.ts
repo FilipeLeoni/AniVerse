@@ -1,8 +1,8 @@
-import { Api } from '@/utils/api';
-import Cookies from 'js-cookie';
-import { UseBrowseOptions } from './useBrowseAnime';
+import { Api } from "@/utils/api";
+import Cookies from "js-cookie";
+import { UseBrowseOptions } from "./useBrowseAnime";
 
-const accessToken = Cookies.get('accessToken');
+const accessToken = Cookies.get("accessToken");
 
 export const useApi = () => ({
   getUploadedAnimes: async (page: number = 1, pageSize: number = 10) => {
@@ -18,7 +18,7 @@ export const useApi = () => ({
 
   getUploadedManga: async (page: number = 1, pageSize: number = 10) => {
     try {
-      const response = await Api.get('/manga');
+      const response = await Api.get("/manga");
       console.log(response);
       return response;
     } catch (error) {
@@ -36,11 +36,21 @@ export const useApi = () => ({
     }
   },
 
+  getMangaById: async (id: number | string) => {
+    try {
+      const response = await Api.get(`/manga/${id}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getAnimeByMediaIds: async (ids: any) => {
     try {
-      const response = await Api.get('/anime/media/get', {
+      const response = await Api.get("/anime/media/get", {
         params: {
-          media_ids: ids.join(','),
+          media_ids: ids.join(","),
         },
       });
       return response.data;
@@ -134,10 +144,10 @@ export const useApi = () => ({
     userId: string,
     page: number,
     perPage: number,
-    status: string = '',
-    type: string = 'ANIME'
+    status: string = "",
+    type: string = "ANIME"
   ) => {
-    type === 'ANIME' ? (type = 'watchlist') : (type = 'readinglist');
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
     try {
       const response = await Api.get(
         `/list/${userId}/${type}?page=${page}&perPage=${perPage}&status=${status}`
@@ -152,9 +162,9 @@ export const useApi = () => ({
   getStatusById: async (
     userId: string,
     mediaId: number,
-    type: string = 'ANIME'
+    type: string = "ANIME"
   ) => {
-    type === 'ANIME' ? (type = 'watchlist') : (type = 'readinglist');
+    type === "ANIME" ? (type = "watchlist") : (type = "readinglist");
 
     try {
       const response = await Api.get(`/list/${userId}/${type}/${mediaId}`);
@@ -196,9 +206,9 @@ export const useApi = () => ({
 
   getMangaMediaByIds: async (ids: string[]) => {
     try {
-      const response = await Api.get('/manga/media/get', {
+      const response = await Api.get("/manga/media/get", {
         params: {
-          media_ids: ids.join(','),
+          media_ids: ids.join(","),
         },
       });
       return response.data;
@@ -216,11 +226,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== '' &&
+            value !== "" &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join('&');
+        .join("&");
 
       const url = `anime/search?${queryParams}`;
 
@@ -240,11 +250,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== '' &&
+            value !== "" &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join('&');
+        .join("&");
 
       const url = `manga/search?${queryParams}`;
 
@@ -265,11 +275,11 @@ export const useApi = () => ({
           ([key, value]) =>
             value !== undefined &&
             value !== null &&
-            value !== '' &&
+            value !== "" &&
             value?.length !== 0
         )
         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join('&');
+        .join("&");
 
       const url = `character/search/query?${queryParams}`;
 

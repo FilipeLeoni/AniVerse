@@ -109,6 +109,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
     }
   };
 
+  console.log(data);
   return (
     <Link href={redirectUrl}>
       <motion.div
@@ -264,7 +265,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
           className="mt-2 text-base font-semibold line-clamp-2"
           style={{ color: primaryColor }}
         >
-          {title || data?.title?.english}
+          {data?.title?.english || title}
         </motion.p>
       </motion.div>
     </Link>

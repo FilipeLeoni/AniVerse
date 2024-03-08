@@ -1,3 +1,5 @@
+"use client";
+
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
@@ -10,9 +12,11 @@ import List from "@/components/shared/List";
 import MediaDescription from "@/components/shared/MediaDescription";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
+import { useApi } from "@/hooks/useApi";
 import { getAnimeById } from "@/mocks/queries";
 import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
 import { convert, getDescription, getTitle } from "@/utils/data";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -20,15 +24,37 @@ import { useRouter } from "next/router";
 import React from "react";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 
-export default async function DetailsPage({
+export default function DetailsPage({
   params,
 }: {
   params: { mangaId: string };
 }) {
-  const { data } = await getAnimeById(params.mangaId[0], "MANGA");
+  const mangaId = params.mangaId[0];
+  const api = useApi();
+  // const { data } = await api.getMangaMediaByIds(params.mangaId[0], "MANGA");
   const locale = useLocale();
-  const title = getTitle(data?.Media, locale);
-  const description = getDescription(data?.Media, locale);
+  // const title = getTitle(data?.Media, locale);
+  // const description = getDescription(data?.Media, locale);
+
+  const { data: media, isLoading } = useQuery({
+    queryKey: ["getMangaById", mangaId],
+    queryFn: async () => {
+      const media = await api.getMangaById(mangaId);
+      return media;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  const data = {
+    Media: media,
+  };
 
   const nextAiringSchedule = data.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
@@ -66,7 +92,7 @@ export default async function DetailsPage({
             </Button>
             <div className="flex flex-col items-start space-y-4 md:no-scrollbar md:py-4">
               <p className="text-2xl md:text-3xl font-semibold max-w-full">
-                {title}
+                {data?.Media?.title?.english}
               </p>
 
               <DotList>
@@ -76,7 +102,7 @@ export default async function DetailsPage({
               </DotList>
 
               <MediaDescription
-                description={description}
+                description={data?.Media?.description}
                 containerClassName="hidden md:block"
                 className="text-gray-300 hover:text-gray-100 transition duration-300"
               />
@@ -115,7 +141,7 @@ export default async function DetailsPage({
           </div>
         </div>
         <MediaDescription
-          description={description}
+          description={data?.Media?.description}
           containerClassName="mt-4 mb-8 md:hidden block"
           className="text-gray-300 hover:text-gray-100 transition duration-300"
         />
@@ -178,9 +204,9 @@ export default async function DetailsPage({
               value={numberWithCommas(data.Media.trending)}
             />
 
-            <InfoItem
+            {/* <InfoItem
               title="Studio"
-              value={data.Media.studios.nodes.map((studio: any) => (
+              value={data?.Media?.studios.map((studio: any) => (
                 <Link
                   key={studio.id}
                   href={createStudioDetailsUrl(studio)}
@@ -189,7 +215,7 @@ export default async function DetailsPage({
                   <p>{studio.name}</p>
                 </Link>
               ))}
-            />
+            /> */}
 
             <InfoItem
               title={"Season"}
@@ -228,12 +254,12 @@ export default async function DetailsPage({
           </div>
         </div>
         <div className="space-y-12 md:col-span-8">
-          {!!data.Media?.characters?.edges?.length && (
+          {!!data.Media?.characters?.length && (
             <DetailsSection
               title={"Characters"}
               className="grid w-full grid-cols-1 gap-4 md:grid-cols-2"
             >
-              {data.Media.characters.edges.map(
+              {data.Media.characters.map(
                 (characterEdge: any, index: number) => (
                   <CharacterConnectionCard
                     characterEdge={characterEdge}
@@ -244,7 +270,7 @@ export default async function DetailsPage({
             </DetailsSection>
           )}
 
-          {!!data.Media?.relations?.nodes?.length && (
+          {/* {!!data.Media?.relations?.length && (
             <DetailsSection title={"Relations"}>
               <List data={data.Media.relations.nodes}>
                 {(node: any) => <Card data={node} className="relations" />}
@@ -258,7 +284,7 @@ export default async function DetailsPage({
                 {(node: any) => <Card data={node.mediaRecommendation} />}
               </List>
             </DetailsSection>
-          )}
+          )} */}
         </div>
       </Section>
     </div>

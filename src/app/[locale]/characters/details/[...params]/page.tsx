@@ -1,3 +1,5 @@
+"use client";
+
 // import VACard from "@/components/features/va/VACard";
 import Card from "@/components/shared/Card";
 import DetailsSection from "@/components/shared/DetailsSection";
@@ -24,6 +26,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { BiCake } from "react-icons/bi";
 import { getCharacterDetails } from "@/mocks/queries";
 import { useApi } from "@/hooks/useApi";
+import { useQuery } from "@tanstack/react-query";
 
 const KeyValue: React.FC<{ property: string; value: string }> = ({
   property,
@@ -40,10 +43,25 @@ interface DetailsPageProps {
   character: Character;
 }
 
-export default async function DetailsPage({ params }: { params: any }) {
+export default function DetailsPage({ params }: { params: any }) {
   const api = useApi();
-  const Character = await api.getCharacterById(params.params[0]);
-  console.log(Character);
+  const characterId = params.params[0];
+  // const Character = await api.getCharacterById(params.params[0]);
+  const { data: Character, isLoading } = useQuery({
+    queryKey: ["getCharacterById", characterId],
+    queryFn: async () => {
+      const media = await api.getCharacterById(characterId);
+      return media;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
   // const { GENDERS } = useConstantTranslation();
 
   //   const gender = useMemo(
