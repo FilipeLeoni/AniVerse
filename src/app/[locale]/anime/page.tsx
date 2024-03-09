@@ -25,6 +25,7 @@ import {
 import { AiFillPlayCircle } from "react-icons/ai";
 import WatchedSection from "@/components/features/anime/WatchedSection";
 import WatchedSwiperSkeleton from "@/components/skeletons/WatchedSwiperSkeleton";
+import { useApi } from "@/hooks/useApi";
 
 interface Anime {
   id: number;
@@ -35,6 +36,7 @@ interface Anime {
 }
 
 export default function AnimePage() {
+  const api = useApi();
   const { data: TrendingAnime, isLoading: TrendingAnimeLoading } =
     useQuery<any>({
       queryKey: ["TrendingAnime"],
@@ -67,6 +69,17 @@ export default function AnimePage() {
     },
     staleTime: 3600 * 1000,
   });
+  const { data: getAddedAnimes, isLoading: isLoadingGetAdded } = useQuery<any>({
+    queryKey: ["getAddedAnimes"],
+    queryFn: async () => {
+      const response = await api.getUploadedAnimes();
+      return response.data;
+    },
+    staleTime: 3600 * 1000,
+  });
+
+  console.log(getAddedAnimes);
+  console.log(UpdatedAnime);
 
   const PopularAnimeData = PopularAnime?.Page?.media || [];
   const TrendingAnimeData = TrendingAnime?.Page?.media || [];
@@ -89,6 +102,14 @@ export default function AnimePage() {
       ) : (
         <WatchedSwiperSkeleton />
       )}
+
+      <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
+        {isLoadingGetAdded ? (
+          "Loading"
+        ) : (
+          <CardCarousel data={getAddedAnimes} title="NEWLY UPDATED" />
+        )}
+      </Section>
 
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
         {PopularAnimeLoading ? (

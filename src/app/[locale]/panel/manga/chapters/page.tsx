@@ -4,6 +4,7 @@ import Card from "@/components/shared/Card";
 import Input from "@/components/shared/Input";
 import List from "@/components/shared/List";
 import ListSkeleton from "@/components/skeletons/ListSkeleton";
+import { useApi } from "@/hooks/useApi";
 import { getTrendingMedia, searchData } from "@/mocks/queries";
 import { useQuery } from "@tanstack/react-query";
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -13,6 +14,18 @@ export default function UploadData() {
   const [query, setQuery] = useState<any>("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
+  // const { data, isLoading } = useQuery<any>({
+  //   queryKey: ["AddChapter", debouncedQuery],
+  //   queryFn: async () => {
+  //     if (debouncedQuery.trim() !== "") {
+  //       const response = await searchData(debouncedQuery);
+  //       return response.data;
+  //     }
+  //     const trendingResponse = await getTrendingMedia("MANGA");
+  //     return trendingResponse.data;
+  //   },
+  // });
+  const api = useApi();
   const { data, isLoading } = useQuery<any>({
     queryKey: ["AddChapter", debouncedQuery],
     queryFn: async () => {
@@ -20,7 +33,7 @@ export default function UploadData() {
         const response = await searchData(debouncedQuery);
         return response.data;
       }
-      const trendingResponse = await getTrendingMedia("MANGA");
+      const trendingResponse: any = await api.getUploadedManga();
       return trendingResponse.data;
     },
   });
@@ -64,7 +77,7 @@ export default function UploadData() {
           <ListSkeleton />
         </div>
       ) : (
-        <List data={data?.Page.media}>
+        <List data={data}>
           {(data: any) => (
             <Card
               data={data}

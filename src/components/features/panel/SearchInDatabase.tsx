@@ -23,10 +23,10 @@ export default function SearchInDatabase({
     queryKey: [`search${label}`, debouncedQuery],
     queryFn: async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/anime/search?query=${debouncedQuery}`
+        `${process.env.NEXT_PUBLIC_API_URL}/anime/manga?keyword=${debouncedQuery}`
       );
       const results = await res.json();
-      return results.data;
+      return results;
     },
     initialData: [],
   });
@@ -80,7 +80,7 @@ export default function SearchInDatabase({
 
   const filteredData = data?.filter(
     (suggestion: any) =>
-      !state.some((selectedAnime: any) => selectedAnime.id === suggestion.id)
+      !state?.some((selectedAnime: any) => selectedAnime.id === suggestion.id)
   );
 
   return (
@@ -116,10 +116,8 @@ export default function SearchInDatabase({
             }}
             exit={{ opacity: 0 }}
           >
-            {isLoading && isFetching ? (
-              <div className="w-full h-full flex justify-center ">
-                <Loading />
-              </div>
+            {isLoading || isFetching ? (
+              <div className="text-center text-gray-500 p-4">Loading...</div>
             ) : debouncedQuery !== "" && filteredData.length === 0 ? (
               <div className="text-center text-gray-500 p-4">Not found...</div>
             ) : (
@@ -134,10 +132,10 @@ export default function SearchInDatabase({
                   className="px-4 py-2 cursor-pointer bg-neutral-800 w-full hover:bg-neutral-700"
                 >
                   <AnimeCard
-                    title={suggestion?.titleRomanji}
+                    title={suggestion?.title?.english}
                     image={suggestion.coverImage.extraLarge}
                     genres={suggestion.coverImage}
-                    format={suggestion.format}
+                    format={suggestion.type}
                     season={suggestion.season}
                     status={suggestion.status}
                   />

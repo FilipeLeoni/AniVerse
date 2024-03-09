@@ -2,7 +2,7 @@
 
 import { MediaFormat, MediaSort } from "@/@types/anilist";
 import AnimeBrowseList from "@/components/features/anime/AnimeBrowseList";
-// import CharacterBrowseList from "@/components/features/characters/CharacterBrowseList";
+import CharacterBrowseList from "@/components/features/characters/CharacterBrowseList";
 import MangaBrowseList from "@/components/features/manga/MangaBrowseList";
 // import VABrowseList from "@/components/features/va/VABrowseList";
 // import Head from "@/components/shared/Head";
@@ -17,7 +17,7 @@ import Section from "@/components/shared/Section";
 const components: any = {
   anime: AnimeBrowseList,
   manga: MangaBrowseList,
-  // characters: CharacterBrowseList,
+  characters: CharacterBrowseList,
   // users: UserBrowseList,
 };
 

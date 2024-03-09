@@ -16,8 +16,8 @@ const CharacterConnectionCard: React.FC<CharacterCardProps> = ({
 }) => {
   const locale = useLocale();
 
-  const id = characterEdge?.node?.id;
-  const name = characterEdge?.node?.name?.userPreferred;
+  const id = characterEdge?.id;
+  const name = characterEdge?.name;
   const formattedName = name ? name.replaceAll(" ", "-") : "";
   const url = `/characters/details/${id}/${formattedName}`;
 
@@ -26,17 +26,15 @@ const CharacterConnectionCard: React.FC<CharacterCardProps> = ({
       <div className="text-gray-300 space-x-4 col-span-1 flex w-full h-24 bg-background-900 hover:bg-white/20 transtion duration-300">
         <div className="relative h-full w-16">
           <Image
-            src={characterEdge?.node?.image?.large || ""}
+            src={characterEdge?.image || ""}
             fill
             style={{ objectFit: "cover" }}
-            alt={`${characterEdge?.node?.name?.userPreferred}`}
+            alt={`${characterEdge?.name}`}
           />
         </div>
 
         <div className="py-2 flex flex-col justify-between">
-          <p className="font-semibold">
-            {characterEdge?.node?.name?.userPreferred}
-          </p>
+          <p className="font-semibold">{characterEdge?.name}</p>
 
           <p>{convert(characterEdge.role, "characterRole", { locale })}</p>
         </div>

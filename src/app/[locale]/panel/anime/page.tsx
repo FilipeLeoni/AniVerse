@@ -112,7 +112,7 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["AnimeAddeds", pageIndex, pageSize],
+    queryKey: ["getAddedAnimes", pageIndex, pageSize],
     queryFn: async () => {
       const response: any = await api.getUploadedAnimes(
         pageIndex + 1,
@@ -166,7 +166,7 @@ const UploadAnimePage = ({ user, sourceId }: any) => {
 
       {isLoading ? (
         <Loading />
-      ) : data?.data.length ? (
+      ) : data?.data?.length ? (
         <ServerPaginateTable
           data={data.data}
           columns={columns}

@@ -1,10 +1,9 @@
 import Button from "@/components/shared/Button";
 import Input from "@/components/shared/Input";
-import Modal, { ModalRef } from "@/components/shared/Modal";
+import Modal from "@/components/shared/Modal";
 import { AdditionalUser } from "@/@types";
 import React, { useRef } from "react";
 import { BiPencil } from "react-icons/bi";
-import { Editor as EditorType } from "@tiptap/react";
 import Editor from "../comment/Editor";
 import { useQueryClient } from "@tanstack/react-query";
 import useUpdateProfile from "@/hooks/useUpdateProfile";
@@ -17,7 +16,6 @@ interface EditProfileModalProps {
 const EditProfileModal: React.FC<EditProfileModalProps> = ({ user }) => {
   const modalRef = useRef<any>();
   const nameInputRef = useRef<any>();
-  const usernameInputRef = useRef<any>();
   const editorRef = useRef<any>();
   const queryClient = useQueryClient();
 
@@ -43,13 +41,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ user }) => {
 
   const handleSaveEdit = () => {
     const name = nameInputRef?.current?.value;
-    const username = usernameInputRef?.current?.value;
     const bio = editorRef?.current?.isEmpty
       ? ""
       : editorRef?.current?.getHTML();
 
-    if (!name || !username) {
-      toast.error("Name and username are required.");
+    if (!name) {
+      toast.error("Name is required.");
 
       return;
     }
@@ -57,7 +54,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ user }) => {
     updateProfile(
       {
         name,
-        username,
         bio,
       },
       {
@@ -100,9 +96,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ user }) => {
             />
 
             <Input
-              ref={usernameInputRef}
               label="Role"
               defaultValue={user.role}
+              disabled
               containerClassName="grow"
               placeholder="Role"
               className="py-2 px-4 border border-gray-600"

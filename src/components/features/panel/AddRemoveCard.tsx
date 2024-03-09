@@ -7,16 +7,14 @@ import { AiOutlineClose } from "react-icons/ai";
 import List from "@/components/shared/List";
 import Card from "./Card";
 
-export default function AddRemoveCard({ label }: any) {
-  const [state, setState] = useState<any[]>([]);
-
+export default function AddRemoveCard({ label, state, setState }: any) {
   console.log(state);
 
   function handleAnimeSelect(anime: any) {
-    if (!state.some((selectedAnime) => selectedAnime.id === anime.id)) {
-      setState((prevSelectedAnimes) => [...prevSelectedAnimes, anime]);
+    if (!state?.some((selectedAnime: any) => selectedAnime.id === anime.id)) {
+      setState((prevSelectedAnimes: any) => [...prevSelectedAnimes, anime]);
     } else {
-      console.log("Este anime já foi adicionado à lista.");
+      console.log("Anime alredy added to list.");
     }
   }
 
@@ -32,7 +30,7 @@ export default function AddRemoveCard({ label }: any) {
         <SearchInDatabase
           label={label}
           handleAnimeSelect={handleAnimeSelect}
-          state={state}
+          state={state || []}
         />
       </div>
       <div className="overflow-ellipsis line-clamp-1 pb-10 flex mt-3">

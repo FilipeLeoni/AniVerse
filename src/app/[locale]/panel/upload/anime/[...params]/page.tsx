@@ -53,6 +53,8 @@ export default function UploadPage({
   const [selectedFile, setSelectedFile] = useState<any | null>(null);
   const [banner, setBanner] = useState<any | null>(null);
   const [coverImage, setCoverImage] = useState<any | null>(null);
+  const [relations, setRelations] = useState<any>([]);
+  const [recommendations, setRecommendations] = useState<any>([]);
 
   const animeId = params.params[0];
   const { data, isLoading } = useQuery<any>({
@@ -302,8 +304,10 @@ export default function UploadPage({
       seasonYear: Number(data.seasonYear),
       characters: transformedCharacters,
       isAdult: data.isAdult,
+      relations: relations,
     };
 
+    console.log(requestBody);
     const callFunction = SendData(requestBody);
 
     toast.promise(
@@ -687,12 +691,20 @@ export default function UploadPage({
             </AnimatePresence>
 
             <div className="w-full">
-              <AddRemoveCard label={"Relations"} />
+              <AddRemoveCard
+                label={"Relations"}
+                state={relations}
+                setState={setRelations}
+              />
             </div>
 
-            <div className="w-full">
-              <AddRemoveCard label={"Recommendations"} />
-            </div>
+            {/* <div className="w-full">
+              <AddRemoveCard
+                label={"Recommendations"}
+                state={recommendations}
+                setState={setRecommendations}
+              />
+            </div> */}
           </div>
         </Section>
 

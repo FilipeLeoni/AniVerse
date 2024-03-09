@@ -26,7 +26,7 @@ const UpdateBanner: React.FC<UpdateBannerProps> = ({ user }) => {
     updateFn: (oldData: AdditionalUser) => Partial<AdditionalUser>
   ) => {
     queryClient.setQueryData<AdditionalUser>(
-      ["userProfile", user.id],
+      ["user-profile", user.id],
 
       (old: any) => {
         const newData = updateFn(old);
@@ -66,7 +66,7 @@ const UpdateBanner: React.FC<UpdateBannerProps> = ({ user }) => {
     setIsPreviewing(true);
 
     optimisticUpdate((old: any) => {
-      bannerUrlRef.current = old.bannerPicture || null;
+      bannerUrlRef.current = old?.bannerPicture || null;
 
       return { bannerPicture: URL.createObjectURL(file) };
     });

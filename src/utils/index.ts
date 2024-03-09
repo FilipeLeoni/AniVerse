@@ -481,20 +481,18 @@ export const createProxyUrl = (
 export const createMediaDetailsUrl = (media: Media | any) => {
   if (media?.type === MediaType.Anime) {
     return `/anime/details/${media.id}/${vietnameseSlug(
-      media?.title?.userPreferred
+      media?.title?.english
     )}`;
   }
 
-  return `/manga/details/${media?.id}/${vietnameseSlug(
-    media?.title?.userPreferred
-  )}`;
+  return `/manga/details/${media?.id}/${vietnameseSlug(media?.title?.english)}`;
 };
 
-// export const createCharacterDetailsUrl = (character: Character) => {
-//   return `/characters/details/${character.id}/${vietnameseSlug(
-//     character?.name?.userPreferred
-//   )}`;
-// };
+export const createCharacterDetailsUrl = (character: any) => {
+  return `/characters/details/${character.id}/${vietnameseSlug(
+    character?.name
+  )}`;
+};
 
 // export const createVoiceActorDetailsUrl = (voiceActor: Staff) => {
 //   return `/voice-actors/details/${voiceActor.id}/${vietnameseSlug(

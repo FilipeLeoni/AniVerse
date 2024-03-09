@@ -33,20 +33,18 @@ export default function AddToListDropdown(props: any) {
     },
   });
 
-  console.log(status);
-  console.log(mediaId);
-  console.log(type);
-
   const { mutate: updateWatchList } = useUpdateWatchlist();
 
   const handleUpdate = (status: string) => {
     if (selected === status) {
       return;
     }
+
     updateWatchList({
       status,
-      mediaId: 1,
+      mediaId: mediaId,
       type: type,
+      hasToAdd: selected,
     });
   };
 

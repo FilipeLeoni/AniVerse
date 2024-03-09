@@ -17,6 +17,7 @@ import useSaveWatched from "@/hooks/useSaveWatched";
 import { parseNumberFromString } from "@/utils";
 import Hls from "netplayer/dist/types/hls.js";
 import { buildAbsoluteURL } from "url-toolkit";
+import EmbedVidet from "./EmbedVidet";
 
 interface IEpisode {
   id: string;
@@ -44,111 +45,6 @@ export default function VideoPlayer({
   // const { videoRef } = useVideo();
   const videoRef: any = useRef<HTMLVideoElement>(null) || ref;
   const saveWatchedInterval: any = useRef<NodeJS.Timer>(null);
-
-  const saveWatchedMutation = useSaveWatched();
-  const corsServers = ["https://corsproxy.io"];
-
-  // const handleHlsInit = useCallback((hls: Hls, source: any) => {
-  //   // @ts-ignore
-  //   // hls.on("hlsManifestParsed", (_, info) => {
-  //   //   info.levels.forEach((level: any) => {
-  //   //     if (!level?.url?.length) return;
-
-  //   //     level.url = level.url.map((url: any) => {
-  //   //       if (!corsServers.some((server: any) => url.includes(server))) return url;
-
-  //   //       if (url.includes("corsproxy")) {
-  //   //         const targetUrl = decodeURIComponent(
-  //   //           url.replace("https://corsproxy.io/", "")
-  //   //         );
-
-  //   //         const finalUrl = buildAbsoluteURL(source.file, targetUrl, {
-  //   //           alwaysNormalize: true,
-  //   //         });
-
-  //   //         return `https://corsproxy.io/?${encodeURIComponent(finalUrl)}`;
-  //   //       } else if (url.includes(config.proxyServerUrl)) {
-  //   //         const targetUrl = decodeURIComponent(
-  //   //           url.replace(config.proxyServerUrl + "/", "")
-  //   //         );
-
-  //   //         const href = new URL(source.file);
-  //   //         const baseUrl = href.searchParams.get("url");
-
-  //   //         const finalUrl = buildAbsoluteURL(baseUrl, targetUrl, {
-  //   //           alwaysNormalize: true,
-  //   //         });
-
-  //   //         return createProxyUrl(finalUrl, source.proxy);
-  //   //       }
-  //   //     });
-  //   //   });
-  //   // });
-
-  //   // @ts-ignore
-  //   hls.on("hlsFragLoading", (_, { frag }) => {
-  //     if (
-  //       !corsServers.some((server) => frag.url.includes(server)) ||
-  //       frag.relurl.includes("http")
-  //     )
-  //       return;
-
-  //     if (frag.url.includes(config.proxyServerUrl)) {
-  //       const href = new URL(frag.baseurl);
-  //       const targetUrl = href.searchParams.get("url");
-
-  //       const url = buildAbsoluteURL(targetUrl, frag.relurl, {
-  //         alwaysNormalize: true,
-  //       });
-
-  //       href.searchParams.set("url", url);
-
-  //       frag.url = href.toString();
-
-  //       // Free CORS server
-  //     } else if (frag.url.includes("corsproxy")) {
-  //       const targetUrl = decodeURIComponent(
-  //         frag.baseurl.replace("https://corsproxy.io/?", "")
-  //       );
-
-  //       const url = buildAbsoluteURL(targetUrl, frag.relurl, {
-  //         alwaysNormalize: true,
-  //       });
-
-  //       frag.url = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-  //     }
-  //   });
-  // }, []);
-
-  console.log(anime);
-  // useEffect(() => {
-  //   const videoEl = videoRef.current;
-  //   if (!videoEl) return;
-  //   console.log(videoEl.current);
-
-  //   const watchedEpisodes = JSON.parse(history)?.watchedEpisodes;
-
-  //   if (!watchedEpisodes) return;
-
-  //   console.log(watchedEpisodes);
-  //   console.log(episodeData);
-
-  //   const watchedEpisodeData = watchedEpisodes?.find(
-  //     (episode: any) => episode.episodeId === episodeData?.id
-  //   );
-
-  //   if (watchedEpisodeData) {
-  //     const watchedTime = watchedEpisodeData?.watchedTime;
-
-  //     console.log(watchedEpisodeData?.watchedTime);
-  //     // videoEl.currentTime === watchedTime;
-  //     if (typeof watchedTime === "number") {
-  //       console.log(watchedTime);
-  //       videoEl.currentTime = watchedTime;
-  //       console.log(videoEl.currentTime);
-  //     }
-  //   }
-  // }, [episodeData]);
 
   useEffect(() => {
     const videoEl = videoRef.current;
@@ -209,11 +105,11 @@ export default function VideoPlayer({
                 id: anime.id,
                 title: anime.title.english,
                 thumbnail: anime.bannerImage || anime.coverImage.extraLarge,
+                totalEpisodes: anime.totalEpisodes,
               },
               episode: {
                 title: episodeData.title,
                 number: episodeData.number,
-                description: episodeData.description,
                 duration: videoRef.current.duration,
               },
               episodeId: episodeData.id,
@@ -261,38 +157,6 @@ export default function VideoPlayer({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [anime, episodeData, videoRef.current]);
-
-  // useEffect(() => {
-  //   const watchedEpisode: any = localStorage.getItem("aniverse_history");
-  //   const watchedEpisodes = JSON.parse(watchedEpisode)?.watchedEpisodes;
-  //   const watchedEpisodeData = watchedEpisodes?.findIndex(
-  //     (episode: any) => episode.episode_id === episodeData.id
-  //   );
-  //   const videoEl = videoRef.current;
-
-  //   if (!videoEl) return;
-
-  //   const currentEpisodeNumber = episodeData.number;
-
-  //   // if (currentEpisodeNumber !== watchedEpisodeData.) return;
-
-  //   const handleVideoPlay = () => {
-  //     videoEl.currentTime = watchedEpisodeData.watchedTime;
-
-  //     videoEl.removeEventListener("canplay", handleVideoPlay);
-  //     videoEl.removeEventListener("timeupdate", handleVideoPlay);
-  //   };
-
-  //   // Only set the video time if the video is ready
-  //   videoEl.addEventListener("canplay", handleVideoPlay);
-  //   // Just in case the video is already played.
-  //   videoEl.addEventListener("timeupdate", handleVideoPlay);
-
-  //   return () => {
-  //     videoEl.removeEventListener("canplay", handleVideoPlay);
-  //     videoEl.removeEventListener("timeupdate", handleVideoPlay);
-  //   };
-  // }, [episodeData, videoRef.current]);
 
   const PlayerControls = React.memo(() => {
     // const {
@@ -414,21 +278,27 @@ export default function VideoPlayer({
     [PlayerControls, PlayerOverlay]
   );
 
+  console.log("chamado de novo");
+
   return (
     <div style={{ height: isMobile ? "100%" : "70vh" }}>
-      {!isEpisodeLoading && episodeData && episodeData.video ? (
+      {episodeData && episodeData.video ? (
         <Player
           ref={videoRef}
           components={components}
           sources={[
             {
-              file: episodeData.video,
+              // file: `${"http://localhost:8081"}/${episodeData.video}`,
+              file: isEpisodeLoading
+                ? "https://cdn.plyr.io/static/blank.mp4"
+                : `${"http://localhost:8081"}/${episodeData.video}`,
             },
           ]}
           className="object-contain w-full h-full"
           autoPlay
         />
-      ) : !isEpisodeLoading && !episodeData ? (
+      ) : // <EmbedVidet />
+      !isEpisodeLoading && !episodeData ? (
         <div className="w-full h-full flex justify-center items-center">
           Vídeo not found
         </div>

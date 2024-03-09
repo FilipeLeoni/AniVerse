@@ -24,6 +24,7 @@ import {
 } from "@/mocks/queries";
 import BookIcon from "@/components/shared/BookIcon";
 import ReadSection from "@/components/features/manga/ReadSection";
+import { useApi } from "@/hooks/useApi";
 
 interface Anime {
   id: number;
@@ -75,6 +76,18 @@ export default function MangaPage() {
     },
     staleTime: 3600 * 1000,
   });
+  const api = useApi();
+  const { data: getAddedMangas } = useQuery<any>({
+    queryKey: ["getAddedMangas"],
+    queryFn: async () => {
+      const response: any = await api.getUploadedManga();
+
+      return response.data;
+    },
+    staleTime: 3600 * 1000,
+  });
+
+  console.log(getAddedMangas);
 
   const randomTrendingManga = useMemo(() => {
     return randomElement(TrendingManga?.Page.media || []);
@@ -97,6 +110,15 @@ export default function MangaPage() {
       <div>
         <ReadSection />
       </div>
+
+      <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
+        {PopularMangaLoading ? (
+          <ListSwiperSkeleton />
+        ) : (
+          <CardCarousel data={getAddedMangas || []} title="Popular Mangas" />
+        )}
+      </Section>
+
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
         {PopularMangaLoading ? (
           <ListSwiperSkeleton />

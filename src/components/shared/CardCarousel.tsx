@@ -225,7 +225,7 @@ const CardCarousel = ({ title, data, onEachCard }: any, props: any) => {
           },
         }}
       >
-        {data.map((item: any, index: any) => {
+        {data?.map((item: any, index: any) => {
           let debounceTimeout: any = null;
 
           const debounce = (fn: (...args: any[]) => void, wait: number) => {

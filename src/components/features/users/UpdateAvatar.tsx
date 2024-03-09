@@ -26,7 +26,7 @@ const UpdateAvatar: React.FC<UpdateAvatarProps> = ({ user }) => {
     updateFn: (oldData: AdditionalUser) => Partial<AdditionalUser>
   ) => {
     queryClient.setQueryData<AdditionalUser>(
-      ["userProfile", user.id],
+      ["user-profile", user.id],
 
       (old: any) => {
         const newData = updateFn(old);
@@ -66,7 +66,7 @@ const UpdateAvatar: React.FC<UpdateAvatarProps> = ({ user }) => {
     setIsPreviewing(true);
 
     optimisticUpdate((old: any) => {
-      avatarUrlRef.current = old.profilePicture;
+      avatarUrlRef.current = old?.profilePicture || null;
       return { profilePicture: URL.createObjectURL(file) };
     });
   };

@@ -118,24 +118,27 @@ import { useApi } from "@/hooks/useApi";
 //     return data.video;
 //   };
 
-//   const uploadVideo = async (file: File) => {
-//     const formData = new FormData();
+export const UploadVideo = async (file: File) => {
+  const formData = new FormData();
+  const api = useApi();
 
-//     formData.append("file", file);
+  formData.append("file", file);
 
-//     const { data } = await client.post<UploadVideoResponse>(
-//       `/upload/video/${hostingId}`,
-//       formData
-//     );
+  // const { data } = await client.post<UploadVideoResponse>(
+  //   `/upload/video/${hostingId}`,
+  //   formData
+  // );
 
-//     if (!data.success) throw new Error("Upload failed");
+  const data = await api.UploadVideo(formData);
 
-//     const { videoId } = data;
+  // if (!data.success) throw new Error("Upload failed");
 
-//     const videoInfo = await getVideoStatus(videoId);
+  // const { videoId } = data;
 
-//     return videoInfo;
-//   };
+  // const videoInfo = await getVideoStatus(videoId);
+
+  return data;
+};
 
 //   const getRemoteStatus = async (remoteId: string | number) => {
 //     const { data } = await client.get<RemoteStatusResponse>(

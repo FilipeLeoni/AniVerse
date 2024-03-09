@@ -5,7 +5,7 @@ import { UseBrowseOptions } from "./useBrowseAnime";
 const accessToken = Cookies.get("accessToken");
 
 export const useApi = () => ({
-  getUploadedAnimes: async (page: number = 1, pageSize: number = 10) => {
+  getUploadedAnimes: async (page: number = 1, pageSize: number = 50) => {
     try {
       const response = await Api.get(
         `/anime?page=${page}&pageSize=${pageSize}`
@@ -29,6 +29,17 @@ export const useApi = () => ({
   getAnimeById: async (id: number | string) => {
     try {
       const response = await Api.get(`/anime/${id}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getMangaById: async (id: number | string) => {
+    try {
+      const response = await Api.get(`/manga/${id}`);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -58,6 +69,95 @@ export const useApi = () => ({
       });
       console.log(response);
       return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getUserByName: async (userName: string) => {
+    try {
+      const response = await Api.get(`user/username/${userName}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getUserRoleHigh: async (role: string) => {
+    try {
+      const response = await Api.get(`user/roles/${role}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  PutUserRoles: async (userId: string, role: string) => {
+    try {
+      const response = await Api.put(`user/role/update/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        role,
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  PutScheduleAnime: async (
+    animeId: string,
+    { schedule, episode }: { schedule: any; episode: string }
+  ) => {
+    try {
+      console.log({
+        schedule,
+        episode,
+      });
+      // const response = await Api.put(`anime/schedule/${animeId}`, {
+      //   // headers: {
+      //   //   Authorization: `Bearer ${accessToken}`,
+      //   // },
+      //   schedule: "2024-02-19T03:00:00.000Z",
+      //   episode: 12,
+      // });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/anime/schedule/${animeId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ schedule, episode }),
+        }
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  putUserBanned: async (uuid: string, status: boolean) => {
+    try {
+      const response = await Api.put(`user/banStatus/${uuid}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        isBanned: status,
+      });
+      return response;
     } catch (error) {
       console.log(error);
     }
@@ -199,6 +299,32 @@ export const useApi = () => ({
       console.log(error);
     }
   },
+
+  getCharacterSearch: async (options: UseBrowseOptions) => {
+    console.log(options);
+    try {
+      const queryParams = Object.entries(options)
+        .filter(
+          ([key, value]) =>
+            value !== undefined &&
+            value !== null &&
+            value !== "" &&
+            value?.length !== 0
+        )
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
+
+      const url = `character/search/query?${queryParams}`;
+
+      console.log(url);
+      const response = await Api.get(url);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   getCharacterById: async (characterId: string) => {
     try {
       const response = await Api.get(`character/${characterId}`);
@@ -227,6 +353,34 @@ export const useApi = () => ({
     }
   },
 
+  UploadVideo: async (file: any) => {
+    try {
+      const response = await Api.post(`episodes/upload`, file, {
+        onUploadProgress: (progressEvent: any) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+
+          console.log(percentCompleted);
+          // setUploadProgress(percentCompleted);
+          // setUploadStatus(`Enviando... ${percentCompleted}%`);
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  UpdateUserBanner: async (userId: string, banner: any) => {
+    try {
+      const response = await Api.put(`user/${userId}/banner`, banner);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   createChapter: async ({
     mangaId,
     chapterNumber,
@@ -245,6 +399,34 @@ export const useApi = () => ({
     }
   },
 
+  getNotifications: async (userId: string) => {
+    try {
+      const response = await Api.get(`notification/${userId}`);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  seenNotifications: async (userId: string, notifications: any) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/notification/${userId}/seen`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notifications }),
+        }
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   // Episodes
 
   // getEpisodeById: async (episodeId: string) => {
@@ -255,4 +437,22 @@ export const useApi = () => ({
   //     console.log(error);
   //   }
   // },
+
+  getActiveRooms: async () => {
+    try {
+      const response = await Api.get("wwf");
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRecommendations: async (animeId: string) => {
+    try {
+      const response = await Api.get(`anime/recommendation/${animeId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 });

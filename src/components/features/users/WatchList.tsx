@@ -10,7 +10,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 // import { parseTime } from "@/utils";
 import classNames from "classnames";
 import dayjs from "dayjs";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface WatchListProps {
   user: any;
@@ -18,6 +18,7 @@ interface WatchListProps {
 
 const WatchList: React.FC<WatchListProps> = ({ user }) => {
   const [activeTab, setActiveTab] = useState<Status>(STATUS.All);
+  const [watchedEpisodes, setWatchedEpisodes] = useState<any>([]);
 
   const {
     data: watchList,
@@ -48,6 +49,13 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
     () => watchList?.pages.map((el: any) => el).flat(),
     [watchList?.pages]
   );
+
+  useEffect(() => {
+    const storedHistory: any = localStorage.getItem("aniverse_history");
+
+    const watchedEpisode = JSON?.parse(storedHistory)?.watchedEpisodes || [];
+    setWatchedEpisodes(watchedEpisode);
+  }, []);
 
   return (
     <div>
@@ -101,11 +109,16 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
           <React.Fragment>
             <List data={totalData}>
               {(node: any) => {
-                const durationTime = node?.duration * 60;
+                console.log(node);
+
+                const watchedEpisode = watchedEpisodes.find(
+                  (episode: any) => episode.anime.id === node.animeId
+                );
+                const durationTime = watchedEpisode?.episode?.duration;
                 const watchProgressPercent =
                   durationTime === 0
                     ? 0
-                    : (node?.watchedTime / durationTime) * 100;
+                    : (watchedEpisode?.watchedTime / 2000) * 100;
 
                 const now = dayjs();
 
@@ -125,6 +138,9 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
                   ? node?.nextAiringEpisode.episode - 1
                   : null;
 
+                console.log(watchedEpisode);
+                console.log(watchProgressPercent);
+                console.log(watchedEpisodes);
                 return (
                   <Card
                     imageEndSlot={
@@ -145,8 +161,8 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
                                   } / ${airedEpisodes} / ${
                                     node?.episodes || "??"
                                   }`
-                                : `${node.watchedEpisode} / ${
-                                    node?.episodes || "??"
+                                : `${watchedEpisode?.episode.number} / ${
+                                    watchedEpisode?.episode.number || "??"
                                   }`}
                             </p>
 
@@ -157,7 +173,11 @@ const WatchList: React.FC<WatchListProps> = ({ user }) => {
 
                           <div
                             className="h-1 bg-primary-500"
-                            style={{ width: `${watchProgressPercent}%` }}
+                            style={{
+                              width: watchProgressPercent
+                                ? `${watchProgressPercent}%`
+                                : 0,
+                            }}
                           />
                         </div>
 

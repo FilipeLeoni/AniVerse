@@ -19,6 +19,7 @@ import NavItem from "./NavItem";
 import Logo from "./Logo";
 import { PiDetective } from "react-icons/pi";
 import { IoCalendarOutline } from "react-icons/io5";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 const SidebarPanel = () => {
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
@@ -67,6 +68,11 @@ const SidebarPanel = () => {
       name: "Schedule",
       href: "/panel/schedule",
       icon: <IoCalendarOutline size={24} />,
+    },
+    {
+      name: "Roles",
+      href: "/panel/roles",
+      icon: <MdOutlineAdminPanelSettings size={24} />,
     },
     ...Options,
   ];
@@ -153,12 +159,14 @@ const SidebarPanel = () => {
           )}
         </div>
         <div className="mt-6 space-y-2">
-          {routes.slice(0, 5).map(({ name, href, icon }) => (
+          {routes.slice(0, 6).map(({ name, href, icon }) => (
             <div key={href}>
               <Button
                 primary
                 className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
-                  pathname === href ? "!bg-neutral-600" : "bg-transparent"
+                  pathname.startsWith(href)
+                    ? "!bg-neutral-600"
+                    : "bg-transparent"
                 }`}
                 onClick={() => handleChangePage(href)}
               >

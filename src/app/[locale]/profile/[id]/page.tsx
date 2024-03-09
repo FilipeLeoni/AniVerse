@@ -38,7 +38,7 @@ export default function Profile({ params }: { params: { id: string } }) {
   const api = useApi();
 
   const { data: user, isLoading } = useQuery({
-    queryKey: ["userProfile", userId],
+    queryKey: ["user-profile", userId],
     queryFn: async () => {
       const res = api.getUserById(userId);
       return res;

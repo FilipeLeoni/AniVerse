@@ -514,6 +514,8 @@ export interface CharacterEdge {
   media: Maybe<Media[]>;
   /** The order the character should be displayed from the users favourites*/
   favouriteOrder: Maybe<number>;
+
+  image: Maybe<string>;
 }
 
 /** A character that features in an anime or manga */

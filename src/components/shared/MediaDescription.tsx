@@ -58,7 +58,7 @@ const MediaDescription: React.FC<MediaDescriptionProps> = ({
 
       {!isDescriptionExpanded &&
         !isMobile &&
-        description.split("\n").length > 6 && (
+        description?.split("\n").length > 6 && (
           <button
             onClick={handleClick}
             className="bg-gradient-to-t from-background-900 via-background-900/80 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 absolute bottom-0 w-full h-12 text-center"

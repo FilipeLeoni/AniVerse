@@ -1,62 +1,74 @@
-import { useUser } from "@/contexts/AuthContext";
-// import { Attachment, uploadFile } from "@/services/upload";
-import { AdditionalUser } from "@/@types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UploadFile } from "@/components/services/upload";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const useUpdateBanner: any = () => {
   const queryClient = useQueryClient();
-  const user = useUser();
+  const { data: session } = useSession();
+  const user = session?.user;
 
-  return useMutation<any>({});
+  return useMutation<any>({
+    mutationKey: ["updateBanner"],
+    mutationFn: async (file: any) => {
+      if (!user?.id) {
+        throw new Error("User not found");
+      }
 
-  // return useMutation<any>(
-  //   async (file: any) => {
-  //     if (!user.id) {
-  //       throw new Error("User not found");
-  //     }
+      try {
+        const uploadedData = await UploadFile(file);
 
-  //     const uploadedData = await uploadFile(file);
+        if (!uploadedData?.success) throw new Error("Upload failed");
 
-  //     if (!uploadedData?.length) throw new Error("Upload failed");
+        const url = uploadedData?.files?.[0];
 
-  //     // I don't know why I didn't return the full URL, just use this until I decided to change it.
-  //     const url =
-  //       `https://cdn.discordapp.com/attachments/` + uploadedData[0].url;
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/${user?.id}/banner`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              banner: url,
+            }),
+          }
+        );
 
-  //     const { error } = await supabaseClient
-  //       .from<AdditionalUser>("users")
-  //       .update({ bannerUrl: url }, { returning: "minimal" })
-  //       .match({ id: user.id });
+        const data = await response.json();
 
-  //     if (error) throw error;
+        if (data?.error) {
+          throw new Error(data.error);
+        }
 
-  //     return uploadedData;
-  //   },
-  //   {
-  //     onMutate: (file) => {
-  //       const fileUrl = URL.createObjectURL(file);
+        return uploadedData;
+      } catch {
+        throw new Error("Error during upload, please try again.");
+      }
+    },
+    onMutate: (file) => {
+      queryClient.setQueryData<any>(
+        ["user-profile", user?.id],
 
-  //       queryClient.setQueryData<AdditionalUser>(
-  //         ["user-profile", user.id],
+        (old: any) => {
+          return {
+            ...old,
+            bannerPicture: file,
+          };
+        }
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess: () => {
+      toast.success("Banner updated successfully");
 
-  //         (old) => {
-  //           return {
-  //             ...old,
-  //             bannerUrl: fileUrl,
-  //           };
-  //         }
-  //       );
-  //     },
-  //     onError: (error) => {
-  //       toast.error(error.message);
-  //     },
-  //     onSuccess: () => {
-  //       toast.success("Banner updated successfully");
-
-  //       queryClient.invalidateQueries(["user-profile", user.id]);
-  //     },
-  //   }
-  // );
+      queryClient.invalidateQueries({
+        queryKey: ["user-profile", user?.id],
+      });
+    },
+  });
 };
 
 export default useUpdateBanner;

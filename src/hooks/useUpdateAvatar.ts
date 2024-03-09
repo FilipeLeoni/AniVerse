@@ -1,110 +1,63 @@
-import { useUser } from "@/contexts/AuthContext";
-// import supabaseClient from "@/lib/supabase";
-// import { Attachment, uploadFile } from "@/services/upload";
-import { AdditionalUser } from "@/@types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UploadFile } from "@/components/services/upload";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const useUpdateAvatar: any = () => {
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
+  const user = session?.user;
 
   return useMutation<any>({
     mutationKey: ["updateAvatar"],
-    mutationFn: async (newProfilePicture: any) => {
-      console.log(newProfilePicture);
-      const formData = new FormData();
+    mutationFn: async (file: any) => {
       try {
-        if (Array.isArray(newProfilePicture)) {
-          newProfilePicture.forEach((f) => formData.append("file", f));
-        } else {
-          formData.append("file", newProfilePicture);
+        const uploadedData = await UploadFile(file);
+
+        if (!uploadedData?.success) throw new Error("Upload failed");
+
+        const url = uploadedData?.files?.[0];
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/${user?.id}/profilePicture`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              picture: url,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (data?.error) {
+          throw new Error(data.error);
         }
 
-        // formData.append("profilePicture", newProfilePicture);
-
-        console.log(formData);
-        // const response = await fetch(
-        //   `http://localhost:8000/user/${newProfilePicture.id}`,
-        //   {
-        //     method: "PUT",
-        //     headers: {
-        //       "Content-Type": "multipart/form-data",
-        //     },
-        //     body: formData,
-        //   }
-        // );
-
-        // if (!response.ok) {
-        //   throw new Error("Erro ao atualizar");
-        // }
-
-        // const data = await response.json();
-        // return data;
+        return uploadedData;
       } catch (error) {
-        throw new Error("Erro ao buscar comentários");
+        throw new Error("Error during upload, please try again.");
       }
     },
     onMutate(payload: any) {
-      queryClient.setQueryData(["userProfile", payload.id], (old: any) => {
+      queryClient.setQueryData(["user-profile", payload.id], (old: any) => {
         return {
           ...old,
           ...payload,
         };
       });
     },
-    onSuccess: async (data: any, params: any) => {
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+    onSuccess: () => {
+      toast.success("Profile picture updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["user-profile"] });
     },
     onError: (error) => {
-      console.log(error);
+      toast.error(error.message);
     },
   });
-  //   async (file: any) => {
-  //     if (!user.id) {
-  //       throw new Error("User not found");
-  //     }
-
-  //     // const uploadedData = await uploadFile(file);
-
-  //     // if (!uploadedData?.length) throw new Error("Upload failed");
-
-  //     // I don't know why I didn't return the full URL, just use this until I decided to change it.
-  //     const url =
-  //       `https://cdn.discordapp.com/attachments/` + uploadedData[0].url;
-
-  //     const { error } = await supabaseClient
-  //       .from<AdditionalUser>("users")
-  //       .update({ avatarUrl: url }, { returning: "minimal" })
-  //       .match({ id: user.id });
-
-  //     if (error) throw error;
-
-  //     return uploadedData;
-  //   },
-  //   {
-  //     onMutate: (file) => {
-  //       const fileUrl = URL.createObjectURL(file);
-
-  //       queryClient.setQueryData<AdditionalUser>(
-  //         ["user-profile", user.id],
-
-  //         (old) => {
-  //           return {
-  //             ...old,
-  //             avatarUrl: fileUrl,
-  //           };
-  //         }
-  //       );
-  //     },
-  //     onError: (error) => {
-  //       toast.error(error.message);
-  //     },
-  //     onSuccess: () => {
-  //       toast.success("Avatar updated successfully");
-
-  //       queryClient.invalidateQueries(["user-profile", user.id]);
-  //     },
-  //   }
-  // );
 };
 
 export default useUpdateAvatar;
