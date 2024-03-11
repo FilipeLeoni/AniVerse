@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { BiPlus } from "react-icons/bi";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+// import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 // import dayjs from 'dayjs';
 // import 'dayjs/locale/fr'; // Importe o idioma francês (se ainda não estiver importado)
 
@@ -86,7 +86,7 @@ export default function ScheduleMutate({
               onChange={(e) => setEpisode(e.target.value)}
             />
 
-            <DateTimePicker
+            {/* <DateTimePicker
               className="border border-red-900"
               sx={{
                 color: "white",
@@ -99,7 +99,7 @@ export default function ScheduleMutate({
               }}
               value={selectedDate}
               onChange={(newValue: any) => handleDateChange(newValue)}
-            />
+            /> */}
 
             <Button
               onClick={() => handlePutSchedule()}
