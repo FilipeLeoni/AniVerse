@@ -14,6 +14,8 @@ import { AiOutlinePlus } from "react-icons/ai";
 const WatchWithFriendPage = () => {
   const { data, isLoading } = useRooms();
 
+  console.log(data);
+
   return (
     <Section className="py-20">
       {/* <Head

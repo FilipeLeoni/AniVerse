@@ -18,6 +18,8 @@ const defaultState: State = {
 export const RoomStateContextProvider = ({ children }: any) => {
   const [state, setState] = React.useState<State>(defaultState);
 
+  console.log("chamado", state);
+
   return (
     <RoomStateContext.Provider value={{ state, setState }}>
       {children}

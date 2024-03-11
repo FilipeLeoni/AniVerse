@@ -281,6 +281,7 @@ export default function UploadPage({
       description: data.description,
       coverImage: coverImage,
       genres: genres,
+      referId: animeId,
       episodes: episodes,
       duration: duration,
       countryOfOrigin: data.countryOfOrigin,
@@ -667,13 +668,13 @@ export default function UploadPage({
               />
             </div>
 
-            <div className="w-full">
+            {/* <div className="w-full">
               <AddRemoveCard
                 label={"Recommendations"}
                 state={recommendations}
                 setState={setRecommendations}
               />
-            </div>
+            </div> */}
           </div>
         </Section>
 

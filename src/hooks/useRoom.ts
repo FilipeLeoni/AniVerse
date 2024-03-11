@@ -10,5 +10,6 @@ export const useRoom = (roomId: number) => {
       console.log(res);
       return res;
     },
+    refetchOnWindowFocus: false,
   });
 };

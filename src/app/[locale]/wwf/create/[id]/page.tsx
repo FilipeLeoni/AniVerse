@@ -109,20 +109,13 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
       visibility,
       title: roomTitle,
       host: {
-        id: "86daaa9f-26f5-4ac3-916d-ea63510f5296",
-        name: "Filipe",
-        avatar: "example.png",
+        id: session?.user?.id,
+        name: session?.user?.name,
+        avatar: session?.user?.profilePicture,
       },
       // hostId: "86daaa9f-26f5-4ac3-916d-ea63510f5296",
     });
-  }, [
-    chosenEpisode,
-    media?.id,
-    mutate,
-    visibility,
-    roomTitle,
-    session?.user?.id,
-  ]);
+  }, [chosenEpisode, media?.id, mutate, visibility, roomTitle, session]);
 
   return (
     <Section className="py-20">
@@ -172,17 +165,18 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
                   placeholder="Pick visibility mode"
                   //   value={VISIBILITY_MODES?.find()}
                   onChange={(newValue: any) => setVisibility(newValue.value)}
-                  styles={{
-                    control: (provided: any) =>
-                      ({
+                  styles={
+                    {
+                      control: (provided: any) => ({
                         ...provided,
                         backgroundColor: "#1a1a1a",
                         ...(!isMobile && {
                           minWidth: "12rem",
                           maxWidth: "14rem",
                         }),
-                      } as any),
-                  }}
+                      }),
+                    } as any
+                  }
                 />
 
                 {visibility === "private" && (

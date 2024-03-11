@@ -5,7 +5,7 @@ import { UseBrowseOptions } from "./useBrowseAnime";
 const accessToken = Cookies.get("accessToken");
 
 export const useApi = () => ({
-  getUploadedAnimes: async (page: number = 1, pageSize: number = 10) => {
+  getUploadedAnimes: async (page: number = 1, pageSize: number = 50) => {
     try {
       const response = await Api.get(
         `/anime?page=${page}&pageSize=${pageSize}`
@@ -109,6 +109,39 @@ export const useApi = () => ({
         },
         role,
       });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  PutScheduleAnime: async (
+    animeId: string,
+    { schedule, episode }: { schedule: any; episode: string }
+  ) => {
+    try {
+      console.log({
+        schedule,
+        episode,
+      });
+      // const response = await Api.put(`anime/schedule/${animeId}`, {
+      //   // headers: {
+      //   //   Authorization: `Bearer ${accessToken}`,
+      //   // },
+      //   schedule: "2024-02-19T03:00:00.000Z",
+      //   episode: 12,
+      // });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/anime/schedule/${animeId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ schedule, episode }),
+        }
+      );
       console.log(response);
       return response;
     } catch (error) {
@@ -320,6 +353,25 @@ export const useApi = () => ({
     }
   },
 
+  UploadVideo: async (file: any) => {
+    try {
+      const response = await Api.post(`episodes/upload`, file, {
+        onUploadProgress: (progressEvent: any) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+
+          console.log(percentCompleted);
+          // setUploadProgress(percentCompleted);
+          // setUploadStatus(`Enviando... ${percentCompleted}%`);
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   UpdateUserBanner: async (userId: string, banner: any) => {
     try {
       const response = await Api.put(`user/${userId}/banner`, banner);
@@ -347,6 +399,34 @@ export const useApi = () => ({
     }
   },
 
+  getNotifications: async (userId: string) => {
+    try {
+      const response = await Api.get(`notification/${userId}`);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  seenNotifications: async (userId: string, notifications: any) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/notification/${userId}/seen`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notifications }),
+        }
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   // Episodes
 
   // getEpisodeById: async (episodeId: string) => {
@@ -357,4 +437,22 @@ export const useApi = () => ({
   //     console.log(error);
   //   }
   // },
+
+  getActiveRooms: async () => {
+    try {
+      const response = await Api.get("wwf");
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRecommendations: async (animeId: string) => {
+    try {
+      const response = await Api.get(`anime/recommendation/${animeId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 });
