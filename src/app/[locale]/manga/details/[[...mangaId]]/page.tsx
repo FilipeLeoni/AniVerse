@@ -1,3 +1,4 @@
+"use client";
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
@@ -14,6 +15,7 @@ import { useApi } from "@/hooks/useApi";
 import { getAnimeById } from "@/mocks/queries";
 import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
 import { convert, getTitle } from "@/utils/data";
+import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -21,23 +23,49 @@ import React from "react";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 import { FaRegBell } from "react-icons/fa";
 
-export default async function DetailsPage({
+export default function DetailsPage({
   params,
 }: {
   params: { mangaId: string };
 }) {
   const api = useApi();
   const mangaId = params.mangaId[0];
-  // const { data } = await getAnimeById(params.mangaId[0], "MANGA");
-  const media = await api.getMangaById(mangaId);
-  const data = {
-    Media: media,
-  };
   const locale = useLocale();
+
+  // const { data } = await getAnimeById(params.mangaId[0], "MANGA");
+  // const media = await api.getMangaById(mangaId);
+  // const data = {
+  //   Media: media,
+  // };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getAnimeById", mangaId],
+    queryFn: async () => {
+      const data = await api.getMangaById(mangaId);
+      return {
+        Media: data,
+      };
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+  // const { data: recommendations } = useQuery({
+  //   queryKey: ["getRecommendations", animeId],
+  //   queryFn: async () => {
+  //     const { data } = await api.getRecommendations(animeId);
+  //     return data;
+  //   },
+  // });
   // const title = getTitle(data?.Media, locale);
   // const description = getDescription(data?.Media, locale);
 
-  const nextAiringSchedule = data.Media?.airingSchedule?.nodes
+  const nextAiringSchedule = data?.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
     .find((schedule: any) => dayjs.unix(schedule.airingAt).isAfter(dayjs()));
 
@@ -62,7 +90,7 @@ export default async function DetailsPage({
 
   return (
     <div className="pb-8">
-      <DetailsBanner image={data.Media?.bannerImage} />
+      <DetailsBanner image={data?.Media?.bannerImage} />
 
       <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
         <div className="flex flex-row md:space-x-8">
@@ -80,7 +108,7 @@ export default async function DetailsPage({
 
             <div className="flex gap-1">
               <div className="flex-1">
-                <AddToListDropdown mediaId={data.Media.id} type="MANGA" />
+                <AddToListDropdown mediaId={data?.Media.id} type="MANGA" />
               </div>
               <div
                 className="flex justify-center items-center cursor-pointer hover:bg-background-400 px-3 rounded-md"
@@ -103,7 +131,7 @@ export default async function DetailsPage({
               </p>
 
               <DotList>
-                {data.Media?.genres.map((genre: any) => (
+                {data?.Media?.genres.map((genre: any) => (
                   <span key={genre}>{convert(genre, "genre", { locale })}</span>
                 ))}
               </DotList>
@@ -128,7 +156,7 @@ export default async function DetailsPage({
                 value={data?.Media?.episodes}
               />
 
-              {data.Media?.duration && (
+              {data?.Media?.duration && (
                 <InfoItem
                   title={"Duration"}
                   value={`${data?.Media?.duration} ${"Minutes"}`}
@@ -264,7 +292,7 @@ export default async function DetailsPage({
           </div>
         </div>
         <div className="space-y-12 md:col-span-8">
-          {!!data.Media?.characters?.length && (
+          {!!data?.Media?.characters?.length && (
             <DetailsSection
               title={"Characters"}
               className="grid w-full grid-cols-1 gap-4 md:grid-cols-2"
@@ -288,7 +316,7 @@ export default async function DetailsPage({
             </DetailsSection>
           )}
 
-          {/* {!!data.Media?.recommendations?.nodes?.length && (
+          {/* {!!data?.Media?.recommendations?.nodes?.length && (
             <DetailsSection title={"Recomendations"}>
               <List data={data?.Media?.recommendations.nodes}>
                 {(node: any) => <Card data={node.mediaRecommendation} />}

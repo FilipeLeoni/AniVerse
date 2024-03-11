@@ -24,6 +24,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { BiCake } from "react-icons/bi";
 import { getCharacterDetails } from "@/mocks/queries";
 import { useApi } from "@/hooks/useApi";
+import { useQuery } from "@tanstack/react-query";
 
 const KeyValue: React.FC<{ property: string; value: string }> = ({
   property,
@@ -40,10 +41,28 @@ interface DetailsPageProps {
   character: Character;
 }
 
-export default async function DetailsPage({ params }: { params: any }) {
+export default function DetailsPage({ params }: { params: any }) {
   const api = useApi();
-  const Character = await api.getCharacterById(params.params[0]);
+
+  const characterId = params.params[0];
+  // const Character = await api.getCharacterById(params.params[0]);
+
+  const { data: Character, isLoading } = useQuery({
+    queryKey: ["getAnimeById", characterId],
+    queryFn: async () => {
+      const data = await api.getCharacterById(characterId);
+      return data;
+    },
+  });
+
   console.log(Character);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex justify-center items-center">
+        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
   // const { GENDERS } = useConstantTranslation();
 
   //   const gender = useMemo(
