@@ -1,5 +1,3 @@
-"use client";
-
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
@@ -15,46 +13,29 @@ import Section from "@/components/shared/Section";
 import { useApi } from "@/hooks/useApi";
 import { getAnimeById } from "@/mocks/queries";
 import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
-import { convert, getDescription, getTitle } from "@/utils/data";
-import { useQuery } from "@tanstack/react-query";
+import { convert, getTitle } from "@/utils/data";
 import dayjs from "dayjs";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
+import { FaRegBell } from "react-icons/fa";
 
-export default function DetailsPage({
+export default async function DetailsPage({
   params,
 }: {
   params: { mangaId: string };
 }) {
-  const mangaId = params.mangaId[0];
   const api = useApi();
-  // const { data } = await api.getMangaMediaByIds(params.mangaId[0], "MANGA");
-  const locale = useLocale();
-  // const title = getTitle(data?.Media, locale);
-  // const description = getDescription(data?.Media, locale);
-
-  const { data: media, isLoading } = useQuery({
-    queryKey: ["getMangaById", mangaId],
-    queryFn: async () => {
-      const media = await api.getMangaById(mangaId);
-      return media;
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen w-full flex justify-center items-center">
-        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
+  const mangaId = params.mangaId[0];
+  // const { data } = await getAnimeById(params.mangaId[0], "MANGA");
+  const media = await api.getMangaById(mangaId);
   const data = {
     Media: media,
   };
+  const locale = useLocale();
+  // const title = getTitle(data?.Media, locale);
+  // const description = getDescription(data?.Media, locale);
 
   const nextAiringSchedule = data.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
@@ -65,6 +46,19 @@ export default function DetailsPage({
 
     return dayjs.unix(nextAiringSchedule.airingAt).locale(locale).fromNow();
   };
+
+  console.log(data);
+  // const relations = [
+  //   ...data?.Media?.relations?.animes,
+  //   ...data?.Media?.relations?.Manga,
+  // ];
+  const relations = [];
+  if (data?.Media?.relations?.animes) {
+    relations.push(...data?.Media?.relations?.animes);
+  }
+  if (data?.Media?.relations?.Manga) {
+    relations.push(...data?.Media?.relations?.Manga);
+  }
 
   return (
     <div className="pb-8">
@@ -82,7 +76,20 @@ export default function DetailsPage({
               Add to list
             </Button> */}
 
-            <AddToListDropdown mediaId={2} type="MANGA" />
+            {/* <AddToListDropdown mediaId={2} type="MANGA" /> */}
+
+            <div className="flex gap-1">
+              <div className="flex-1">
+                <AddToListDropdown mediaId={data.Media.id} type="MANGA" />
+              </div>
+              <div
+                className="flex justify-center items-center cursor-pointer hover:bg-background-400 px-3 rounded-md"
+                // onClick={() => handleNotification()}
+              >
+                <FaRegBell size={20} />
+              </div>
+            </div>
+            {/* </div> */}
           </div>
 
           <div className="flex flex-col justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-4">
@@ -102,7 +109,7 @@ export default function DetailsPage({
               </DotList>
 
               <MediaDescription
-                description={data?.Media?.description}
+                description={data?.Media?.description || ""}
                 containerClassName="hidden md:block"
                 className="text-gray-300 hover:text-gray-100 transition duration-300"
               />
@@ -112,22 +119,25 @@ export default function DetailsPage({
             <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0 ">
               <InfoItem
                 title={"Country"}
-                value={convert(data.Media.countryOfOrigin, "country", {
+                value={convert(data?.Media?.countryOfOrigin, "country", {
                   locale,
                 })}
               />
-              <InfoItem title={"Total Episodes"} value={data.Media.episodes} />
+              <InfoItem
+                title={"Total Episodes"}
+                value={data?.Media?.episodes}
+              />
 
               {data.Media?.duration && (
                 <InfoItem
                   title={"Duration"}
-                  value={`${data.Media.duration} ${"Minutes"}`}
+                  value={`${data?.Media?.duration} ${"Minutes"}`}
                 />
               )}
 
               <InfoItem
                 title={"Status"}
-                value={convert(data.Media.status, "status", { locale })}
+                value={convert(data?.Media?.status, "status", { locale })}
               />
 
               {nextAiringSchedule && (
@@ -141,7 +151,7 @@ export default function DetailsPage({
           </div>
         </div>
         <MediaDescription
-          description={data?.Media?.description}
+          description={data?.Media?.description || ""}
           containerClassName="mt-4 mb-8 md:hidden block"
           className="text-gray-300 hover:text-gray-100 transition duration-300"
         />
@@ -165,48 +175,48 @@ export default function DetailsPage({
           <div className="flex md:hidden px-4 flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
             <InfoItem
               title={"Country"}
-              value={convert(data.Media.countryOfOrigin, "country", {
+              value={convert(data?.Media?.countryOfOrigin, "country", {
                 locale,
               })}
             />
-            <InfoItem title={"Total Episodes"} value={data.Media.episodes} />
+            <InfoItem title={"Total Episodes"} value={data?.Media?.episodes} />
 
-            {data.Media.duration && (
+            {data?.Media?.duration && (
               <InfoItem
                 title={"Duration"}
-                value={`${data.Media.duration} ${"Minutes"}`}
+                value={`${data?.Media?.duration} ${"Minutes"}`}
               />
             )}
 
             <InfoItem
               title={"Status"}
-              value={convert(data.Media.status, "status", { locale })}
+              value={convert(data?.Media?.status, "status", { locale })}
             />
           </div>
           <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 py-5 px-4 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
             <InfoItem
               title={"Format"}
-              value={convert(data.Media.format, "format", { locale })}
+              value={convert(data?.Media?.format, "format", { locale })}
             />
-            <InfoItem title="English" value={data.Media.title?.english} />
-            <InfoItem title="Native" value={data.Media.title?.native} />
-            <InfoItem title="Romanji" value={data.Media.title?.romanji} />
+            <InfoItem title="English" value={data?.Media?.title?.english} />
+            <InfoItem title="Native" value={data?.Media?.title?.native} />
+            <InfoItem title="Romanji" value={data?.Media?.title?.romanji} />
             <InfoItem
               title={"Popular"}
-              value={numberWithCommas(data.Media.popularity)}
+              value={numberWithCommas(data?.Media?.popularity)}
             />
             <InfoItem
               title={"Favourite"}
-              value={numberWithCommas(data.Media.favourites)}
+              value={numberWithCommas(data?.Media?.favourites)}
             />
             <InfoItem
               title={"Trending"}
-              value={numberWithCommas(data.Media.trending)}
+              value={numberWithCommas(data?.Media?.trending)}
             />
 
             {/* <InfoItem
               title="Studio"
-              value={data?.Media?.studios.map((studio: any) => (
+              value={data?.Media?.studios.nodes.map((studio: any) => (
                 <Link
                   key={studio.id}
                   href={createStudioDetailsUrl(studio)}
@@ -219,13 +229,13 @@ export default function DetailsPage({
 
             <InfoItem
               title={"Season"}
-              value={`${convert(data.Media.season, "season", { locale })} ${
-                data.Media.seasonYear
+              value={`${convert(data?.Media?.season, "season", { locale })} ${
+                data?.Media?.seasonYear
               }`}
             />
             <InfoItem
               title={"Synonimus"}
-              value={data.Media.synonyms.map((synomym: any) => (
+              value={data?.Media?.synonyms.map((synomym: any) => (
                 <div key={synomym} className="-mb-2">
                   <p>{synomym}</p>
                 </div>
@@ -236,7 +246,7 @@ export default function DetailsPage({
             <h1 className="font-semibold">Tags</h1>
 
             <ul className="overflow-x-auto flex flex-row md:flex-col gap-2 [&>*]:shrink-0 md:no-scrollbar">
-              {data.Media.tags.map((tag: any) => (
+              {data?.Media?.tags.map((tag: any) => (
                 <Link
                   href={{
                     pathname: "/browse",
@@ -259,7 +269,7 @@ export default function DetailsPage({
               title={"Characters"}
               className="grid w-full grid-cols-1 gap-4 md:grid-cols-2"
             >
-              {data.Media.characters.map(
+              {data?.Media?.characters.map(
                 (characterEdge: any, index: number) => (
                   <CharacterConnectionCard
                     characterEdge={characterEdge}
@@ -270,17 +280,17 @@ export default function DetailsPage({
             </DetailsSection>
           )}
 
-          {/* {!!data.Media?.relations?.length && (
+          {!!relations?.length && (
             <DetailsSection title={"Relations"}>
-              <List data={data.Media.relations.nodes}>
+              <List data={relations}>
                 {(node: any) => <Card data={node} className="relations" />}
               </List>
             </DetailsSection>
           )}
 
-          {!!data.Media?.recommendations?.nodes?.length && (
+          {/* {!!data.Media?.recommendations?.nodes?.length && (
             <DetailsSection title={"Recomendations"}>
-              <List data={data.Media.recommendations.nodes}>
+              <List data={data?.Media?.recommendations.nodes}>
                 {(node: any) => <Card data={node.mediaRecommendation} />}
               </List>
             </DetailsSection>

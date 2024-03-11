@@ -1,5 +1,3 @@
-"use client";
-
 import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
 import CharacterConnectionCard from "@/components/shared/CharacterConnectionCard";
@@ -11,7 +9,10 @@ import List from "@/components/shared/List";
 import MediaDescription from "@/components/shared/MediaDescription";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
-import { numberWithCommas } from "@/utils";
+import { getAnimeById } from "@/mocks/queries";
+import { createStudioDetailsUrl, numberWithCommas } from "@/utils";
+import { convert, getDescription, getTitle } from "@/utils/data";
+import { useLocale } from "next-intl";
 import { BsFillPlayFill, BsPlusCircleFill } from "react-icons/bs";
 import Link from "next/link";
 import React from "react";
@@ -23,8 +24,8 @@ import Reaction from "@/components/features/comment/Reaction";
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import EpisodeSelector from "@/components/features/anime/EpisodeSelector";
 import { useApi } from "@/hooks/useApi";
-import { useQuery } from "@tanstack/react-query";
-export default function DetailsPage({
+import { FaRegBell } from "react-icons/fa";
+export default async function DetailsPage({
   params,
 }: {
   params: { animeId: string };
@@ -32,40 +33,42 @@ export default function DetailsPage({
   const api = useApi();
   const animeId = params.animeId[0];
   // const { data } = await getAnimeById(params.animeId[0], "ANIME");
-  // const media = await api.getAnimeById(animeId);
-
-  const { data: media, isLoading } = useQuery({
-    queryKey: ["getAnimeById", animeId],
-    queryFn: async () => {
-      const media = await api.getAnimeById(animeId);
-      return media;
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen w-full flex justify-center items-center">
-        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
+  const media = await api.getAnimeById(animeId);
+  const recommendations = await api.getRecommendations(animeId);
   const data = {
     Media: media,
   };
+  console.log(data);
+  const locale = useLocale();
+  const title = getTitle(data?.Media, locale);
+  const description = getDescription(data?.Media, locale);
 
   const nextAiringSchedule = data?.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
     .find((schedule: any) => dayjs.unix(schedule.airingAt).isAfter(dayjs()));
 
+  const handleNotification = () => {
+    console.log("handleNotification");
+  };
+
+  console.log(recommendations);
+  console.log(data?.Media?.relations);
+  const relations = [];
+  if (data?.Media?.relations?.animes) {
+    relations.push(...data?.Media?.relations?.animes);
+  }
+  if (data?.Media?.relations?.Manga) {
+    relations.push(...data?.Media?.relations?.Manga);
+  }
+
   return (
     <div className="pb-8">
-      <DetailsBanner image={data?.Media.bannerImage} />
+      <DetailsBanner image={data?.Media?.bannerImage} />
 
       <Section className="relative pb-4 bg-background-900 px-4 md:px-12 lg:px-20 xl:px-28 w-full h-auto">
         <div className="flex flex-row md:space-x-8">
           <div className="shrink-0 relative md:static md:left-0 md:-translate-x-0 w-[120px] md:w-[186px] mt-4 md:-mt-12 space-y-6">
-            <PlainCard src={data?.Media.coverImage.extraLarge} alt={"Test"} />
+            <PlainCard src={data?.Media?.coverImage?.extraLarge} alt={"Test"} />
             {/* <Button
               primary
               className="gap-4 w-full justify-center md:flex hidden"
@@ -74,7 +77,17 @@ export default function DetailsPage({
               Add to list
             </Button> */}
 
-            <AddToListDropdown mediaId={data.Media.id} type="ANIME" />
+            <div className="flex gap-1">
+              <div className="flex-1">
+                <AddToListDropdown mediaId={data.Media.id} type="ANIME" />
+              </div>
+              <div
+                className="flex justify-center items-center cursor-pointer hover:bg-background-400 px-3 rounded-md"
+                // onClick={() => handleNotification()}
+              >
+                <FaRegBell size={20} />
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col md:justify-between md:py-4 ml-4 text-left items-start md:-mt-16 space-y-0 md:space-y-4">
@@ -85,13 +98,15 @@ export default function DetailsPage({
 
             <div className="flex flex-col items-start space-y-4 md:py-4 max-w-fit">
               <p className="text-2xl md:text-3xl font-semibold max-w-full">
-                {data?.Media?.title?.english}
+                {data.Media.title.english}
               </p>
 
               <div className="overflow-ellipsis line-clamp-1">
                 <DotList>
                   {data?.Media.genres.map((genre: any) => (
-                    <span key={genre}>{genre}</span>
+                    <span key={genre}>
+                      {convert(genre, "genre", { locale })}
+                    </span>
                   ))}
                 </DotList>
               </div>
@@ -104,7 +119,12 @@ export default function DetailsPage({
             </div>
 
             <div className="hidden md:flex gap-x-8 md:gap-x-16 [&>*]:shrink-0">
-              <InfoItem title={"Country"} value={data?.Media.countryOfOrigin} />
+              <InfoItem
+                title={"Country"}
+                value={convert(data?.Media.countryOfOrigin, "country", {
+                  locale,
+                })}
+              />
               <InfoItem title={"Total Episodes"} value={data?.Media.episodes} />
 
               {data?.Media.duration && (
@@ -114,7 +134,10 @@ export default function DetailsPage({
                 />
               )}
 
-              <InfoItem title={"Status"} value={data?.Media.status} />
+              <InfoItem
+                title={"Status"}
+                value={convert(data?.Media.status, "status", { locale })}
+              />
 
               {nextAiringSchedule && (
                 <AiringCountDown
@@ -148,7 +171,12 @@ export default function DetailsPage({
       <Section className="w-full min-h-screen gap-8 mt-2 md:mt-8 space-y-8 md:space-y-0 md:grid md:grid-cols-10 sm:px-12">
         <div className="md:col-span-2 xl:h-[max-content] space-y-4">
           <div className="flex md:hidden flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar py-4">
-            <InfoItem title={"Country"} value={data?.Media.countryOfOrigin} />
+            <InfoItem
+              title={"Country"}
+              value={convert(data?.Media.countryOfOrigin, "country", {
+                locale,
+              })}
+            />
             <InfoItem title={"Total Episodes"} value={data?.Media.episodes} />
 
             {data?.Media.duration && (
@@ -158,7 +186,10 @@ export default function DetailsPage({
               />
             )}
 
-            <InfoItem title={"Status"} value={data?.Media.status} />
+            <InfoItem
+              title={"Status"}
+              value={convert(data?.Media.status, "status", { locale })}
+            />
 
             {nextAiringSchedule && (
               <AiringCountDown
@@ -169,10 +200,13 @@ export default function DetailsPage({
           </div>
 
           <div className="flex flex-row md:flex-col overflow-x-auto bg-background-900 rounded-md py-5 md:p-4 gap-4 [&>*]:shrink-0 md:no-scrollbar">
-            <InfoItem title={"Format"} value={data?.Media?.format} />
-            <InfoItem title="English" value={data?.Media?.title?.english} />
-            <InfoItem title="Native" value={data?.Media?.title?.native} />
-            <InfoItem title="Romanji" value={data?.Media?.title?.romanji} />
+            <InfoItem
+              title={"Format"}
+              value={convert(data?.Media.format, "format", { locale })}
+            />
+            <InfoItem title="English" value={data?.Media.title.english} />
+            <InfoItem title="Native" value={data?.Media.title.native} />
+            <InfoItem title="Romanji" value={data?.Media.title.romanji} />
             <InfoItem
               title={"Popular"}
               value={numberWithCommas(data?.Media.popularity)}
@@ -201,7 +235,9 @@ export default function DetailsPage({
 
             <InfoItem
               title={"Season"}
-              value={`${data?.Media.season} ${data?.Media.seasonYear}`}
+              value={`${convert(data?.Media.season, "season", { locale })} ${
+                data?.Media.seasonYear
+              }`}
             />
             <InfoItem
               title={"Synonimus"}
@@ -236,7 +272,11 @@ export default function DetailsPage({
 
         <div className="space-y-12 md:col-span-8">
           <DetailsSection title={"Episodes"} className="overflow-hidden">
-            <EpisodeSelector episodes={data?.Media?.episode} />
+            {data?.Media?.episode.length > 0 ? (
+              <EpisodeSelector episodes={data?.Media?.episode} />
+            ) : (
+              <p className="font-mediun">No episodes available...</p>
+            )}
           </DetailsSection>
           {!!data?.Media?.characters?.length && (
             <DetailsSection
@@ -254,6 +294,21 @@ export default function DetailsPage({
             </DetailsSection>
           )}
 
+          {!!relations?.length && (
+            <DetailsSection title={"Relations"}>
+              <List data={relations}>
+                {(node: any) => <Card data={node} className="relations" />}
+              </List>
+            </DetailsSection>
+          )}
+
+          {!!recommendations?.length && (
+            <DetailsSection title={"Recomendations"}>
+              <List data={recommendations}>
+                {(node: any) => <Card data={node} />}
+              </List>
+            </DetailsSection>
+          )}
           {/* {!!data?.Media?.relations?.nodes?.length && (
             <DetailsSection title={"Relations"}>
               <List data={data?.Media.relations.nodes}>
@@ -272,10 +327,10 @@ export default function DetailsPage({
         </div>
       </Section>
       <Section className="mt-24">
-        {/* <div className="w-full flex flex-col items-center justify-center mb-20 gap-6">
+        <div className="w-full flex flex-col items-center justify-center mb-20 gap-6">
           <h2 className="text-xl">What do you think?</h2>
           <Reaction />
-        </div> */}
+        </div>
         <Comments animeId={animeId} />
       </Section>
     </div>

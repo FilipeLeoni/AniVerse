@@ -82,7 +82,7 @@ const Card: React.FC<any> = (props) => {
   //   [data.title, locale]
   // );
 
-  const title = data.title.romaji;
+  const title = data?.title?.english;
 
   const description = useMemo(
     () => getDescription(data, locale),

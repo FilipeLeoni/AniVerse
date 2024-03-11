@@ -19,6 +19,8 @@ interface ReactContextProviderProps {
 const RoomContext = React.createContext<any>(null);
 
 export const RoomContextProvider: React.FC<any> = ({ children, value }) => {
+  console.log("chamado");
+
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 };
 

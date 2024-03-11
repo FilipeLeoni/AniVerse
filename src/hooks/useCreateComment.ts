@@ -65,8 +65,11 @@ const useCreateComment: any = () => {
       return data;
     },
     onSuccess: async (_: any, params: any) => {
-      await queryClient.invalidateQueries({
-        queryKey: ["comments"],
+      queryClient.invalidateQueries({
+        queryKey: [
+          "comments",
+          { animeId: params.animeId, parentId: params.parentId },
+        ],
       });
     },
     onError: (error) => {

@@ -13,6 +13,7 @@ import {
   supportedUploadSubtitleFormats,
   supportedUploadVideoFormats,
 } from "@/constants";
+import useCreateEpisode from "@/hooks/useCreateEpisode";
 
 import React, { useState } from "react";
 
@@ -32,19 +33,14 @@ export default function UploadCreateEpisodePage({
   const [fonts, setFonts] = useState<File[]>([]);
   const [episodeName, setEpisodeName] = useState("");
 
-  //   const { mutate: createEpisode } = useCreateEpisode({
-  //     mediaId,
-  //     sourceId,
-  //   });
+  const { mutate: createEpisode } = useCreateEpisode();
 
   const onSubmit = () => {
-    // createEpisode({
-    //   episodeName,
-    //   fonts,
-    //   subtitles,
-    //   video: videoState.video,
-    //   hostingId: videoState.hostingId,
-    // });
+    createEpisode({
+      episodeName: episodeName,
+      episodeNumber: 1,
+      video: videoState,
+    });
   };
 
   return (
@@ -74,7 +70,7 @@ export default function UploadCreateEpisodePage({
             </UploadSection.Right>
           </UploadSection>
 
-          <UploadSection>
+          {/* <UploadSection>
             <UploadSection.Left>
               <label className="font-semibold text-2xl">Subtitles</label>
               <p className="text-sm text-gray-300">
@@ -83,11 +79,11 @@ export default function UploadCreateEpisodePage({
             </UploadSection.Left>
 
             <UploadSection.Right>
-              {/* <SubtitleUpload onChange={setSubtitles} /> */}
+              <SubtitleUpload onChange={setSubtitles} />
             </UploadSection.Right>
-          </UploadSection>
+          </UploadSection> */}
 
-          <UploadSection>
+          {/* <UploadSection>
             <UploadSection.Left>
               <label className="font-semibold text-2xl">Fonts</label>
               <p className="text-sm text-gray-300">
@@ -98,7 +94,7 @@ export default function UploadCreateEpisodePage({
             <UploadSection.Right>
               <FontUpload onChange={setFonts} />
             </UploadSection.Right>
-          </UploadSection>
+          </UploadSection> */}
         </div>
       </UploadContainer>
 

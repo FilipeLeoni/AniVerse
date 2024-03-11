@@ -1,5 +1,3 @@
-"use client";
-
 // import VACard from "@/components/features/va/VACard";
 import Card from "@/components/shared/Card";
 import DetailsSection from "@/components/shared/DetailsSection";
@@ -26,7 +24,6 @@ import { AiFillHeart } from "react-icons/ai";
 import { BiCake } from "react-icons/bi";
 import { getCharacterDetails } from "@/mocks/queries";
 import { useApi } from "@/hooks/useApi";
-import { useQuery } from "@tanstack/react-query";
 
 const KeyValue: React.FC<{ property: string; value: string }> = ({
   property,
@@ -43,25 +40,10 @@ interface DetailsPageProps {
   character: Character;
 }
 
-export default function DetailsPage({ params }: { params: any }) {
+export default async function DetailsPage({ params }: { params: any }) {
   const api = useApi();
-  const characterId = params.params[0];
-  // const Character = await api.getCharacterById(params.params[0]);
-  const { data: Character, isLoading } = useQuery({
-    queryKey: ["getCharacterById", characterId],
-    queryFn: async () => {
-      const media = await api.getCharacterById(characterId);
-      return media;
-    },
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen w-full flex justify-center items-center">
-        <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  const Character = await api.getCharacterById(params.params[0]);
+  console.log(Character);
   // const { GENDERS } = useConstantTranslation();
 
   //   const gender = useMemo(
@@ -143,18 +125,18 @@ export default function DetailsPage({ params }: { params: any }) {
         <Section className="relative z-10 bg-background-900 pb-4 mb-8">
           <div className="flex flex-col md:flex-row md:space-x-8">
             <div className="shrink-0 relative left-1/2 -translate-x-1/2 md:static md:left-0 md:-translate-x-0 w-[186px] -mt-20 space-y-6">
-              <PlainCard src={Character?.image} alt={Character?.name} />
+              <PlainCard src={Character.image} alt={Character.name} />
             </div>
 
             <div className="space-y-8 text-center md:text-left flex flex-col items-center md:items-start py-4 mt-4">
               <div className="flex flex-col md:flex-row items-center gap-4">
-                <h1 className="text-3xl font-semibold">{Character?.name}</h1>
+                <h1 className="text-3xl font-semibold">{Character.name}</h1>
 
                 <TextIcon
                   iconClassName="text-primary-500"
                   LeftIcon={AiFillHeart}
                 >
-                  <p>{numberWithCommas(Character?.favourites)}</p>
+                  <p>{numberWithCommas(Character.favourites)}</p>
                 </TextIcon>
 
                 {/* {isBirthday && (
@@ -165,12 +147,12 @@ export default function DetailsPage({ params }: { params: any }) {
               </div>
 
               <div className="space-y-4">
-                <KeyValue property={"Gender"} value={Character?.gender} />
+                <KeyValue property={"Gender"} value={Character.gender} />
                 <KeyValue
                   property={"Date of birth"}
                   value={Character.dateOfBirth}
                 />
-                <KeyValue property={"Age"} value={Character?.age} />
+                <KeyValue property={"Age"} value={Character.age} />
               </div>
             </div>
           </div>

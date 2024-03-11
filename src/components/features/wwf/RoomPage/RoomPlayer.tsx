@@ -89,7 +89,7 @@ const PlayerOverlay = () => {
 const RoomPlayer = () => {
   const playerRef: any = useVideoSync();
   const { room, socket, basicRoomUser } = useRoomInfo();
-  const { data, isLoading } = useFetchEpisode(room?.episode?.id);
+  // const { data, isLoading } = useFetchEpisode(room?.episode?.id);
 
   console.log(room);
   console.log(basicRoomUser);
@@ -166,6 +166,7 @@ const RoomPlayer = () => {
   //     ]
   //   );
 
+  console.log(room?.episode);
   return (
     <RoomPlayerContextProvider
       value={{
@@ -174,7 +175,7 @@ const RoomPlayer = () => {
         // currentEpisodeIndex: currentEpisodeIndex,
         episodes: sortedEpisodes,
         sourceId: room?.episode.sourceId,
-        sources: data?.sources,
+        sources: "data?.sources",
         setEpisode: handleNavigateEpisode,
         isHost,
       }}
@@ -185,7 +186,7 @@ const RoomPlayer = () => {
             ref={playerRef}
             sources={[
               {
-                file: "https://s22.anime-sama.fr/videos/Solo%20Leveling/Saison%201/VF/Solo_Leveling_1_VF.mp4",
+                file: "http://localhost:8081/https://s22.anime-sama.fr/videos/Solo%20Leveling/Saison%201/VF/Solo_Leveling_1_VF.mp4",
               },
             ]}
             // subtitles={data?.subtitles || []}
@@ -202,4 +203,4 @@ const RoomPlayer = () => {
   );
 };
 
-export default React.memo(RoomPlayer);
+export default RoomPlayer;

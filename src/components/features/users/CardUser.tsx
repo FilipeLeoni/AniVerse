@@ -90,7 +90,7 @@ export const CardUser: React.FC<any> = ({ user, searchUser }: any) => {
           <Select
             options={roles}
             defaultValue={{ label: user?.role, value: user?.role }}
-            onChange={(e) => handleModifyRole(e)}
+            onChange={(e: any) => handleModifyRole(e)}
             placeholder="Roles"
             isClearable={false}
             styles={

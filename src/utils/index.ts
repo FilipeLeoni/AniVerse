@@ -480,7 +480,6 @@ export const createProxyUrl = (
 
 export const createMediaDetailsUrl = (media: Media | any) => {
   if (media?.type === MediaType.Anime) {
-    console.log(media);
     return `/anime/details/${media.id}/${vietnameseSlug(
       media?.title?.english
     )}`;
