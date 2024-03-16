@@ -31,6 +31,10 @@ import Section from "./Section";
 import Skeleton, { SkeletonItem } from "./Skeleton";
 import { useLocale } from "next-intl";
 import BookIcon from "./BookIcon";
+import YouTube from "react-youtube";
+import classNames from "classnames";
+import { BsFillVolumeMuteFill, BsFillVolumeUpFill } from "react-icons/bs";
+
 interface HomeBannerProps {
   data: Media[];
   isLoading?: boolean;
@@ -156,7 +160,8 @@ const MobileHomeBannerSkeleton = () => (
 const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
   const [index, setIndex] = useState<number>(0);
   const [showTrailer, setShowTrailer] = useState(false);
-
+  const [player, setPlayer] =
+    useState<ReturnType<YouTube["getInternalPlayer"]>>();
   const [isMuted, setIsMuted] = useState(true);
   const isRanOnce = useRef(false);
   const locale = useLocale();
@@ -171,6 +176,22 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
     },
     []
   );
+
+  const mute = useCallback(() => {
+    if (!player) return;
+
+    player.mute();
+
+    setIsMuted(true);
+  }, [player]);
+
+  const unMute = useCallback(() => {
+    if (!player) return;
+
+    player.unMute();
+
+    setIsMuted(false);
+  }, [player]);
 
   const title = useMemo(
     () => getTitle(activeSlide, locale),
@@ -207,6 +228,63 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
                 fill
                 style={{ objectFit: "cover", objectPosition: "50% 35%" }}
                 alt={title as string}
+              />
+            </motion.div>
+          )}
+
+          {activeSlide?.type === "ANIME" && activeSlide?.trailer?.id && (
+            <motion.div
+              className={classNames(
+                "opacity-1 absolute w-full overflow-hidden h-[300%] -top-[100%] transition-all duration-700",
+                !showTrailer && "opacity-0"
+              )}
+            >
+              <YouTube
+                videoId={activeSlide.trailer.id}
+                onReady={({ target }) => {
+                  setPlayer(target);
+                }}
+                onPlay={({ target }) => {
+                  setShowTrailer(true);
+
+                  if (!isRanOnce.current) {
+                    setIsMuted(true);
+                  } else if (!isMuted) {
+                    setIsMuted(false);
+
+                    target.unMute();
+                  }
+
+                  isRanOnce.current = true;
+                }}
+                onPause={() => {
+                  setShowTrailer(false);
+                }}
+                onEnd={() => {
+                  setShowTrailer(false);
+                }}
+                onError={() => {
+                  setShowTrailer(false);
+                }}
+                className="absolute inset-0 h-full w-full youtube-video-container"
+                opts={{
+                  playerVars: {
+                    width: "100%",
+                    height: "100%",
+                    autoplay: 1,
+                    modestbranding: 1,
+                    controls: 0,
+                    mute: 1,
+                    showInfo: 0,
+                    loading: "off",
+                    origin: "http://localhost:3000",
+                  },
+                }}
+                iframeClassName={classNames(
+                  "absolute w-full overflow-hidden h-[300%] -top-[100%] opacity-1",
+                  !showTrailer && "opacity-0"
+                )}
+                loading="eager"
               />
             </motion.div>
           )}
@@ -263,6 +341,16 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
             iconClassName="w-16 h-16"
           />
         </Link>
+
+        {showTrailer && player && (
+          <CircleButton
+            LeftIcon={isMuted ? BsFillVolumeMuteFill : BsFillVolumeUpFill}
+            outline
+            className="absolute bottom-20 right-12"
+            iconClassName="w-6 h-6"
+            onClick={isMuted ? unMute : mute}
+          />
+        )}
 
         <div className="banner__overlay--down absolute bottom-0 h-16 w-full"></div>
       </div>
