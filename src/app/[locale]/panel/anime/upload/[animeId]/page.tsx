@@ -244,7 +244,6 @@ export default function UploadPage({
   };
 
   async function SendData(requestBody: any) {
-    console.log(requestBody);
     const response: any = await fetch(`http://localhost:8000/anime`, {
       method: "POST",
       headers: {
@@ -298,7 +297,6 @@ export default function UploadPage({
       relations: relations,
     };
 
-    console.log(requestBody);
     const callFunction = SendData(requestBody);
 
     toast.promise(

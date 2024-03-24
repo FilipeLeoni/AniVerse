@@ -19,8 +19,6 @@ const EpisodeCard: React.FC<EpisodeCardProps> = ({
   className,
   ...props
 }) => {
-  console.log(duration);
-  console.log(watchedTime);
   // const watchedPercentage = (watchedTime / duration) * 100;
   const watchProgressPercent = useMemo(
     () => (duration === 0 ? 0 : (watchedTime / duration) * 100),

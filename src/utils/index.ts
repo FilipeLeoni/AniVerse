@@ -494,6 +494,79 @@ export const createCharacterDetailsUrl = (character: any) => {
   )}`;
 };
 
+export function getStartAndEndOfDay(timestampUnix: number) {
+  const startOfDay = new Date(timestampUnix * 1000); // Convertendo para milissegundos
+  startOfDay.setHours(0, 0, 0, 0); // Define o início do dia (00:00:00)
+
+  const endOfDay = new Date(timestampUnix * 1000); // Convertendo para milissegundos
+  endOfDay.setHours(23, 59, 59, 999); // Define o final do dia (23:59:59)
+
+  const airingAt_greater = Math.floor(startOfDay.getTime() / 1000); // Convertendo de milissegundos para segundos
+  const airingAt_lesser = Math.floor(endOfDay.getTime() / 1000); // Convertendo de milissegundos para segundos
+
+  return { airingAt_greater, airingAt_lesser };
+}
+
+export function getTimeFormattedForUserTimeZone(timestampUnix: number) {
+  // Obtém o fuso horário do sistema do usuário
+  const userTimeZoneOffset = new Date().getTimezoneOffset() * 60; // Offset em segundos
+
+  // Calcula o timestamp Unix ajustado para o fuso horário do usuário
+  const adjustedTimestampUnix = timestampUnix + userTimeZoneOffset;
+
+  // Cria um objeto Date com o timestamp ajustado
+  const adjustedDate = new Date(adjustedTimestampUnix * 1000); // Convertendo para milissegundos
+
+  // Obtém a hora e o minuto formatados (hh:mm)
+  const hours = adjustedDate.getHours().toString().padStart(2, "0"); // Adiciona zero à esquerda se necessário
+  const minutes = adjustedDate.getMinutes().toString().padStart(2, "0"); // Adiciona zero à esquerda se necessário
+
+  return `${hours}:${minutes}`;
+}
+// export function getDatesOfCurrentWeek() {
+//   const today = new Date();
+//   const currentDay = today.getDay();
+//   const startOfWeek = new Date(today);
+//   startOfWeek.setDate(startOfWeek.getDate() - currentDay);
+//   const datesOfWeek = [];
+//   for (let i = 0; i < 7; i++) {
+//     const date = new Date(startOfWeek);
+//     date.setDate(date.getDate() + i);
+//     const day = date.getDate().toString().padStart(2, "0");
+//     const month = (date.getMonth() + 1).toString().padStart(2, "0");
+//     const year = date.getFullYear();
+//     const dateString = `${day}/${month}/${year}`;
+//     const timestamp = Math.floor(date.getTime() / 1000);
+//     datesOfWeek.push({ date: dateString, dateUnix: timestamp });
+//   }
+//   return datesOfWeek;
+// }
+
+export function getDatesOfCurrentWeek() {
+  const today = new Date();
+  const currentDay = today.getDay();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(startOfWeek.getDate() - currentDay);
+  const datesOfWeek = [];
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(startOfWeek);
+    date.setDate(date.getDate() + i);
+    const dayOfWeekAbbrev = date.toLocaleDateString("en-US", {
+      weekday: "short",
+    }); // Obtém o nome abreviado do dia da semana em inglês
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const dateString = `${day}/${month}/${year}`;
+    const timestamp = Math.floor(date.getTime() / 1000);
+    datesOfWeek.push({
+      date: dateString,
+      dateUnix: timestamp,
+      dayOfWeekAbbrev: dayOfWeekAbbrev,
+    });
+  }
+  return datesOfWeek;
+}
 // export const createVoiceActorDetailsUrl = (voiceActor: Staff) => {
 //   return `/voice-actors/details/${voiceActor.id}/${vietnameseSlug(
 //     voiceActor?.name?.userPreferred

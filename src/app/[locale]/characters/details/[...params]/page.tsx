@@ -55,7 +55,6 @@ export default function DetailsPage({ params }: { params: any }) {
     },
   });
 
-  console.log(Character);
   if (isLoading) {
     return (
       <div className="min-h-screen w-full flex justify-center items-center">

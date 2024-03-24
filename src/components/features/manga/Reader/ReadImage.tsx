@@ -31,8 +31,6 @@ const ReadImage: React.FC<ReadImageProps> = ({
     rootMargin: "0px 0px 10px 0px",
   });
 
-  console.log(image);
-
   useEffect(() => {
     setLoaded(false);
   }, [image]);

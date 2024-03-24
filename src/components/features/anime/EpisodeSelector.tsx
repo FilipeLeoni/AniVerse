@@ -20,20 +20,15 @@ function EpisodeSelector(
   const calculateEpisodeRange = (pageIndex: any) => {
     const startIndex = pageIndex * itemsPerPage + 1;
     const endIndex = Math.min(startIndex + itemsPerPage - 1, episodes.length);
-    console.log(`${startIndex} - ${endIndex}`);
 
     return `${startIndex} - ${endIndex}`;
   };
 
-  console.log(currentPage);
-
   // Função para mudar a página
   const changePage = (pageIndex: any) => {
-    console.log("chamado");
     setCurrentPage(pageIndex);
   };
 
-  console.log(episodes);
   const startIndex = currentPage * itemsPerPage + 1;
   const endIndex = Math.min(startIndex + itemsPerPage - 1, episodes.length);
   const currentAnimes = episodes.slice(startIndex - 1, endIndex);

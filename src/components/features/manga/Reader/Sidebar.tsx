@@ -90,8 +90,6 @@ const Sidebar = () => {
     );
   }, [filterText, chapters]);
 
-  console.log(filteredChapters);
-
   // const sources = useMemo(
   //   () => groupBy(chapters, (data: any) => data.source.name),
   //   [chapters]
@@ -146,8 +144,6 @@ const Sidebar = () => {
 
     currentChapterEl.scrollIntoView();
   }, [currentChapter]);
-
-  console.log(manga);
 
   return (
     <motion.div

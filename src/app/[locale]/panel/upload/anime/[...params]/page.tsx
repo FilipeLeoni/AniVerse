@@ -256,7 +256,6 @@ export default function UploadPage({
         body: JSON.stringify(requestBody),
       }
     );
-    console.log(response);
     if (response.ok) {
       router.push("/panel/upload/anime");
       return response;
@@ -307,7 +306,6 @@ export default function UploadPage({
       relations: relations,
     };
 
-    console.log(requestBody);
     const callFunction = SendData(requestBody);
 
     toast.promise(

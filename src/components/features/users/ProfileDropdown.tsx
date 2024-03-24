@@ -70,12 +70,11 @@ const AvatarDropdown = () => {
       destroyPopperInstance();
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dropdownVisible]);
 
-  console.log(session?.user);
-
   return (
-    <div className="avatar-dropdown w-full cursor-pointer">
+    <div className="avatar-dropdown w-full cursor-pointer ">
       <div
         className="avatar w-10 h-10"
         ref={avatarRef}
@@ -88,7 +87,7 @@ const AvatarDropdown = () => {
           }
           alt="Avatar"
           fill
-          className="object-cover overflow-hidden rounded-full"
+          className="object-cover overflow-hidden rounded-full bg-neutral-800"
         />
       </div>
       {dropdownVisible && (

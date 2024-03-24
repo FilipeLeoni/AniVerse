@@ -19,6 +19,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { MdTagFaces } from "react-icons/md";
 import Description from "./Description";
 import { useLocale } from "next-intl";
+import { isMobile } from "react-device-detect";
 
 interface AnimeCardProps {
   data: Media;
@@ -109,6 +110,7 @@ const Card: React.FC<AnimeCardProps> = (props) => {
     }
   };
 
+  console.log(data);
   return (
     <Link href={redirectUrl}>
       <motion.div
@@ -266,6 +268,8 @@ const Card: React.FC<AnimeCardProps> = (props) => {
         >
           {title || data?.title?.english}
         </motion.p>
+        {isMobile && <p></p>}
+        <p></p>
       </motion.div>
     </Link>
   );

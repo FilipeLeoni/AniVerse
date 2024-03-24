@@ -45,6 +45,7 @@ const GenreSwiper: React.FC<GenresSwiperProps> = ({
       }}
       isOverflowHidden={!isMobile}
       freeMode
+      hideNavigation={isMobile}
       {...props}
     >
       {GENRES.map((genre: any) => (

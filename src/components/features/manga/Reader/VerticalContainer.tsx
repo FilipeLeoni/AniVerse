@@ -11,10 +11,6 @@ const VerticalContainer: React.FC = () => {
   const { state, setState } = useReadPanel();
   const { direction } = useReadSettings();
 
-  console.log({
-    currentChapter,
-  });
-
   const router = useRouter();
 
   const sourceChapters = useMemo(

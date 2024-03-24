@@ -26,7 +26,6 @@ export default function RecentlyWatched() {
 
   const uniqueAnimeIdsSet = new Set();
   for (const item of related) {
-    console.log(item);
     uniqueAnimeIdsSet.add(item.anime.id);
   }
   const animeIds = Array.from(uniqueAnimeIdsSet);

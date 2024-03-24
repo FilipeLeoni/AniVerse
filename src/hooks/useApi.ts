@@ -1,6 +1,7 @@
 import { Api } from "@/utils/api";
 import Cookies from "js-cookie";
 import { UseBrowseOptions } from "./useBrowseAnime";
+import { getStartAndEndOfDay } from "@/utils";
 
 const accessToken = Cookies.get("accessToken");
 
@@ -116,6 +117,24 @@ export const useApi = () => ({
     }
   },
 
+  getAnimeSchedule: async (animeId: string) => {
+    try {
+      const response = await Api.get(`schedule/anime/${animeId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getMangaSchedule: async (mangaId: string) => {
+    try {
+      const response = await Api.get(`schedule/manga/${mangaId}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   PutScheduleAnime: async (
     animeId: string,
     { schedule, episode }: { schedule: any; episode: string }
@@ -143,6 +162,15 @@ export const useApi = () => ({
         }
       );
       console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  postAnimeSchedule: async (animeId: string, data: any) => {
+    try {
+      const response = await Api.post(`anime/schedule/${animeId}`, data);
       return response;
     } catch (error) {
       console.log(error);
@@ -451,6 +479,28 @@ export const useApi = () => ({
     try {
       const response = await Api.get(`anime/recommendation/${animeId}`);
       return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getScheduleTimeLineByDay: async (timestamp: number) => {
+    try {
+      const unixDay = getStartAndEndOfDay(timestamp);
+      console.log(unixDay);
+      const response = await Api.get(
+        `schedule/day?greater=${unixDay.airingAt_greater}&lesser=${unixDay.airingAt_lesser}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  deleteAnimeSchedule: async (id: string) => {
+    try {
+      const response = await Api.delete(`schedule/${id}`);
+      return response;
     } catch (error) {
       console.log(error);
     }

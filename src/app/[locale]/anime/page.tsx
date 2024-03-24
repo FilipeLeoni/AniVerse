@@ -78,9 +78,6 @@ export default function AnimePage() {
     staleTime: 3600 * 1000,
   });
 
-  console.log(getAddedAnimes);
-  console.log(UpdatedAnime);
-
   const PopularAnimeData = PopularAnime?.Page?.media || [];
   const TrendingAnimeData = TrendingAnime?.Page?.media || [];
   const UpdatedAnimeData = UpdatedAnime?.Page?.media || [];
@@ -103,6 +100,11 @@ export default function AnimePage() {
         <WatchedSwiperSkeleton />
       )}
 
+      {isMobile && (
+        <Section className="w-full md:w-[20%] md:!pl-0 h-full mb-8">
+          <GenreSwiper className="md:h-[520px]" />
+        </Section>
+      )}
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
         {isLoadingGetAdded ? (
           "Loading"

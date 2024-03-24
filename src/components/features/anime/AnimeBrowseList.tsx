@@ -144,7 +144,6 @@ const BrowseList: React.FC<BrowseListProps> = ({
       setValue("season", searchSeason);
     }
     if (searchSeasonYear) {
-      console.log(searchSeasonYear);
       setValue("seasonYear", Number(searchSeasonYear));
     }
   }, [

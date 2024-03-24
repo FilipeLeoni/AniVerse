@@ -41,8 +41,6 @@ export default function WatchPage({ params }: { params: { params: string } }) {
     },
   });
 
-  console.log(episode);
-  console.log(anime?.media?.episode);
   return (
     <div className="flex flex-col w-full h-auto pt-16">
       <div style={{ height: isMobile ? "100%" : "70vh" }} className="relative">

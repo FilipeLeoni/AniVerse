@@ -87,8 +87,6 @@ export default function MangaPage() {
     staleTime: 3600 * 1000,
   });
 
-  console.log(getAddedMangas);
-
   const randomTrendingManga = useMemo(() => {
     return randomElement(TrendingManga?.Page.media || []);
   }, [TrendingManga]);

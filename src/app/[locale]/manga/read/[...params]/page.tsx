@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 export default function Read({ params }: { params: any }) {
-  console.log(params);
   const mangaId = params.params[0];
   const chapterId = params.params[1];
   const saveReadTimeout = useRef<NodeJS.Timeout>();
@@ -41,8 +40,6 @@ export default function Read({ params }: { params: any }) {
     [manga, chapterId]
   );
 
-  console.log(manga?.chapters);
-  console.log(currentChapterIndex);
   const router = useRouter();
 
   const handleChapterNavigate = useCallback(
@@ -99,7 +96,6 @@ export default function Read({ params }: { params: any }) {
         readChapters = JSON.parse(storedHistory).readChapters || [];
       }
 
-      console.log(manga);
       readChapters.unshift({
         mangaId: manga?.id,
         chapterId: chapter?.id,
@@ -135,8 +131,6 @@ export default function Read({ params }: { params: any }) {
     );
   }
 
-  console.log(chapter);
-  console.log(manga);
   return (
     <div>
       {chapter && (

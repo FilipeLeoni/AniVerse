@@ -90,7 +90,6 @@ export default function VideoPlayer({
         //   existingEpisodeIndex !== -1 &&
         //   watchedEpisodes[existingEpisodeIndex]?.anime.id === anime.id;
 
-        console.log(isSameAnime);
         if (existingEpisodeIndex !== -1) {
           watchedEpisodes[existingEpisodeIndex].watchedTime =
             videoRef.current?.currentTime;
@@ -277,8 +276,6 @@ export default function VideoPlayer({
     }),
     [PlayerControls, PlayerOverlay]
   );
-
-  console.log("chamado de novo");
 
   return (
     <div style={{ height: isMobile ? "100%" : "70vh" }}>

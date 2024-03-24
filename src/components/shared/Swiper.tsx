@@ -95,7 +95,7 @@ const Swiper: React.FC<SwiperProps> = ({
         nextEl: ".custom-button-next",
         prevEl: ".custom-button-prev",
       }}
-      modules={[Navigation]}
+      modules={[FreeMode, Navigation, Thumbs]}
       {...props}
     >
       {children}

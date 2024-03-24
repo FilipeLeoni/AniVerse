@@ -12,9 +12,7 @@ import React from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 export default function Chapters({ params }: { params: { id: string } }) {
-  console.log(params);
   const mediaId = parseInt(params.id);
-  console.log(params);
   const { data: manga, isLoading: mediaLoading } = useQuery<any>({
     queryKey: ["MangaChapters", mediaId],
     queryFn: async () => {
@@ -23,7 +21,6 @@ export default function Chapters({ params }: { params: { id: string } }) {
     },
   });
 
-  console.log(manga);
   return (
     <React.Fragment>
       <UploadContainer isVerified={true}>

@@ -75,7 +75,6 @@ export default function DetailsPage({
     return dayjs.unix(nextAiringSchedule.airingAt).locale(locale).fromNow();
   };
 
-  console.log(data);
   // const relations = [
   //   ...data?.Media?.relations?.animes,
   //   ...data?.Media?.relations?.Manga,

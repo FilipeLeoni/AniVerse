@@ -30,15 +30,10 @@ export default function UploadCreateChapterManga({
 }: {
   params: { id: string };
 }) {
-  const [videoState, setVideoState] = useState(null);
-  const [subtitles, setSubtitles] = useState<any>([]);
-  const [fonts, setFonts] = useState<File[]>([]);
-  const [episodeName, setEpisodeName] = useState("");
   const [chapterName, setChapterName] = useState("");
   const [chapterNumber, setChapterNumber] = useState("");
 
   const mangaId = params.id.toString();
-  console.log(mangaId);
   const [images, setImages] = useState<File[]>([]);
 
   const { mutate: createChapter } = useCreateChapter({

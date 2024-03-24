@@ -78,8 +78,6 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
 
   const [chosenEpisode, setChosenEpisode] = useState<any>(media?.episode?.[0]);
 
-  console.log(chosenEpisode);
-
   const mediaTitle = useMemo(() => getTitle(media, locale), [media, locale]);
   const mediaDescription = useMemo(
     () => getDescription(media, locale),
@@ -96,13 +94,6 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
   const { data: session } = useSession();
 
   const handleCreateRoom = useCallback(() => {
-    console.log({
-      episodeId: `${chosenEpisode?.id}`,
-      mediaId: media?.id,
-      visibility,
-      title: roomTitle,
-      hostId: session?.user?.id,
-    });
     mutate({
       episodeId: chosenEpisode.id,
       mediaId: media?.id,

@@ -4,7 +4,6 @@ import Player from "netplayer";
 import React from "react";
 
 export default function Examples({ params }: { params: { animeId: string } }) {
-  console.log(params);
   return (
     <div>
       <Player

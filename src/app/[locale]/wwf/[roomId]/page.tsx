@@ -18,7 +18,6 @@ import Player from "netplayer";
 
 export default function RoomPage({ params }: { params: { roomId: string } }) {
   const roomId = params.roomId;
-  console.log(roomId);
   // const user = useUser();
   // console.log(user);
   const [socket, setSocket] = useState<Socket>();
@@ -72,7 +71,6 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
 
   useEffect(() => {
     if (session?.user && !sessionLoaded) {
-      console.log("chamado");
       setBasicRoomUser({
         userId: session.user.id,
         avatarUrl: session.user.profilePicture || "",
@@ -132,7 +130,6 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
 
       socket.emit("join", roomId, peerId, roomUser);
 
-      console.log(roomUser);
       optimisticUpdateRoom((room) => {
         room?.users.push(roomUser);
 
@@ -140,7 +137,6 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
       });
 
       socket.on("event", (event: any) => {
-        console.log(event.content?.[2]);
         if (event.content?.[2] === roomUser.id) return;
 
         if (event.eventType === "join") {
@@ -239,8 +235,6 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
       newPeer?.disconnect();
     };
   }, [roomId, basicRoomUser]);
-
-  console.log(socket);
 
   return (
     <React.Fragment>

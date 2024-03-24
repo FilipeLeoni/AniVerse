@@ -65,8 +65,6 @@ const BrowseList: React.FC<BrowseListProps> = ({
 
   // const totalData: any = searchResult?.pages;
 
-  console.log(totalData);
-
   return (
     <div className="min-h-screen">
       <form className="space-y-4">
