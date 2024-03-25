@@ -53,6 +53,7 @@ export default function AnimePage() {
       return response.data;
     },
   });
+
   const { data: UpdatedAnime } = useQuery<any>({
     queryKey: ["UpdatedAnime"],
     queryFn: async () => {

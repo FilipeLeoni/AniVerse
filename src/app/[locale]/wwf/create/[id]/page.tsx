@@ -3,7 +3,6 @@
 import Button from "@/components/shared/Button";
 import Description from "@/components/shared/Description";
 import DotList from "@/components/shared/DotList";
-// import EpisodeSelector from "@/components/shared/EpisodeSelector";
 import Input from "@/components/shared/Input";
 import PlainCard from "@/components/shared/PlainCard";
 import Section from "@/components/shared/Section";
@@ -11,12 +10,9 @@ import Select from "@/components/shared/Select";
 import useConstantTranslation from "@/hooks/useConstantTranslation";
 import useCreateRoom from "@/hooks/useCreateRoom";
 import useDevice from "@/hooks/useDevice";
-import { AnimeSourceConnection } from "@/@types";
 import { Media } from "@/@types/anilist";
-import { convert, getDescription, getTitle, sortMediaUnit } from "@/utils/data";
+import { convert, getDescription, getTitle } from "@/utils/data";
 import classNames from "classnames";
-import { NextPage } from "next";
-import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
 import { MdOutlineTitle } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
@@ -32,10 +28,6 @@ interface CreateRoomPageProps {
 }
 
 type Visibility = "public" | "private";
-type VisibilityOption = {
-  label: string;
-  value: Visibility;
-};
 
 const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
   const { isMobile } = useDevice();
@@ -56,25 +48,9 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
     },
   });
 
-  //   const { data: episodes, isLoading: isEpisodeLoading } = useQuery<any>({
-  //     queryKey: ["EpisodeAnime"],
-  //     queryFn: async () => {
-  //       const response = await api.getEpisodeById(animeId);
-  //       return response;
-  //     },
-  //   });
-
-  //   const {data: media, isLoading} = useQuery({
-  //     queryKey: ['media', mediaId],
-  //     queryFn: () => {const res = await api.getAnimeById}
-  //   })
-
-  //   const { locale } = useRouter();
   const locale = useLocale();
 
   const { mutate, isLoading } = useCreateRoom();
-
-  //   const sortedEpisodes = useMemo(() => sortMediaUnit(episodes), [episodes]);
 
   const [chosenEpisode, setChosenEpisode] = useState<any>(media?.episode?.[0]);
 

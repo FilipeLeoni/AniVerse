@@ -90,47 +90,6 @@ const Sidebar = () => {
     );
   }, [filterText, chapters]);
 
-  // const sources = useMemo(
-  //   () => groupBy(chapters, (data: any) => data.source.name),
-  //   [chapters]
-  // );
-
-  // const verifiedSources = useMemo(() => {
-  //   const verifiedChapters = chapters.filter(
-  //     (chapter: any) => chapter.source.isCustomSource
-  //   );
-
-  //   const sources = groupBy(
-  //     verifiedChapters,
-  //     (chapter: any) => chapter?.source?.name
-  //   );
-
-  //   const sortedSources = sortObjectByValue(
-  //     sources,
-  //     (a: any, b: any) => b.length - a.length
-  //   );
-
-  //   return sortedSources;
-  // }, [chapters]);
-
-  // const nonVerifiedSources = useMemo(() => {
-  //   const nonVerifiedChapters = chapters?.filter(
-  //     (chapter: any) => !chapter.source.isCustomSource
-  //   );
-
-  //   const sources = groupBy(
-  //     nonVerifiedChapters,
-  //     (chapter: any) => chapter.source.name
-  //   );
-
-  //   const sortedSources = sortObjectByValue(
-  //     sources,
-  //     (a: any, b: any) => b.length - a.length
-  //   );
-
-  //   return sortedSources;
-  // }, [chapters]);
-
   const handleChangeChapterIndex = (index: number) => () => {
     setChapter(chapters[index]);
 

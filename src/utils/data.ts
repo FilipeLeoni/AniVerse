@@ -19,6 +19,7 @@ type TranslationKeys = [
   "ANIME_SORTS",
   "MANGA_SORTS",
   "TYPES",
+  "MEDIA_TYPES",
   "COUNTRIES",
   "VISIBILITY_MODES",
   "CHAT_EVENT_TYPES",
@@ -54,6 +55,7 @@ const composeTranslation = (translation: Translation) => {
     animeSort: translation.ANIME_SORTS as Translate[],
     mangaSort: translation.MANGA_SORTS as Translate[],
     type: translation.TYPES as Translate[],
+    mediaTypes: translation.MEDIA_TYPES as Translate[],
     country: translation.COUNTRIES as Translate[],
   };
 };

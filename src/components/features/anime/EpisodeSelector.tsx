@@ -19,7 +19,7 @@ function EpisodeSelector(
   // Função para calcular o intervalo de episódios para a página atual
   const calculateEpisodeRange = (pageIndex: any) => {
     const startIndex = pageIndex * itemsPerPage + 1;
-    const endIndex = Math.min(startIndex + itemsPerPage - 1, episodes.length);
+    const endIndex = Math.min(startIndex + itemsPerPage - 1, episodes?.length);
 
     return `${startIndex} - ${endIndex}`;
   };
@@ -30,8 +30,8 @@ function EpisodeSelector(
   };
 
   const startIndex = currentPage * itemsPerPage + 1;
-  const endIndex = Math.min(startIndex + itemsPerPage - 1, episodes.length);
-  const currentAnimes = episodes.slice(startIndex - 1, endIndex);
+  const endIndex = Math.min(startIndex + itemsPerPage - 1, episodes?.length);
+  const currentAnimes = episodes?.slice(startIndex - 1, endIndex);
 
   const defaultOnEachEpisode = (episode: any) => (
     <Link
@@ -52,7 +52,7 @@ function EpisodeSelector(
     </Link>
   );
 
-  const totalPages = Math.ceil(episodes.length / itemsPerPage);
+  const totalPages = Math.ceil(episodes?.length / itemsPerPage);
 
   // Função para mudar a página
 
@@ -84,7 +84,7 @@ function EpisodeSelector(
           <TabList className="flex items-center justify-start gap-x-2 list-none mb-4">
             {episodes &&
               Array.from(
-                { length: Math.ceil(episodes.length / itemsPerPage) },
+                { length: Math.ceil(episodes?.length / itemsPerPage) },
                 (_, index) => (
                   <Tab
                     key={index}
@@ -97,7 +97,7 @@ function EpisodeSelector(
           </TabList>
           {episodes &&
             Array.from(
-              { length: Math.ceil(episodes.length / itemsPerPage) },
+              { length: Math.ceil(episodes?.length / itemsPerPage) },
               (_, index) => (
                 <TabPanel key={index}>
                   <div className="flex gap-2 w-full justify-end mb-10">

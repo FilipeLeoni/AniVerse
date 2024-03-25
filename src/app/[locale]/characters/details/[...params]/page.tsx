@@ -1,4 +1,5 @@
 // import VACard from "@/components/features/va/VACard";
+"use client";
 import Card from "@/components/shared/Card";
 import DetailsSection from "@/components/shared/DetailsSection";
 // import Head from "@/components/shared/Head";

@@ -1,11 +1,13 @@
-'use client';
+"use client";
 
-import Image from '@/components/shared/Image';
+import Image from "@/components/shared/Image";
 // import { adminUser } from '@/@types/anilist';
-import Link from 'next/link';
-import React from 'react';
-import Description from './Description';
-import profileDefault from '@/assets/profile-default.jpg';
+import Link from "next/link";
+import React from "react";
+import Description from "./Description";
+import profileDefault from "@/assets/profile-default.jpg";
+import Avatar from "./Avatar";
+import Select from "./Select";
 
 interface CharacterCardProps {
   adminUser: any;
@@ -17,35 +19,51 @@ const CharacterConnectionCard: React.FC<CharacterCardProps> = ({
   const url = `/profile/${adminUser.id}`;
 
   return (
-    <Link href={url} className="w-full">
-      <div className="text-gray-300 space-x-4 col-span-1 flex w-full h-24 bg-background-800 hover:bg-white/20 transtion duration-300">
-        <div className="relative h-full w-16">
+    <>
+      <div className="text-gray-300 space-x-4 col-span-1 w-full h-auto bg-background-800 transtion duration-300">
+        <div className="relative w-full h-20">
           <Image
-            src={adminUser?.profilePicture || profileDefault}
+            src={adminUser?.bannerPicture || profileDefault}
             fill
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: "cover" }}
             alt={`${adminUser?.name}`}
           />
         </div>
 
-        <div className="py-2 flex flex-col ">
-          <p className="font-semibold">{adminUser?.name}</p>
-          <p className="text-primary-400">{adminUser.role}</p>
+        <div className="flex">
+          <div className="-mt-6">
+            <Avatar src={adminUser?.profilePicture} className="w-24 h-24" />
+          </div>
 
-          <Description
-            className="!line-clamp-1 pt-2"
-            description={`${
-              adminUser?.bio
-                ? adminUser?.bio?.slice(0, 35)
-                : "This user is busy watching anime so hasn't written anything here yet.".slice(
-                    0,
-                    35
-                  )
-            }...`}
+          <div className="flex flex-col pl-4 py-2">
+            <p className="font-semibold">{adminUser?.name}</p>
+
+            <Description
+              className="!line-clamp-1 pt-2"
+              description={`${
+                adminUser?.bio
+                  ? adminUser?.bio
+                  : "This user is busy watching anime so hasn't written anything here yet."
+              }...`}
+            />
+          </div>
+        </div>
+
+        <div className="w-full">
+          <Select
+            className="!w-full py-8"
+            options={[
+              { value: "Admin", label: "Admin" },
+              { value: "Moderator", label: "Moderator" },
+              { value: "User", label: "User" },
+            ]}
+            defaultValue={{ value: adminUser.role, label: adminUser.role }}
           />
         </div>
+
+        {/* <p className="text-primary-400">{adminUser.role}</p> */}
       </div>
-    </Link>
+    </>
   );
 };
 

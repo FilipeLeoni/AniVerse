@@ -179,12 +179,19 @@ export const TYPES = [
     label: "Characters",
   },
   {
-    value: "voice_actors",
-    label: "Voice actors",
-  },
-  {
     value: "users",
     label: "Users",
+  },
+];
+
+export const MEDIATYPES = [
+  {
+    value: "anime",
+    label: "anime",
+  },
+  {
+    value: "manga",
+    label: "manga",
   },
 ];
 
@@ -344,6 +351,7 @@ const translations = {
   ANIME_SORTS,
   MANGA_SORTS,
   TYPES,
+  MEDIATYPES,
   COUNTRIES,
   VISIBILITY_MODES,
   CHAT_EVENT_TYPES,
