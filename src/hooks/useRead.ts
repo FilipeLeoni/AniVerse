@@ -25,7 +25,9 @@ const useRead = () => {
     storedHistory = localStorage.getItem("aniverse_history") ?? "";
   }
   const api = useApi();
-  const { readChapters } = JSON.parse(storedHistory);
+  const { readChapters } = storedHistory
+    ? JSON.parse(storedHistory)
+    : { readChapters: [] };
 
   const mangaChapterMap: Record<number, number> = {}; // Mapeia mangaId para um único chapterId
 
