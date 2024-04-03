@@ -19,8 +19,11 @@ interface ChapterData {
 
 const useRead = () => {
   // const storedHistory: any = localStorage.getItem("aniverse_history");
-  let storedHistory = localStorage.getItem("aniverse_history") ?? "";
+  let storedHistory = "";
 
+  if (typeof localStorage !== "undefined") {
+    storedHistory = localStorage.getItem("aniverse_history") ?? "";
+  }
   const api = useApi();
   const { readChapters } = JSON.parse(storedHistory);
 

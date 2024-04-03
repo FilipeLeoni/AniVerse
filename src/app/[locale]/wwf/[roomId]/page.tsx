@@ -60,7 +60,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
   }, []);
 
   const config = {
-    socketServerUrl: "http://localhost:8000",
+    socketServerUrl: process.env.NEXT_PUBLIC_API_URL as string,
   };
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
       const { origin } = new URL(config.socketServerUrl);
 
       // const socket = io("http://localhost:8000");
-      const socket = io("http://localhost:8000", {
+      const socket = io(process.env.NEXT_PUBLIC_API_URL as string, {
         query: { roomId },
       });
 
