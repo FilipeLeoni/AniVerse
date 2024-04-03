@@ -4,7 +4,7 @@ import { supportedUploadImageFormats } from "@/constants";
 import React, { useState } from "react";
 
 interface EpisodeNameUploadProps {
-  onChange: (episodeName: string) => void;
+  onChange: (episodeData: any) => void;
   inputProps?: Omit<InputProps, "ref">;
 }
 
@@ -12,14 +12,37 @@ const EpisodeSection: React.FC<EpisodeNameUploadProps> = ({
   onChange,
   inputProps,
 }) => {
-  const [episodeName, setEpisodeName] = useState("");
+  const [episodeData, setEpisodeData] = useState({
+    episodeName: "",
+    episodeNumber: "",
+    episodeDescription: "",
+    // thumbnail: "",
+  });
 
+  const handleInputChange = (field: string, value: any) => {
+    console.log(value);
+    setEpisodeData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
+  const handleBlur = () => {
+    if (onChange) {
+      onChange(episodeData);
+    }
+  };
   return (
     <div>
       <div className="flex gap-10 mb-4">
         <div className=" h-full">
           <label>Thumbnail (optional)</label>
-          <FileUploading multiple acceptType={supportedUploadImageFormats} />
+          <FileUploading
+            acceptType={supportedUploadImageFormats}
+            onChange={(image: any) =>
+              onChange({ ...episodeData, thumbnail: image })
+            }
+          />
         </div>
 
         <div className="flex-1">
@@ -27,28 +50,37 @@ const EpisodeSection: React.FC<EpisodeNameUploadProps> = ({
             label="Number (required)"
             placeholder="1"
             className="px-3 py-2"
-            onChange={(e) => {
-              const target = e.target as HTMLInputElement;
+            onChange={(e: any) =>
+              handleInputChange("episodeNumber", e.target.value)
+            }
+            onBlur={handleBlur}
+            // onChange={(e) => {
+            //   const target = e.target as HTMLInputElement;
 
-              setEpisodeName(target.value);
-            }}
-            onBlur={() => {
-              onChange?.(episodeName);
-            }}
+            //   setEpisodeNumber(target.value);
+            // }}
+
+            // onBlur={() => {
+            //   onChange?.(episodeNumber);
+            // }}
             {...inputProps}
           />
           <Input
             label="Title (optional)"
             placeholder="You are awesome!"
             className="px-3 py-2"
-            onChange={(e) => {
-              const target = e.target as HTMLInputElement;
+            onChange={(e: any) =>
+              handleInputChange("episodeName", e.target.value)
+            }
+            onBlur={handleBlur}
+            // onChange={(e) => {
+            //   const target = e.target as HTMLInputElement;
 
-              setEpisodeName(target.value);
-            }}
-            onBlur={() => {
-              onChange?.(episodeName);
-            }}
+            //   setEpisodeName(target.value);
+            // }}
+            // onBlur={() => {
+            //   onChange?.(episodeName);
+            // }}
             {...inputProps}
           />
         </div>
@@ -57,14 +89,18 @@ const EpisodeSection: React.FC<EpisodeNameUploadProps> = ({
         label="Description (optional)"
         placeholder="Because you are awesome, so you are uploading a new episode!"
         className="px-3 py-2"
-        onChange={(e) => {
-          const target = e.target as HTMLInputElement;
+        onChange={(e: any) =>
+          handleInputChange("episodeDescription", e.target.value)
+        }
+        onBlur={handleBlur}
+        // onChange={(e) => {
+        //   const target = e.target as HTMLInputElement;
 
-          setEpisodeName(target.value);
-        }}
-        onBlur={() => {
-          onChange?.(episodeName);
-        }}
+        //   setEpisodeDescription(target.value);
+        // }}
+        // onBlur={() => {
+        //   onChange?.({ description: episodeDescription });
+        // }}
         {...inputProps}
       />
     </div>

@@ -43,7 +43,7 @@ const GenresFormSelect: React.FC<GenresFormSelectProps> = ({
   const { GENRES } = useConstantTranslation();
 
   const groups = useMemo(() => {
-    const genres = GENRES.map((genre: any) => ({
+    const genres = GENRES?.map((genre: any) => ({
       value: genre.value as string,
       label: genre.label,
     }));

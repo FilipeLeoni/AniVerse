@@ -36,10 +36,6 @@ const routes = [
     href: "/wwf",
   },
   {
-    title: "anime_theme",
-    href: "/themes",
-  },
-  {
     title: "Airing Schedule",
     href: "/schedule",
   },

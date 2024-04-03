@@ -2,6 +2,7 @@ import { Api } from "@/utils/api";
 import Cookies from "js-cookie";
 import { UseBrowseOptions } from "./useBrowseAnime";
 import { getStartAndEndOfDay } from "@/utils";
+import toast from "react-hot-toast";
 
 const accessToken = Cookies.get("accessToken");
 
@@ -11,6 +12,60 @@ export const useApi = () => ({
       const response = await Api.get(
         `/anime?page=${page}&pageSize=${pageSize}`
       );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRecentlyUpdated: async () => {
+    try {
+      const response = await Api.get(`anime/dashboard/recently-updated`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRecentlyUpdatedManga: async () => {
+    try {
+      const response = await Api.get(`manga/dashboard/recently-updated`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getPopularAnime: async () => {
+    try {
+      const response = await Api.get(`anime/dashboard/popular`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getPopularManga: async () => {
+    try {
+      const response = await Api.get(`manga/dashboard/popular`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRecommed: async () => {
+    try {
+      const response = await Api.get(`anime/dashboard/recommend`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getRecommedManga: async () => {
+    try {
+      const response = await Api.get(`manga/dashboard/recommend`);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -27,9 +82,27 @@ export const useApi = () => ({
     }
   },
 
-  getAnimeById: async (id: number | string) => {
+  getTrendingAnime: async () => {
     try {
-      const response = await Api.get(`/anime/${id}`);
+      const response = await Api.get("/anime/dashboard/trending");
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getTrendingManga: async () => {
+    try {
+      const response = await Api.get("/manga/dashboard/trending");
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getAnimeById: async (id: number | string, episode: boolean = false) => {
+    try {
+      const response = await Api.get(`/anime/${id}?episode=${episode}`);
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -177,6 +250,25 @@ export const useApi = () => ({
     }
   },
 
+  postAnimeEpisode: async (data: any) => {
+    try {
+      const response = await Api.post(`episodes/create`, data);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  deleteAnimeEpisode: async (episodeId: any) => {
+    try {
+      const response = await Api.delete(`episodes/${episodeId}`);
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   putUserBanned: async (uuid: string, status: boolean) => {
     try {
       const response = await Api.put(`user/banStatus/${uuid}`, {
@@ -238,6 +330,15 @@ export const useApi = () => ({
   getEpisodeById: async (id: string) => {
     try {
       const response = await Api.get(`/episodes/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getEpisodeByAnime: async (animeId: number) => {
+    try {
+      const response = await Api.get(`/episodes/anime/${animeId}`);
       return response.data;
     } catch (error) {
       console.log(error);
@@ -383,12 +484,22 @@ export const useApi = () => ({
 
   UploadVideo: async (file: any) => {
     try {
-      const response = await Api.post(`episodes/upload`, file, {
+      const toastId = toast.loading("Uploading video...");
+      const response = await Api.post(`upload/video`, file, {
         onUploadProgress: (progressEvent: any) => {
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
 
+          toast.loading(`Uploading video... ${percentCompleted}%`, {
+            id: toastId,
+          });
+
+          if (percentCompleted === 100) {
+            toast.success("Video uploaded successfully", {
+              id: toastId,
+            });
+          }
           console.log(percentCompleted);
           // setUploadProgress(percentCompleted);
           // setUploadStatus(`Enviando... ${percentCompleted}%`);

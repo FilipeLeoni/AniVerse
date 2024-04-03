@@ -16,6 +16,7 @@ import {
 import useCreateEpisode from "@/hooks/useCreateEpisode";
 
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 interface UploadCreateEpisodePageProps {
   user: any;
@@ -24,22 +25,32 @@ interface UploadCreateEpisodePageProps {
 }
 
 export default function UploadCreateEpisodePage({
-  mediaId,
-  sourceId,
-  user,
-}: any) {
-  const [videoState, setVideoState] = useState(null);
+  params,
+}: {
+  params: { id: number };
+}) {
+  const [videoState, setVideoState] = useState<any>(null);
   const [subtitles, setSubtitles] = useState<any>([]);
   const [fonts, setFonts] = useState<File[]>([]);
-  const [episodeName, setEpisodeName] = useState("");
+  const [episodeData, setEpisodeData] = useState({
+    episodeName: "",
+    episodeNumber: "",
+    episodeDescription: "",
+    thumbnail: "",
+  });
 
+  const animeId = params.id;
   const { mutate: createEpisode } = useCreateEpisode();
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     createEpisode({
-      episodeName: episodeName,
-      episodeNumber: 1,
-      video: videoState,
+      animeId: animeId,
+      title: episodeData?.episodeName,
+      number: episodeData?.episodeNumber,
+      description: episodeData?.episodeDescription,
+      thumbnail: episodeData?.thumbnail,
+      video: videoState?.video,
+      type: videoState?.type,
     });
   };
 
@@ -53,7 +64,7 @@ export default function UploadCreateEpisodePage({
             </UploadSection.Left>
 
             <UploadSection.Right>
-              <EpisodeSection onChange={setSubtitles} />
+              <EpisodeSection onChange={setEpisodeData} />
             </UploadSection.Right>
           </UploadSection>
 
@@ -69,32 +80,6 @@ export default function UploadCreateEpisodePage({
               <VideoUpload onChange={setVideoState as any} />
             </UploadSection.Right>
           </UploadSection>
-
-          {/* <UploadSection>
-            <UploadSection.Left>
-              <label className="font-semibold text-2xl">Subtitles</label>
-              <p className="text-sm text-gray-300">
-                Supports {supportedUploadSubtitleFormats.join(", ")}
-              </p>
-            </UploadSection.Left>
-
-            <UploadSection.Right>
-              <SubtitleUpload onChange={setSubtitles} />
-            </UploadSection.Right>
-          </UploadSection> */}
-
-          {/* <UploadSection>
-            <UploadSection.Left>
-              <label className="font-semibold text-2xl">Fonts</label>
-              <p className="text-sm text-gray-300">
-                Fonts specifically for .ass subtitle
-              </p>
-            </UploadSection.Left>
-
-            <UploadSection.Right>
-              <FontUpload onChange={setFonts} />
-            </UploadSection.Right>
-          </UploadSection> */}
         </div>
       </UploadContainer>
 
@@ -106,38 +91,3 @@ export default function UploadCreateEpisodePage({
     </div>
   );
 }
-
-// export const getServerSideProps = withAdditionalUser({
-//   async getServerSideProps(ctx, user) {
-//     try {
-//       const { data: sourceAddedByUser, error } = await supabaseClient
-//         .from<Source>("kaguya_sources")
-//         .select("id")
-//         .eq("addedUserId", user.id)
-//         .single();
-
-//       if (error || !sourceAddedByUser?.id) {
-//         throw error;
-//       }
-
-//       return {
-//         props: {
-//           sourceId: sourceAddedByUser.id,
-//           mediaId: ctx.query.id,
-//         },
-//       };
-//     } catch (err) {
-//       return {
-//         redirect: {
-//           statusCode: 302,
-//           destination: "/login",
-//         },
-//       };
-//     }
-//   },
-// });
-
-// @ts-ignore
-// UploadCreateEpisodePage.getLayout = (children) => (
-//   <UploadLayout>{children}</UploadLayout>
-// );

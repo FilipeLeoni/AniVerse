@@ -45,7 +45,7 @@ const BannerSwiper: React.FC<BannerSwiperProps> = ({ data, ...props }) => {
       {...props}
     >
       <div className="swiper">
-        {data.map((anime) => (
+        {data?.map((anime) => (
           <SwiperSlide key={anime.id}>
             {({ isActive }) => {
               const title = getTitle(anime, locale);

@@ -118,24 +118,13 @@ import { useApi } from "@/hooks/useApi";
 //     return data.video;
 //   };
 
-export const UploadVideo = async (file: File) => {
+export const UploadVideo = async (file: any) => {
   const formData = new FormData();
   const api = useApi();
 
-  formData.append("file", file);
-
-  // const { data } = await client.post<UploadVideoResponse>(
-  //   `/upload/video/${hostingId}`,
-  //   formData
-  // );
+  formData.append("file", file[0]);
 
   const data = await api.UploadVideo(formData);
-
-  // if (!data.success) throw new Error("Upload failed");
-
-  // const { videoId } = data;
-
-  // const videoInfo = await getVideoStatus(videoId);
 
   return data;
 };

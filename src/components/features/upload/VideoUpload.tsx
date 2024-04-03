@@ -1,14 +1,16 @@
+import FileUploading from "@/components/shared/FileUploading";
 import Loading from "@/components/shared/Loading";
 import Select from "@/components/shared/Select";
+import { supportedUploadVideoFormats } from "@/constants";
 // import useHostings from "@/hooks/useHostings";
 import React, { useMemo, useRef, useState } from "react";
 
 export type VideoState = {
   video: File | string;
-  hostingId: string;
+  type: string;
 };
 
-export type VideoUploadOnChange = ({ video, hostingId }: VideoState) => void;
+export type VideoUploadOnChange = ({ video, type }: VideoState) => void;
 
 export interface VideoUploadProps {
   onChange?: VideoUploadOnChange;
@@ -17,35 +19,21 @@ export interface VideoUploadProps {
 const VideoUpload: React.FC<VideoUploadProps> = ({ onChange }) => {
   const textAreaRef = useRef<any>(null);
 
-  // const { data, isLoading } = useHostings();
-
-  const [hostingId, setHostingId] = useState<any>(null);
+  const [videoType, setVideoType] = useState<any>(null);
 
   const handleTextAreaBlur = () => {
-    onChange?.({ video: textAreaRef.current.value, hostingId });
+    console.log(textAreaRef.current.value);
+    onChange?.({ video: textAreaRef.current.value, type: videoType });
   };
-
-  // const selectValue = useMemo(() => {
-  //   // if (isLoading) return [];
-
-  //   // return data.map((hosting: any) => ({ value: hosting.id, label: hosting.name }));
-  // }, [data, isLoading]);
 
   const handleSelectChange = ({ value }: { value?: string }) => {
-    console.log(value);
+    setVideoType(value);
   };
-
-  // const selectedHosting = useMemo(() => {
-  //   if (isLoading) return null;
-  //   if (!hostingId) return null;
-
-  //   return data.find((hosting: any) => hosting.id === hostingId);
-  // }, [data, hostingId, isLoading]);
 
   const options = [
     {
-      value: "archive",
-      label: "Archive",
+      value: "file",
+      label: "File",
     },
     {
       value: "link",
@@ -55,31 +43,34 @@ const VideoUpload: React.FC<VideoUploadProps> = ({ onChange }) => {
 
   return (
     <div className="relative">
-      {/* {isLoading ? (
-        <Loading />
-      ) : ( */}
-      {/* // Remove file upload because the server can't handle large files */}
-
       <React.Fragment>
         <div className="flex justify-end">
           <Select
             options={options}
             placeholder="Type"
             onChange={handleSelectChange as any}
+            defaultValue={options[0]}
           />
         </div>
 
-        <textarea
-          ref={textAreaRef}
-          onBlur={handleTextAreaBlur}
-          className="mt-2 p-2 w-full h-36 bg-background-900 text-white border-gray-300 border"
-          // placeholder={
-          //   selectedHosting?.supportedUrlFormats?.join("\n") ||
-          //   "Nhập url video ở đây."
-          // }
-        />
+        {videoType === "link" ? (
+          <textarea
+            ref={textAreaRef}
+            onBlur={handleTextAreaBlur}
+            className="mt-2 p-2 w-full h-36 bg-background-900 text-white border-gray-300 border"
+            placeholder={
+              "Please insert the video link here. Example video link: https://www.youtube.com/watch?v=example123"
+            }
+          />
+        ) : (
+          <div className="mt-2">
+            <FileUploading
+              acceptType={supportedUploadVideoFormats}
+              onChange={(video: any) => onChange?.({ video, type: "file" })}
+            />
+          </div>
+        )}
       </React.Fragment>
-      {/* )} */}
     </div>
   );
 };

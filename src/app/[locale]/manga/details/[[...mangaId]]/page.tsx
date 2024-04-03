@@ -1,4 +1,6 @@
 "use client";
+import NotFound from "@/app/[locale]/not-found";
+import ChapterSelector from "@/components/features/manga/ChapterSelector";
 import AddToListDropdown from "@/components/shared/AddToListDropdown";
 import Button from "@/components/shared/Button";
 import Card from "@/components/shared/Card";
@@ -6,6 +8,7 @@ import CharacterConnectionCard from "@/components/shared/CharacterConnectionCard
 import DetailsBanner from "@/components/shared/DetailsBanner";
 import DetailsSection from "@/components/shared/DetailsSection";
 import DotList from "@/components/shared/DotList";
+import EpisodeSelector from "@/components/shared/EpisodeSelector";
 import InfoItem from "@/components/shared/InfoItem";
 import List from "@/components/shared/List";
 import MediaDescription from "@/components/shared/MediaDescription";
@@ -55,6 +58,11 @@ export default function DetailsPage({
       </div>
     );
   }
+
+  if (!data?.Media) {
+    return <NotFound />;
+  }
+
   // const { data: recommendations } = useQuery({
   //   queryKey: ["getRecommendations", animeId],
   //   queryFn: async () => {
@@ -87,6 +95,8 @@ export default function DetailsPage({
     relations.push(...data?.Media?.relations?.Manga);
   }
 
+  console.log(data?.Media);
+  console.log(relations);
   return (
     <div className="pb-8">
       <DetailsBanner image={data?.Media?.bannerImage} />
@@ -130,7 +140,7 @@ export default function DetailsPage({
               </p>
 
               <DotList>
-                {data?.Media?.genres.map((genre: any) => (
+                {data?.Media?.genres?.map((genre: any) => (
                   <span key={genre}>{convert(genre, "genre", { locale })}</span>
                 ))}
               </DotList>
@@ -262,7 +272,7 @@ export default function DetailsPage({
             />
             <InfoItem
               title={"Synonimus"}
-              value={data?.Media?.synonyms.map((synomym: any) => (
+              value={data?.Media?.synonyms?.map((synomym: any) => (
                 <div key={synomym} className="-mb-2">
                   <p>{synomym}</p>
                 </div>
@@ -273,7 +283,7 @@ export default function DetailsPage({
             <h1 className="font-semibold">Tags</h1>
 
             <ul className="overflow-x-auto flex flex-row md:flex-col gap-2 [&>*]:shrink-0 md:no-scrollbar">
-              {data?.Media?.tags.map((tag: any) => (
+              {data?.Media?.tags?.map((tag: any) => (
                 <Link
                   href={{
                     pathname: "/browse",
@@ -290,7 +300,19 @@ export default function DetailsPage({
             </ul>
           </div>
         </div>
+        {/* <div>teste</div> */}
         <div className="space-y-12 md:col-span-8">
+          <DetailsSection title={"Chapters"} className="overflow-hidden">
+            {data?.Media?.chapters.length > 0 ? (
+              <ChapterSelector
+                chapters={data?.Media?.chapters}
+                mediaId={mangaId}
+              />
+            ) : (
+              <p className="font-mediun">No episodes available...</p>
+            )}
+          </DetailsSection>
+
           {!!data?.Media?.characters?.length && (
             <DetailsSection
               title={"Characters"}

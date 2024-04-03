@@ -56,7 +56,7 @@ export default function ScheduleTimeline({
                   <div className="overflow-ellipsis line-clamp-1">
                     {item?.anime ? (
                       <DotList>
-                        {item?.anime.genres.map((genre: any) => (
+                        {item?.anime?.genres?.map((genre: any) => (
                           <span key={genre} className="text-neutral-300">
                             {convert(genre, "genre", { locale: "en" })}
                           </span>
@@ -64,7 +64,7 @@ export default function ScheduleTimeline({
                       </DotList>
                     ) : (
                       <DotList>
-                        {item?.manga.genres.map((genre: any) => (
+                        {item?.manga?.genres?.map((genre: any) => (
                           <span key={genre} className="text-neutral-300">
                             {convert(genre, "genre", { locale: "en" })}
                           </span>

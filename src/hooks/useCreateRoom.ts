@@ -1,6 +1,8 @@
 import { useUser } from "@/contexts/AuthContext";
 import { Room } from "@/@types";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface CreateRoomBody {
   mediaId: number;
@@ -11,8 +13,7 @@ interface CreateRoomBody {
 
 const useCreateRoom: any = () => {
   const user = useUser();
-  // const router = useRouter();
-  console.log("use create");
+  const router = useRouter();
   return useMutation({
     mutationKey: ["createRoom"],
     mutationFn: async (room: CreateRoomBody) => {
@@ -29,37 +30,15 @@ const useCreateRoom: any = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       return data;
     },
+    onSuccess(room: any) {
+      router.replace(`/wwf/${room.id}`);
+    },
+    onError(error: any) {
+      toast.error(error.message);
+    },
   });
-
-  // return useMutation<Room, any, CreateRoomBody, any>(
-  //   async (body) => {
-  //     const { data, error } = await supabaseClient
-  //       .from<Room>("kaguya_rooms")
-  //       .insert({
-  //         hostUserId: user.id,
-  //         mediaId: body.mediaId,
-  //         episodeId: body.episodeId,
-  //         visibility: body.visibility,
-  //         title: body.title || null,
-  //       })
-  //       .single();
-
-  //     if (error) throw error;
-
-  //     return data;
-  //   },
-  //   {
-  //     onSuccess: (room) => {
-  //       router.replace(`/wwf/${room.id}`);
-  //     },
-  //     onError: (error) => {
-  //       toast.error(error);
-  //     },
-  //   }
-  // );
 };
 
 export default useCreateRoom;

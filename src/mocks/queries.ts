@@ -401,6 +401,9 @@ export const getAnimeById = async (id: any, type: any) => {
                 averageScore
                 popularity
                 trending
+                trailer {
+                  id
+                }
                 favourites
                 synonyms
                 season

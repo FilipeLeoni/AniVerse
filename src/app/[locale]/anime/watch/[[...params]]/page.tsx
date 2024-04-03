@@ -28,7 +28,7 @@ export default function WatchPage({ params }: { params: { params: string } }) {
   const { data: anime, isLoading: mediaLoading } = useQuery<any>({
     queryKey: ["AnimeById"],
     queryFn: async () => {
-      const response = await api.getAnimeById(animeId);
+      const response = await api.getAnimeById(animeId, true);
       return { media: response };
     },
   });

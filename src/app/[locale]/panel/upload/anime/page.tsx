@@ -65,7 +65,7 @@ export default function UploadData() {
           <ListSkeleton />
         </div>
       ) : (
-        <List data={data?.Page.media}>
+        <List data={data?.Page?.media}>
           {(data: any) => (
             <Card data={data} redirectUrl={`/panel/upload/anime/${data.id}`} />
           )}

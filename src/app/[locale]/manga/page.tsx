@@ -47,10 +47,12 @@ export default function MangaPage() {
     useQuery<any>({
       queryKey: ["TrendingManga"],
       queryFn: async () => {
-        const response = await getTrendingMedia("MANGA");
+        const response: any = await api.getTrendingManga();
         return response.data;
       },
     });
+
+  console.log(TrendingManga);
 
   const { data: PopularManga, isLoading: PopularMangaLoading } = useQuery<any>({
     queryKey: ["PopularManga"],
@@ -77,7 +79,7 @@ export default function MangaPage() {
     staleTime: 3600 * 1000,
   });
   const api = useApi();
-  const { data: getAddedMangas } = useQuery<any>({
+  const { data: getAddedMangas, isLoading } = useQuery<any>({
     queryKey: ["getAddedMangas"],
     queryFn: async () => {
       const response: any = await api.getUploadedManga();
@@ -87,19 +89,38 @@ export default function MangaPage() {
     staleTime: 3600 * 1000,
   });
 
-  const randomTrendingManga = useMemo(() => {
-    return randomElement(TrendingManga?.Page.media || []);
-  }, [TrendingManga]);
+  const { data: getPopularManga, isLoading: isLoadingPopularManga } =
+    useQuery<any>({
+      queryKey: ["getPopularManga"],
+      queryFn: async () => {
+        const response = await api.getPopularManga();
+        return response;
+      },
+      staleTime: 3600 * 1000,
+    });
 
-  const PopularMangaData = PopularManga?.Page?.media || [];
-  const TrendingMangaData = TrendingManga?.Page?.media || [];
-  const UpdatedMangaData = UpdatedManga?.Page?.media || [];
+  const { data: getRecommend, isLoading: isLoadingRecommend } = useQuery<any>({
+    queryKey: ["getRecommed"],
+    queryFn: async () => {
+      const response = await api.getRecommedManga();
+      return response;
+    },
+    staleTime: 3600 * 1000,
+  });
+
+  // const randomTrendingManga = useMemo(() => {
+  //   return randomElement(TrendingManga?.Page.media || []);
+  // }, [TrendingManga]);
+
+  // const PopularMangaData = PopularManga?.Page?.media || [];
+  // const TrendingMangaData = TrendingManga?.Page?.media || [];
+  // const UpdatedMangaData = UpdatedManga?.Page?.media || [];
 
   return (
     <div>
       <div>
         <HomeBanner
-          data={TrendingMangaData}
+          data={TrendingManga || []}
           isLoading={TrendingMangaLoading}
           icon={BookIcon}
         />
@@ -110,22 +131,19 @@ export default function MangaPage() {
       </div>
 
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        {PopularMangaLoading ? (
+        {isLoading ? (
           <ListSwiperSkeleton />
         ) : (
-          <CardCarousel data={getAddedMangas || []} title="Popular Mangas" />
+          <CardCarousel data={getAddedMangas || []} title="NEWLY UPDATED" />
         )}
       </Section>
 
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        {PopularMangaLoading ? (
+        {isLoadingPopularManga ? (
           <ListSwiperSkeleton />
         ) : (
-          <CardCarousel data={PopularMangaData} title="Popular Mangas" />
+          <CardCarousel data={getPopularManga || []} title="POPULAR MANGAS" />
         )}
-      </Section>
-      <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        <CardCarousel data={UpdatedMangaData} title="NEWLY UPDATED" />
       </Section>
 
       {!isMobile && (
@@ -135,13 +153,16 @@ export default function MangaPage() {
             isDesktop ? "flex-row" : "flex-col"
           )}
         >
-          <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 md:w-[80%] md:!pr-0">
+          <Section
+            className="w-full md:w-[80%] md:!pr-0"
+            title="SHOULD READ ON ANIVERSE"
+          >
             <ShouldWatch
-              data={randomTrendingManga}
-              isLoading={RandomMangaLoading}
+              data={getRecommend || []}
+              isLoading={isLoadingRecommend}
             />
           </Section>
-          <Section className="w-full md:w-[20%] md:!pl-0 h-full">
+          <Section className="w-full md:w-[20%] md:!pl-0 h-full" title="GENRES">
             <GenreSwiper className="md:h-[520px]" />
           </Section>
         </div>

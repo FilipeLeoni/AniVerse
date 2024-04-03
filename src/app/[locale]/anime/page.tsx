@@ -26,6 +26,7 @@ import { AiFillPlayCircle } from "react-icons/ai";
 import WatchedSection from "@/components/features/anime/WatchedSection";
 import WatchedSwiperSkeleton from "@/components/skeletons/WatchedSwiperSkeleton";
 import { useApi } from "@/hooks/useApi";
+import BaseLayout from "@/components/layout/BaseLayout";
 
 interface Anime {
   id: number;
@@ -54,6 +55,8 @@ export default function AnimePage() {
     },
   });
 
+  console.log(TrendingAnime);
+
   const { data: UpdatedAnime } = useQuery<any>({
     queryKey: ["UpdatedAnime"],
     queryFn: async () => {
@@ -79,6 +82,36 @@ export default function AnimePage() {
     staleTime: 3600 * 1000,
   });
 
+  const { data: getRecentlyUpdated, isLoading: isLoadingRecentlyUpdated } =
+    useQuery<any>({
+      queryKey: ["getRecentlyUpdated"],
+      queryFn: async () => {
+        const response = await api.getRecentlyUpdated();
+        return response;
+      },
+      staleTime: 3600 * 1000,
+    });
+
+  const { data: getPopularAnime, isLoading: isLoadingPopularAnime } =
+    useQuery<any>({
+      queryKey: ["getPopularAnime"],
+      queryFn: async () => {
+        const response = await api.getPopularAnime();
+        return response;
+      },
+      staleTime: 3600 * 1000,
+    });
+
+  const { data: getRecommend, isLoading: isLoadingRecommend } = useQuery<any>({
+    queryKey: ["getRecommed"],
+    queryFn: async () => {
+      const response = await api.getRecommed();
+      return response;
+    },
+    staleTime: 3600 * 1000,
+  });
+
+  console.log(getRecommend);
   const PopularAnimeData = PopularAnime?.Page?.media || [];
   const TrendingAnimeData = TrendingAnime?.Page?.media || [];
   const UpdatedAnimeData = UpdatedAnime?.Page?.media || [];
@@ -87,8 +120,8 @@ export default function AnimePage() {
     <div>
       <div>
         <HomeBanner
-          data={TrendingAnimeData}
-          isLoading={TrendingAnimeLoading}
+          data={getPopularAnime || []}
+          isLoading={isLoadingPopularAnime}
           icon={AiFillPlayCircle}
         />
       </div>
@@ -118,11 +151,8 @@ export default function AnimePage() {
         {PopularAnimeLoading ? (
           <ListSwiperSkeleton />
         ) : (
-          <CardCarousel data={PopularAnimeData} title="Popular Animes" />
+          <CardCarousel data={getPopularAnime} title="Popular Animes" />
         )}
-      </Section>
-      <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        <CardCarousel data={UpdatedAnimeData} title="NEWLY UPDATED" />
       </Section>
 
       {!isMobile && (
@@ -132,10 +162,13 @@ export default function AnimePage() {
             isDesktop ? "flex-row" : "flex-col"
           )}
         >
-          <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 md:w-[80%] md:!pr-0">
-            <ShouldWatch data={RandomAnime} isLoading={RandomAnimeLoading} />
+          <Section
+            className="w-full md:w-[80%] md:!pr-0"
+            title="SHOULD WATCH ON ANIVERSE"
+          >
+            <ShouldWatch data={getRecommend} isLoading={isLoadingRecommend} />
           </Section>
-          <Section className="w-full md:w-[20%] md:!pl-0 h-full">
+          <Section className="w-full md:w-[20%] md:!pl-0 h-full" title="GENRES">
             <GenreSwiper className="md:h-[520px]" />
           </Section>
         </div>

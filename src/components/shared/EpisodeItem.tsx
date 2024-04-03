@@ -1,5 +1,6 @@
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import DeleteConfirmation from "./DeleteConfirmation";
 
 interface IEpisodeitem {
   children: number;
@@ -13,12 +14,14 @@ export default function EpisodeItem({ children, onDelete }: IEpisodeitem) {
         <p>EP {children}</p>
       </div>
 
-      <div
-        className="absolute -right-2 -top-1 bg-neutral-700 rounded-full p-2 cursor-pointer hover:text-primary-500 hover:bg-neutral-800"
-        onClick={onDelete}
-      >
-        <AiOutlineClose />
-      </div>
+      <DeleteConfirmation
+        reference={
+          <div className="absolute -right-2 -top-1 bg-neutral-700 rounded-full p-2 cursor-pointer hover:text-primary-500 hover:bg-neutral-800">
+            <AiOutlineClose />
+          </div>
+        }
+        onConfirm={onDelete}
+      />
     </div>
   );
 }

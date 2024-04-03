@@ -43,14 +43,14 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
   const { data: media, isLoading: isLoadingMedia } = useQuery({
     queryKey: ["media", animeId],
     queryFn: async () => {
-      const res = await api.getAnimeById(animeId);
+      const res = await api.getAnimeById(animeId, true);
       return res;
     },
   });
 
   const locale = useLocale();
 
-  const { mutate, isLoading } = useCreateRoom();
+  const { mutate, isPending } = useCreateRoom();
 
   const [chosenEpisode, setChosenEpisode] = useState<any>(media?.episode?.[0]);
 
@@ -69,6 +69,7 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
 
   const { data: session } = useSession();
 
+  console.log(isPending);
   const handleCreateRoom = useCallback(() => {
     mutate({
       episodeId: chosenEpisode.id,
@@ -80,7 +81,6 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
         name: session?.user?.name,
         avatar: session?.user?.profilePicture,
       },
-      // hostId: "86daaa9f-26f5-4ac3-916d-ea63510f5296",
     });
   }, [chosenEpisode, media?.id, mutate, visibility, roomTitle, session]);
 
@@ -101,7 +101,7 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
           </h3>
 
           <DotList className="mt-2">
-            {media?.genres.map((genre: any) => (
+            {media?.genres?.map((genre: any) => (
               <span key={genre}>{convert(genre, "genre", { locale })}</span>
             ))}
           </DotList>
@@ -202,7 +202,7 @@ const CreateRoomPage: any = ({ params }: { params: { id: string } }) => {
           </div>
 
           <Button
-            isLoading={isLoading}
+            isLoading={isPending}
             className="mx-auto md:ml-auto md:mr-0"
             primary
             onClick={handleCreateRoom}

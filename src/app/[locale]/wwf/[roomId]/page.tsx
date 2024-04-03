@@ -15,53 +15,20 @@ import Sidebar from "@/components/features/wwf/RoomPage/Sidebar";
 import GuestRegister from "@/components/features/wwf/RoomPage/GuestRegister";
 import { useUser } from "@/contexts/UserContext";
 import Player from "netplayer";
+import toast from "react-hot-toast";
 
 export default function RoomPage({ params }: { params: { roomId: string } }) {
   const roomId = params.roomId;
   // const user = useUser();
   // console.log(user);
-  const [socket, setSocket] = useState<Socket>();
+  const [socket, setSocket] = useState<Socket | any>();
   const [peer, setPeer] = useState<Peer>();
   const { data, isLoading } = useRoom(Number(roomId));
   const queryClient = useQueryClient();
   const [sessionLoaded, setSessionLoaded] = useState(false);
 
   const { data: session, status } = useSession();
-  // console.log(session);
 
-  // const session = {
-  //   user: {
-  //     id: "471ff954-0c70-4c8d-a5b9-a0b73624fd4f",
-  //     email: "razante.2@outlook.com",
-  //     name: "Razantexzzzz",
-  //     role: "Admin",
-  //     profilePicture:
-  //       "http://localhost:8000/uploads/cute-robot-working-on-a-laptop-3d-render-technology-concept-ai-generated-free-photo.jpg-1708215842545-865568615.jpg",
-  //     bannerPicture:
-  //       "http://localhost:8000/uploads/robot-call-center-communication-with-artificial-intelligence-made-with-generative-ai_155027-4384.webp-1708215881894-912651367.webp",
-  //     bio: "<p>Eu sou o reeiiiii!!!</p>",
-  //     createdAt: "2024-02-11T16:18:41.583Z",
-  //     updatedAt: "2024-02-18T00:24:41.917Z",
-  //     isBanned: false,
-  //   },
-  //   expires: "2024-03-20T02:30:15.102Z",
-  //   name: "Razante",
-  //   email: "razante.2@outlook.com",
-  //   picture:
-  //     "https://lh3.googleusercontent.com/a/ACg8ocKL2GNcqN1Jw1UyrcMF_QSE92nNAikB6gxhxtFd1ut6=s96-c",
-  //   sub: "101768579349033483698",
-  //   iat: 1708309770,
-  //   exp: 1710901770,
-  //   jti: "af20e320-7564-4619-8bf4-14d5efeea789",
-  //   accessToken:
-  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJhemFudGUuMkBvdXRsb29rLmNvbSIsInN1YiI6eyJuYW1lIjoiUmF6YW50ZXh6enp6In0sImlhdCI6MTcwODMwOTgxNSwiZXhwIjoxNzA4OTE0NjE1fQ._6xq7Y6DmBW2pI15JnjbzIxmaHWFi4plOoF7A6XxESQ",
-  // };
-  // const [basicRoomUser, setBasicRoomUser] = useState<BasicRoomUser>({
-  //   userId: session?.user?.id as string,
-  //   avatarUrl: session?.user?.profilePicture as string,
-  //   name: session?.user?.name || "tester",
-  //   isGuest: false,
-  // });
   const [basicRoomUser, setBasicRoomUser] = useState<BasicRoomUser>({
     userId: "", // Inicialmente vazio até que os dados do usuário estejam disponíveis
     avatarUrl: "",
@@ -79,7 +46,7 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
       });
       setSessionLoaded(true);
     }
-  }, [session]);
+  }, [session, sessionLoaded]);
 
   const [roomUser, setRoomUser] = useState<any>(null);
 
@@ -165,19 +132,32 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
 
       setSocket(socket);
 
-      socket.on("disconnect", (reason) => {
-        console.log("user disconnected", reason);
+      // socket.on("disconnect", (reason) => {
+      //   console.log("user disconnected", reason);
 
-        optimisticUpdateRoom((room) => {
-          room.users = room?.users?.filter(
-            (user: any) => user.id !== socket.id
-          );
+      //   optimisticUpdateRoom((room) => {
+      //     room.users = room?.users?.filter(
+      //       (user: any) => user.id !== socket.id
+      //     );
 
-          return room;
-        });
+      //     return room;
+      //   });
 
-        createSocket(peerId);
+      //   createSocket(peerId);
+      // });
+
+      socket.on("disconnecting", () => {
+        console.log("chamadoa qui"); // the Set contains at least the socket ID
       });
+
+      // socket.on("disconnect", () => {
+      //   console.log("Disconnected from server");
+      // });
+
+      // socket.on("disconnect", () => {
+      //   // socket.rooms.size === 0
+      //   console.log("chamado aqu");
+      // });
 
       socket.on("reconnect", () => {
         console.log("reconnected");
@@ -230,11 +210,11 @@ export default function RoomPage({ params }: { params: { roomId: string } }) {
 
     return () => {
       newSocket?.off();
-
+      socket?.disconnect();
       newSocket?.disconnect();
       newPeer?.disconnect();
     };
-  }, [roomId, basicRoomUser]);
+  }, [roomId, basicRoomUser, socket, queryClient, config.socketServerUrl]);
 
   return (
     <React.Fragment>

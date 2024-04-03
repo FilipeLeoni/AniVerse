@@ -29,6 +29,7 @@ export default function SearchInDatabase({
       return results;
     },
     initialData: [],
+    enabled: debouncedQuery !== "",
   });
 
   const router = useRouter();
@@ -77,6 +78,8 @@ export default function SearchInDatabase({
   const handleInputBlur = () => {
     setIsInputFocused(false);
   };
+
+  console.log(data);
 
   const filteredData = data?.filter(
     (suggestion: any) =>

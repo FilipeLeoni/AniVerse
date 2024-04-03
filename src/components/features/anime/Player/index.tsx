@@ -288,7 +288,7 @@ export default function VideoPlayer({
               // file: `${"http://localhost:8081"}/${episodeData.video}`,
               file: isEpisodeLoading
                 ? "https://cdn.plyr.io/static/blank.mp4"
-                : `${"http://localhost:8081"}/${episodeData.video}`,
+                : `${episodeData.video}`,
             },
           ]}
           className="object-contain w-full h-full"

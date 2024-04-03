@@ -128,6 +128,7 @@ export default function UploadPage({
     }
   }, [data?.Media, locale, setValue]);
 
+  console.log(data?.Media?.trailer);
   if (isLoading) {
     return (
       <div className="min-h-screen w-full flex justify-center items-center">
@@ -300,6 +301,7 @@ export default function UploadPage({
       status: data?.status,
       format: data?.format,
       season: data?.season,
+      trailer: data?.trailer,
       seasonYear: Number(data?.seasonYear),
       characters: transformedCharacters,
       isAdult: data?.isAdult,
@@ -420,6 +422,15 @@ export default function UploadPage({
                     containerClassName="md:w-full md:w-1/3 mb-8 text-gray-400 "
                     className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                     {...(register("color"), { max: 100, min: 1 })}
+                  />
+
+                  <Input
+                    containerInputClassName="focus:border border-white/80"
+                    label={"Trailer"}
+                    defaultValue={data?.Media?.trailer.id}
+                    containerClassName="md:w-full md:w-1/3 mb-8 text-gray-400 "
+                    className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
+                    {...register("trailer")}
                   />
 
                   <Input

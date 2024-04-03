@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { WatchHistoryProvider } from "@/contexts/WatchHistoryContext";
 import { VideoProvider } from "@/contexts/GlobalPlayerContext";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
+import BaseLayout from "@/components/layout/BaseLayout";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -29,6 +30,8 @@ export default function RootLayout({
   const locale = useLocale();
   const messages = useMessages();
 
+  const test = false;
+
   return (
     <html lang={locale}>
       <NextIntlClientProvider locale={locale} messages={messages}>
@@ -37,8 +40,8 @@ export default function RootLayout({
             <WatchHistoryProvider>
               <body className={outfit.className}>
                 <NextTopLoader color="#EF4444" />
-                <Header />
-                <main>{children}</main>
+                {/* {test && <Header />} */}
+                <BaseLayout>{children}</BaseLayout>
                 {/* <Footer /> */}
                 <Toaster />
               </body>

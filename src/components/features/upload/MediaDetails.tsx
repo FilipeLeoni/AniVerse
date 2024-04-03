@@ -49,7 +49,7 @@ const MediaDetails: React.FC<MediaDetailsProps> = ({ media }) => {
               </TextIcon>
 
               <DotList>
-                {media.genres.map((genre: any) => (
+                {media?.genres?.map((genre: any) => (
                   <span key={genre}>{convert(genre, "genre")}</span>
                 ))}
               </DotList>

@@ -48,7 +48,7 @@ const GenreSwiper: React.FC<GenresSwiperProps> = ({
       hideNavigation={isMobile}
       {...props}
     >
-      {GENRES.map((genre: any) => (
+      {GENRES?.map((genre: any) => (
         <SwiperSlide key={genre.value}>
           <Link href={`/browse?type=${type}&genres=${genre.value}`}>
             <div

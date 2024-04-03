@@ -21,7 +21,6 @@ interface ShouldWatchProps {
 const ShouldWatch: React.FC<ShouldWatchProps> = ({ data, isLoading }) => {
   const locale = useLocale();
 
-  const title = useMemo(() => getTitle(data, locale), [data, locale]);
   const description = useMemo(
     () => getDescription(data, locale),
     [data, locale]
@@ -57,7 +56,7 @@ const ShouldWatch: React.FC<ShouldWatchProps> = ({ data, isLoading }) => {
       <div className="space-between !mt-8 flex flex-col gap-4 md:flex-row">
         <div className="shrink-0 md:w-2/6">
           <h1 className="text-2xl font-semibold uppercase line-clamp-2">
-            {title}
+            {data?.title?.english}
           </h1>
 
           <div className="mt-4 flex flex-wrap items-center gap-x-8 text-lg">

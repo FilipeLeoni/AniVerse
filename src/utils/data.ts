@@ -110,10 +110,10 @@ export const getTitle = (data: Media, locale?: string) => {
   );
 
   if (!translation) {
-    return data?.title?.userPreferred;
+    return data?.title?.english;
   }
 
-  return translation.title || data?.title?.userPreferred;
+  return translation.title || data?.title?.english;
 };
 
 export const getDescription = (data: Media, locale?: string) => {

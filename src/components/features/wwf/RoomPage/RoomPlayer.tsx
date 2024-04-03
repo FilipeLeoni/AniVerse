@@ -186,7 +186,7 @@ const RoomPlayer = () => {
             ref={playerRef}
             sources={[
               {
-                file: "http://localhost:8081/https://s22.anime-sama.fr/videos/Solo%20Leveling/Saison%201/VF/Solo_Leveling_1_VF.mp4",
+                file: room?.episode?.video,
               },
             ]}
             // subtitles={data?.subtitles || []}

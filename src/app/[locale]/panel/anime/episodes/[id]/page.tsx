@@ -10,10 +10,12 @@ import Input from "@/components/shared/Input";
 import Loading from "@/components/shared/Loading";
 import { UploadMediaProvider } from "@/contexts/UploadMediaContext";
 import { useApi } from "@/hooks/useApi";
-import { useQuery } from "@tanstack/react-query";
+import useDeleteEpisode from "@/hooks/useDeleteEpisode";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { AiFillEdit } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -24,18 +26,52 @@ export default function Params({ params }: { params: { id: number } }) {
   const handleCheckboxChange = () => {
     setChecked(!checked);
   };
+
+  const queryClient = useQueryClient();
+  const { mutate: deleteEpisode, status, isPending } = useDeleteEpisode();
   const api = useApi();
   const mediaId = params.id;
   const { data: anime, isLoading: mediaLoading } = useQuery<any>({
-    queryKey: ["EpisodeAnime", mediaId],
+    queryKey: ["getAnimeById", mediaId],
     queryFn: async () => {
       const response = await api.getAnimeById(mediaId);
       return { media: response };
     },
   });
 
-  const { control } = useForm();
+  const { data: episodes, isLoading: isEpisodeLoading } = useQuery<any>({
+    queryKey: ["getEpisodesByAnime", mediaId],
+    queryFn: async () => {
+      const response = await api.getEpisodeByAnime(mediaId);
+      return response;
+    },
+  });
 
+  async function handleDeleteEpisode(episodeId: number) {
+    deleteEpisode({
+      episodeId,
+    });
+  }
+
+  useEffect(() => {
+    if (status === "pending") {
+      toast.loading("Deleting episode...");
+    }
+
+    if (status === "success") {
+      toast.success("Episode deleted successfully");
+    }
+
+    if (status === "error") {
+      toast.error("Error deleting episode");
+    }
+
+    return () => {
+      toast.dismiss();
+    };
+  }, [status]);
+
+  const { control } = useForm();
   return (
     <React.Fragment>
       <UploadContainer isVerified={true}>
@@ -59,19 +95,27 @@ export default function Params({ params }: { params: { id: number } }) {
                     </Link>
                   </div>
 
-                  <div className="space-y-2">
-                    {anime.media && anime.media.episode.length > 0 ? (
-                      anime.media.episode.map((episode: any) => (
-                        <div key={episode}>
-                          <EpisodeItem onDelete={() => console.log("Deleted")}>
-                            {episode.number}
-                          </EpisodeItem>
-                        </div>
-                      ))
-                    ) : (
-                      <p>No Data...</p>
-                    )}
-                  </div>
+                  {isEpisodeLoading ? (
+                    <div>
+                      <Loading />
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {episodes && episodes.length > 0 ? (
+                        episodes.map((episode: any) => (
+                          <div key={episode}>
+                            <EpisodeItem
+                              onDelete={() => handleDeleteEpisode(episode.id)}
+                            >
+                              {episode.number}
+                            </EpisodeItem>
+                          </div>
+                        ))
+                      ) : (
+                        <p>No Data...</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </UploadMediaProvider>

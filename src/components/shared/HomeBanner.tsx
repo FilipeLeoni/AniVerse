@@ -83,7 +83,7 @@ const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
         slidesPerView={1}
         loop
       >
-        {data.map((slide: Media, index: number) => {
+        {data?.map((slide: Media, index: number) => {
           const title = getTitle(slide, locale);
           const formattedTime = formatTimeDifference(
             slide?.nextAiringEpisode?.airingAt
@@ -130,7 +130,7 @@ const MobileHomeBanner: React.FC<HomeBannerProps> = ({ data }) => {
                         </TextIcon>
                         <DotList>
                           {slide.genres &&
-                            slide.genres.map((genre) => (
+                            slide?.genres?.map((genre) => (
                               <span key={genre}>
                                 {convert(genre, "genre", { locale })}
                               </span>
@@ -166,7 +166,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
   const isRanOnce = useRef(false);
   const locale = useLocale();
 
-  const activeSlide: any = useMemo(() => data[index], [data, index]);
+  const activeSlide: any = useMemo(() => data?.[index], [data, index]);
 
   const handleSlideChange: SwiperProps["onSlideChange"] = useCallback(
     (swiper: any) => {
@@ -232,7 +232,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
             </motion.div>
           )}
 
-          {activeSlide?.type === "ANIME" && activeSlide?.trailer?.id && (
+          {activeSlide?.type === "ANIME" && activeSlide?.trailer && (
             <motion.div
               className={classNames(
                 "opacity-1 absolute w-full overflow-hidden h-[300%] -top-[100%] transition-all duration-700",
@@ -240,7 +240,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
               )}
             >
               <YouTube
-                videoId={activeSlide.trailer.id}
+                videoId={activeSlide.trailer}
                 onReady={({ target }) => {
                   setPlayer(target);
                 }}
