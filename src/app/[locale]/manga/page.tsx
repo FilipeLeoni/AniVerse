@@ -126,9 +126,9 @@ export default function MangaPage() {
         />
       </div>
 
-      <div>
+      {/* <div>
         <ReadSection />
-      </div>
+      </div> */}
 
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
         {isLoading ? (
