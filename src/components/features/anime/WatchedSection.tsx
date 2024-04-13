@@ -1,17 +1,13 @@
-// import useWatched from "@/hooks/useWatched";
 import React from "react";
-import WatchedSwiperSkeleton from "@/components/skeletons/WatchedSwiperSkeleton";
 import Section from "@/components/shared/Section";
 import WatchedSwiper from "@/components/features/anime/WatchedSwiper";
-import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/hooks/useApi";
+import Link from "next/link";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 const WatchedSection = () => {
-  // const { data, isLoading, isError } = useWatched();
-
   const storedHistory = localStorage.getItem("aniverse_history");
   let data: any = [];
-  const api = useApi();
 
   if (storedHistory) {
     data = JSON.parse(storedHistory).watchedEpisodes || [];
@@ -22,7 +18,19 @@ const WatchedSection = () => {
   }
 
   return (
-    <Section title="Rencetly watched">
+    <Section>
+      <Link
+        href={"/anime/recently-watched"}
+        className="flex items-center mb-4 gap-2 group"
+      >
+        <h1 className="uppercase text-2xl font-semibold relative">
+          Rencetly watched
+          <div className="opacity-0 group-hover:opacity-100 absolute -right-0 flex items-center justify-center group-hover:translate-x-8 transition-all duration-300 top-0 mt-1.5">
+            <FaArrowRightLong size={20} />
+          </div>
+        </h1>
+      </Link>
+
       <WatchedSwiper
         data={data}
         slidesPerView={5}

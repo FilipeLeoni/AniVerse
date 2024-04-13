@@ -6,6 +6,7 @@ import Section from "@/components/shared/Section";
 import CardCarousel from "@/components/shared/CardCarousel";
 import SwiperCard from "@/components/shared/SwiperCard";
 import Link from "next/link";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 const ReadSection = () => {
   const { data, isLoading } = useRead();
@@ -14,12 +15,23 @@ const ReadSection = () => {
     return <ListSwiperSkeleton />;
   }
 
-  if (!data) {
+  if (!data || !data?.length) {
     return null;
   }
 
   return (
-    <Section title="Recently Read">
+    <Section>
+      <Link
+        href={"/anime/recently-read"}
+        className="flex items-center mb-4 gap-2 group"
+      >
+        <h1 className="uppercase text-2xl font-semibold relative">
+          Recently Read
+          <div className="opacity-0 group-hover:opacity-100 absolute -right-0 flex items-center justify-center group-hover:translate-x-8 transition-all duration-300 top-0 mt-1.5">
+            <FaArrowRightLong size={20} />
+          </div>
+        </h1>
+      </Link>
       <CardCarousel
         data={data}
         onEachCard={(data: any, isHover: any) => (

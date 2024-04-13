@@ -44,7 +44,7 @@ export default function RecentlyWatched() {
     <Section className="min-h-screen">
       <div className="mt-8">
         {isLoading ? (
-          <div className="min-h-[2rem] w-full relative">
+          <div className="h-screen w-full relative flex justify-center items-center">
             <Loading />
           </div>
         ) : (

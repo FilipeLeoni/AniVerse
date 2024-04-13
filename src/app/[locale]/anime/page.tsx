@@ -111,11 +111,6 @@ export default function AnimePage() {
     staleTime: 3600 * 1000,
   });
 
-  console.log(getRecommend);
-  const PopularAnimeData = PopularAnime?.Page?.media || [];
-  const TrendingAnimeData = TrendingAnime?.Page?.media || [];
-  const UpdatedAnimeData = UpdatedAnime?.Page?.media || [];
-
   return (
     <div>
       <div>
