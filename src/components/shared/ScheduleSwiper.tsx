@@ -1,17 +1,9 @@
 "use client";
 
-import Image from "@/components/shared/Image";
-// import Swiper, { SwiperProps, SwiperSlide } from "@/components/shared/Swiper";
-import useConstantTranslation from "@/hooks/useConstantTranslation";
-import useDevice from "@/hooks/useDevice";
 import classNames from "classnames";
-import Link from "next/link";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Swiper, SwiperSlide } from "swiper/react";
-// import Swiper, { SwiperProps, SwiperSlide } from "@/components/shared/Swiper";
-
-// import { Swiper, SwiperSlide } from "swiper/react";
+import { SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
@@ -22,16 +14,24 @@ import Section from "./Section";
 import { useQuery } from "@tanstack/react-query";
 import { getDatesOfCurrentWeek } from "@/utils";
 import { useApi } from "@/hooks/useApi";
+import Swiper from "./Swiper";
 
 SwiperCore.use([FreeMode, Navigation, Thumbs]);
 
 const ScheduleSwiper: React.FC<any> = ({ type = "anime", ...props }) => {
-  const { isMobile } = useDevice();
-  const { GENRES } = useConstantTranslation();
-  const { DAYSOFWEEK } = useConstantTranslation();
   const [index, setIndex] = useState<number>(0);
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
-  const [selectedDay, setSelectedDay] = useState<any>(null);
+
+  const swiper: any = React.useRef(null);
+
+  const setSwiper = (newSwiper: any) => {
+    swiper.current = newSwiper;
+  };
+
+  React.useEffect(() => {
+    if (swiper.current) {
+      swiper.current.slideTo(index);
+    }
+  }, [index]);
 
   const api = useApi();
   const currentWeekDates = getDatesOfCurrentWeek();
@@ -44,6 +44,21 @@ const ScheduleSwiper: React.FC<any> = ({ type = "anime", ...props }) => {
     },
   });
 
+  useEffect(() => {
+    const todaySeconds = Math.floor(Date.now() / 1000); // 1713030498
+
+    const todayIndex = currentWeekDates.findIndex(
+      (date: any) => date.dateUnix === todaySeconds
+    );
+
+    if (todayIndex !== -1) {
+      setIndex(todayIndex);
+    } else {
+      setIndex(0);
+    }
+  }, []);
+
+  // );
   const handleSlideChange = useCallback((swiper: any) => {
     swiper.loopCreate;
     setIndex(swiper.activeIndex);
@@ -51,16 +66,13 @@ const ScheduleSwiper: React.FC<any> = ({ type = "anime", ...props }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
   return (
-    <>
+    <div className="px-20 pt-4">
       <Swiper
-        // onSwiper={setThumbsSwiper}
-        // slidesPerGroup={1}
+        onSwiper={setSwiper}
+        initialSlide={index}
         centeredSlides
-        // loop
-        // slidesPerView={2}
         grabCursor={true}
         spaceBetween={24}
-        // className="py-20"
         onSlideChange={handleSlideChange}
         breakpoints={{
           1536: {
@@ -83,12 +95,7 @@ const ScheduleSwiper: React.FC<any> = ({ type = "anime", ...props }) => {
       >
         <div className="swiper">
           {currentWeekDates.map((day: any) => (
-            <SwiperSlide
-              key={day.dateUnix}
-              onClick={() => {
-                setSelectedDay(day.dateUnix);
-              }}
-            >
+            <SwiperSlide key={day.dateUnix}>
               {({ isActive }) => {
                 return (
                   <motion.div
@@ -115,38 +122,23 @@ const ScheduleSwiper: React.FC<any> = ({ type = "anime", ...props }) => {
         </div>
       </Swiper>
 
-      <Swiper
-        spaceBetween={10}
-        navigation={true}
-        thumbs={{
-          swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
-        }}
-        className="mySwiper2"
-      >
-        <SwiperSlide className="mt-12">
-          {({ isActive }) => {
-            return (
-              <Section>
-                {isLoading ? (
-                  <div className="min-h-screen w-full flex justify-center mt-16">
-                    <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
-                  </div>
-                ) : data?.length > 0 ? (
-                  <>
-                    <p className="italic text-neutral-300 text-lg">
-                      The airing schedule is synced with your local time.
-                    </p>
-                    <ScheduleTimeline data={data} />
-                  </>
-                ) : (
-                  <p>No new releases scheduled for today.</p>
-                )}
-              </Section>
-            );
-          }}
-        </SwiperSlide>
-      </Swiper>
-    </>
+      <Section className="mt-12">
+        {isLoading ? (
+          <div className="min-h-screen w-full flex justify-center mt-16">
+            <div className="w-16 h-16 border-4 border-primary-500 rounded-full animate-spin"></div>
+          </div>
+        ) : data?.length > 0 ? (
+          <>
+            <p className="italic text-neutral-300 text-lg">
+              The airing schedule is synced with your local time.
+            </p>
+            <ScheduleTimeline data={data} />
+          </>
+        ) : (
+          <p>No new releases scheduled for today.</p>
+        )}
+      </Section>
+    </div>
   );
 };
 export default React.memo(ScheduleSwiper);
