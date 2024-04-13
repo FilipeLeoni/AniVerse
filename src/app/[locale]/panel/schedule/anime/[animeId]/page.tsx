@@ -51,12 +51,14 @@ export default function ScheduleMutate({
     },
   });
 
-  const handleDelete = async () => {
-    deleteSchedule({ type: "ANIME", ...schedule });
+  const handleDelete = async (episodeId: number) => {
+    deleteSchedule({ type: "ANIME", episodeId });
     queryClient.invalidateQueries({
       queryKey: ["getAnimeSchedule", animeId],
     });
   };
+
+  console.log(schedule);
 
   const handleCreateSchedule = async () => {
     const airingAt = value?.unix();
@@ -131,24 +133,27 @@ export default function ScheduleMutate({
           </div>
         )}
 
-        {anime && !isLoadingSchedule && schedule?.airingAt && (
-          <div className="w-full bg-background-800 mt-4 p-4 rounded-md relative flex justify-between">
+        {schedule.map((episode: any) => (
+          <div
+            className="w-full bg-background-800 mt-4 p-4 rounded-md relative flex justify-between"
+            key={episode.number}
+          >
             <div>
               <div className="flex gap-2">
                 <p>Episode: </p>
-                <p className="text-primary-200">{schedule?.episodeNumber}</p>
+                <p className="text-primary-200">{episode?.episodeNumber}</p>
               </div>
 
               <div className="flex gap-2">
                 <p>Date entered: </p>
                 <p className="text-primary-200">
-                  {dayjs.unix(schedule?.airingAt).format("DD-MM-YYYY HH:mm")}
+                  {dayjs.unix(episode?.airingAt).format("DD-MM-YYYY HH:mm")}
                 </p>
               </div>
               <p className="flex gap-2">
                 Schedule created at:{" "}
                 <span className="text-primary-200">
-                  {dayjs(schedule.createdAt).format("DD-MM-YYYY HH:mm")}
+                  {dayjs(episode.createdAt).format("DD-MM-YYYY HH:mm")}
                 </span>
               </p>
             </div>
@@ -159,11 +164,11 @@ export default function ScheduleMutate({
               )}
             >
               {/* <Button
-                iconClassName="w-5 h-5"
-                secondary
-                LeftIcon={AiFillEdit}
-                // onClick={handleEdit}
-              /> */}
+      iconClassName="w-5 h-5"
+      secondary
+      LeftIcon={AiFillEdit}
+      // onClick={handleEdit}
+    /> */}
 
               <DeleteConfirmation
                 reference={
@@ -174,11 +179,11 @@ export default function ScheduleMutate({
                     LeftIcon={AiFillDelete}
                   />
                 }
-                onConfirm={handleDelete}
+                onConfirm={() => handleDelete(episode.id)}
               />
             </div>
           </div>
-        )}
+        ))}
       </div>
       <Toaster />
     </div>

@@ -15,7 +15,7 @@ const useDeleteSchedule: any = () => {
         //   payload.schedule.id
         // );
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/schedule/${payload.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/schedule/${payload.episodeId}`,
           {
             method: "DELETE",
             headers: {
@@ -23,7 +23,6 @@ const useDeleteSchedule: any = () => {
             },
           }
         );
-        console.log(response);
         if (!response.ok) {
           throw new Error("Erro ao buscar comentários");
         }
@@ -50,17 +49,16 @@ const useDeleteSchedule: any = () => {
       console.log(params);
       if (params.type === "ANIME") {
         setType("ANIME");
-        const animeId = params.animeId;
 
         queryClient.invalidateQueries({
-          queryKey: ["getAnimeSchedule", animeId],
+          queryKey: ["getAnimeSchedule"],
         });
       } else {
         const mangaId = params.mangaId;
         setType("MANGA");
 
         queryClient.invalidateQueries({
-          queryKey: ["getMangaSchedule", mangaId],
+          queryKey: ["getMangaSchedule"],
         });
       }
     },
