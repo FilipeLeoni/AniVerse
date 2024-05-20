@@ -15,6 +15,16 @@ const BannerSwiper: React.FC<BannerSwiperProps> = ({ data, ...props }) => {
   const { isDesktop } = useDevice();
   const locale = useLocale();
 
+  const repeatItems = (items: any, minLength: number) => {
+    const repeatedItems = [];
+    while (repeatedItems.length < minLength) {
+      repeatedItems.push(...items);
+    }
+    return repeatedItems.slice(0, minLength);
+  };
+
+  const repeatedData = repeatItems(data, 20);
+
   return (
     <Swiper
       slidesPerGroup={1}
@@ -40,13 +50,13 @@ const BannerSwiper: React.FC<BannerSwiperProps> = ({ data, ...props }) => {
         },
       }}
       slideToClickedSlide
-      defaultActiveSlide={7}
+      defaultActiveSlide={data.length / 2}
       className=""
       {...props}
     >
       <div className="swiper">
-        {data?.map((anime) => (
-          <SwiperSlide key={anime.id}>
+        {data?.map((anime, index) => (
+          <SwiperSlide key={anime.id + index}>
             {({ isActive }) => {
               const title = getTitle(anime, locale);
               return (

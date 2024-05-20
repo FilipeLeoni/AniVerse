@@ -38,41 +38,7 @@ interface Anime {
 
 export default function AnimePage() {
   const api = useApi();
-  const { data: TrendingAnime, isLoading: TrendingAnimeLoading } =
-    useQuery<any>({
-      queryKey: ["TrendingAnime"],
-      queryFn: async () => {
-        const response = await getTrendingMedia();
-        return response.data;
-      },
-    });
 
-  const { data: PopularAnime, isLoading: PopularAnimeLoading } = useQuery<any>({
-    queryKey: ["PopularAnime"],
-    queryFn: async () => {
-      const response = await getPopularMedia();
-      return response.data;
-    },
-  });
-
-  console.log(TrendingAnime);
-
-  const { data: UpdatedAnime } = useQuery<any>({
-    queryKey: ["UpdatedAnime"],
-    queryFn: async () => {
-      const response = await getUpdatedMedia();
-      return response.data;
-    },
-  });
-
-  const { data: RandomAnime, isLoading: RandomAnimeLoading } = useQuery<any>({
-    queryKey: ["RandomAnime"],
-    queryFn: async () => {
-      const response = await getRandomMedia();
-      return response;
-    },
-    staleTime: 3600 * 1000,
-  });
   const { data: getAddedAnimes, isLoading: isLoadingGetAdded } = useQuery<any>({
     queryKey: ["getAddedAnimes"],
     queryFn: async () => {
@@ -81,16 +47,6 @@ export default function AnimePage() {
     },
     staleTime: 3600 * 1000,
   });
-
-  const { data: getRecentlyUpdated, isLoading: isLoadingRecentlyUpdated } =
-    useQuery<any>({
-      queryKey: ["getRecentlyUpdated"],
-      queryFn: async () => {
-        const response = await api.getRecentlyUpdated();
-        return response;
-      },
-      staleTime: 3600 * 1000,
-    });
 
   const { data: getPopularAnime, isLoading: isLoadingPopularAnime } =
     useQuery<any>({
@@ -121,7 +77,7 @@ export default function AnimePage() {
         />
       </div>
 
-      {!TrendingAnimeLoading ? (
+      {!isLoadingRecommend ? (
         <div className="space-y-8 mb-12">
           <WatchedSection />
         </div>
@@ -143,7 +99,7 @@ export default function AnimePage() {
       </Section>
 
       <Section className="md:space-between flex flex-col items-center space-y-4 space-x-0 md:flex-row md:space-y-0 md:space-x-4 pb-14">
-        {PopularAnimeLoading ? (
+        {isLoadingGetAdded ? (
           <ListSwiperSkeleton />
         ) : (
           <CardCarousel data={getPopularAnime} title="Popular Animes" />

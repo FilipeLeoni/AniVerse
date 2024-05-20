@@ -166,7 +166,20 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
   const isRanOnce = useRef(false);
   const locale = useLocale();
 
-  const activeSlide: any = useMemo(() => data?.[index], [data, index]);
+  const repeatItems = (items: any, minLength: number) => {
+    const repeatedItems = [];
+    while (repeatedItems.length < minLength) {
+      repeatedItems.push(...items);
+    }
+    return repeatedItems.slice(0, minLength);
+  };
+
+  const repeatedData = repeatItems(data, 20);
+
+  const activeSlide: any = useMemo(
+    () => repeatedData?.[index],
+    [repeatedData, index]
+  );
 
   const handleSlideChange: SwiperProps["onSlideChange"] = useCallback(
     (swiper: any) => {
@@ -355,7 +368,7 @@ const DesktopHomeBanner: React.FC<HomeBannerProps> = ({ data, icon }) => {
         <div className="banner__overlay--down absolute bottom-0 h-16 w-full"></div>
       </div>
       <Section className="w-full pb-12 max-w-full">
-        <BannerSwiper onSlideChange={handleSlideChange} data={data} />
+        <BannerSwiper onSlideChange={handleSlideChange} data={repeatedData} />
       </Section>
     </React.Fragment>
   );

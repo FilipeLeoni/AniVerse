@@ -15,32 +15,9 @@ import ShouldWatch from "@/components/shared/ShouldWatch";
 import GenreSwiper from "@/components/shared/GenreSwiper";
 import classNames from "classnames";
 import { isDesktop, isMobile } from "react-device-detect";
-import AnimeScheduling from "@/components/features/anime/Player/AnimeScheduling";
-import { randomElement } from "@/utils";
-import {
-  getPopularMedia,
-  getTrendingMedia,
-  getUpdatedMedia,
-} from "@/mocks/queries";
 import BookIcon from "@/components/shared/BookIcon";
 import ReadSection from "@/components/features/manga/ReadSection";
 import { useApi } from "@/hooks/useApi";
-
-interface Anime {
-  id: number;
-  title: {
-    original: string;
-    english: string;
-  };
-}
-
-interface AnimeListResponse {
-  data: {
-    Page: {
-      media: Anime[];
-    };
-  };
-}
 
 export default function MangaPage() {
   const { data: TrendingManga, isLoading: TrendingMangaLoading } =
@@ -52,32 +29,6 @@ export default function MangaPage() {
       },
     });
 
-  console.log(TrendingManga);
-
-  const { data: PopularManga, isLoading: PopularMangaLoading } = useQuery<any>({
-    queryKey: ["PopularManga"],
-    queryFn: async () => {
-      const response = await getPopularMedia("MANGA");
-      return response.data;
-    },
-  });
-  const { data: UpdatedManga, isLoading: UpdatedMangaLodaing } = useQuery<any>({
-    queryKey: ["UpdatedManga"],
-    queryFn: async () => {
-      const response = await getUpdatedMedia("MANGA");
-      return response.data;
-    },
-  });
-
-  const { data: RandomManga, isLoading: RandomMangaLoading } = useQuery<any>({
-    queryKey: ["RandomManga"],
-    queryFn: async () => {
-      const response = TrendingManga;
-
-      return response;
-    },
-    staleTime: 3600 * 1000,
-  });
   const api = useApi();
   const { data: getAddedMangas, isLoading } = useQuery<any>({
     queryKey: ["getAddedMangas"],
@@ -107,14 +58,6 @@ export default function MangaPage() {
     },
     staleTime: 3600 * 1000,
   });
-
-  // const randomTrendingManga = useMemo(() => {
-  //   return randomElement(TrendingManga?.Page.media || []);
-  // }, [TrendingManga]);
-
-  // const PopularMangaData = PopularManga?.Page?.media || [];
-  // const TrendingMangaData = TrendingManga?.Page?.media || [];
-  // const UpdatedMangaData = UpdatedManga?.Page?.media || [];
 
   return (
     <div>
