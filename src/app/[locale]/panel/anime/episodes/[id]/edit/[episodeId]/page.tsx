@@ -13,9 +13,11 @@ import {
   supportedUploadSubtitleFormats,
   supportedUploadVideoFormats,
 } from "@/constants";
+import { useApi } from "@/hooks/useApi";
 import useCreateEpisode from "@/hooks/useCreateEpisode";
+import { useQuery } from "@tanstack/react-query";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 interface UploadCreateEpisodePageProps {
@@ -24,11 +26,8 @@ interface UploadCreateEpisodePageProps {
   mediaId: number;
 }
 
-export default function UploadCreateEpisodePage({
-  params,
-}: {
-  params: { id: number };
-}) {
+export default function EditEpisodePage({ params }: { params: any }) {
+  console.log(params);
   const [videoState, setVideoState] = useState<any>(null);
   const [episodeData, setEpisodeData] = useState({
     episodeName: "",
@@ -37,8 +36,31 @@ export default function UploadCreateEpisodePage({
     thumbnail: "",
   });
 
-  const animeId = params.id;
+  const { id: animeId, episodeId } = params;
+  // const episodeId = params.episodeId;
+  // const animeId = params.id;
   const { mutate: createEpisode } = useCreateEpisode();
+  const api = useApi();
+  const { data } = useQuery({
+    queryKey: ["getEpisodeById"],
+    queryFn: async () => {
+      const response = await api.getEpisodeById(episodeId);
+      return response;
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      setEpisodeData({
+        episodeName: data.title,
+        episodeNumber: data.number,
+        episodeDescription: data.description,
+        thumbnail: data.thumbnail,
+      });
+    }
+  }, [data]);
+
+  console.log(data);
 
   const onSubmit = async () => {
     createEpisode({
@@ -62,7 +84,10 @@ export default function UploadCreateEpisodePage({
             </UploadSection.Left>
 
             <UploadSection.Right>
-              <EpisodeSection onChange={setEpisodeData} />
+              <EpisodeSection
+                onChange={setEpisodeData}
+                defaultData={episodeData}
+              />
             </UploadSection.Right>
           </UploadSection>
 

@@ -30,8 +30,6 @@ export default function RootLayout({
   const locale = useLocale();
   const messages = useMessages();
 
-  const test = false;
-
   return (
     <html lang={locale}>
       <NextIntlClientProvider locale={locale} messages={messages}>

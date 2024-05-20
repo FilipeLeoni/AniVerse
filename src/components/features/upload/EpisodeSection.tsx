@@ -1,24 +1,39 @@
 import FileUploading from "@/components/shared/FileUploading";
 import Input, { InputProps } from "@/components/shared/Input";
 import { supportedUploadImageFormats } from "@/constants";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface EpisodeNameUploadProps {
   onChange: (episodeData: any) => void;
   inputProps?: Omit<InputProps, "ref">;
+  defaultData?: any;
 }
 
 const EpisodeSection: React.FC<EpisodeNameUploadProps> = ({
   onChange,
   inputProps,
+  defaultData,
 }) => {
   const [episodeData, setEpisodeData] = useState({
-    episodeName: "",
-    episodeNumber: "",
-    episodeDescription: "",
+    episodeName: defaultData?.episodeName || "",
+    episodeNumber: defaultData?.episodeNumber || "",
+    episodeDescription: defaultData?.episodeDescription || "",
     // thumbnail: "",
   });
 
+  useEffect(() => {
+    if (defaultData) {
+      setEpisodeData({
+        episodeName: defaultData?.episodeName || "",
+        episodeNumber: defaultData?.episodeNumber || "",
+        episodeDescription: defaultData?.episodeDescription || "",
+        // thumbnail: "",
+      });
+    }
+  }, [defaultData]);
+
+  console.log(defaultData);
+  console.log(episodeData.episodeName);
   const handleInputChange = (field: string, value: any) => {
     console.log(value);
     setEpisodeData((prevState) => ({
@@ -50,6 +65,7 @@ const EpisodeSection: React.FC<EpisodeNameUploadProps> = ({
             label="Number (required)"
             placeholder="1"
             className="px-3 py-2"
+            value={episodeData.episodeNumber}
             onChange={(e: any) =>
               handleInputChange("episodeNumber", e.target.value)
             }
@@ -68,6 +84,7 @@ const EpisodeSection: React.FC<EpisodeNameUploadProps> = ({
           <Input
             label="Title (optional)"
             placeholder="You are awesome!"
+            value={episodeData.episodeName}
             className="px-3 py-2"
             onChange={(e: any) =>
               handleInputChange("episodeName", e.target.value)
@@ -87,6 +104,7 @@ const EpisodeSection: React.FC<EpisodeNameUploadProps> = ({
       </div>
       <Input
         label="Description (optional)"
+        value={episodeData.episodeDescription}
         placeholder="Because you are awesome, so you are uploading a new episode!"
         className="px-3 py-2"
         onChange={(e: any) =>
