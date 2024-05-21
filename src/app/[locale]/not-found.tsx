@@ -17,23 +17,25 @@ function NotFound() {
         <div className="mb-4 text-gray-300">
           <span className="text-lg">
             <div>
-              <span className="text-red-300">Error 404</span>
+              Welcome to
+              <span className="text-red-300"> the 404 dimension</span>
             </div>
           </span>
         </div>
 
-        <p className="text-4xl font-semibold">There&apos;s nothing here...</p>
+        <p className="text-4xl font-semibold">
+          You have discovered a new dimension
+        </p>
 
         <p className="text-2xl text-gray-200 mt-4">
-          ...maybe the page you&apos;re looking for is not found or never
-          existed.
+          But unfortunately, this dimension has nothing at all
         </p>
 
         <Link
           href="/"
           className="bg-transparent mt-8 border-2 border-red-500 rounded hover:bg-red-500 text-white transition-colors px-3 py-2"
         >
-          <p className="text-lg">Go back</p>
+          <p className="text-lg">Go back to the old dimension</p>
         </Link>
       </Section>
     </div>

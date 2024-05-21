@@ -1,7 +1,7 @@
 "use client";
 
 import HomeBanner from "@/components/shared/HomeBanner";
-import React, { useMemo } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import "swiper/css";
 import "swiper/css/free-mode";
