@@ -586,9 +586,11 @@ export const useApi = () => ({
     }
   },
 
-  getRecommendations: async (animeId: string) => {
+  getRecommendations: async (animeId: string, quantity: number = 14) => {
     try {
-      const response = await Api.get(`anime/recommendation/${animeId}`);
+      const response = await Api.get(
+        `anime/recommendation/${animeId}?quantity=${quantity}`
+      );
       return response.data;
     } catch (error) {
       console.log(error);

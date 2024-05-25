@@ -33,14 +33,23 @@ export default function WatchPage({ params }: { params: { params: string } }) {
     },
   });
 
-  const { data: related } = useQuery<any>({
-    queryKey: ["getAddedAnimes"],
+  const { data: recommendations } = useQuery<any>({
+    queryKey: ["getRecommendations"],
     queryFn: async () => {
-      const response = await api.getUploadedAnimes();
+      const response = await api.getRecommendations(animeId, 8);
       return { media: response };
     },
   });
 
+  console.log(anime);
+
+  const relations = [];
+  if (anime?.media?.relations?.animes) {
+    relations.push(...anime?.media?.relations?.animes);
+  }
+  if (anime?.media?.relations?.Manga) {
+    relations.push(...anime?.media?.relations?.Manga);
+  }
   return (
     <div className="flex flex-col w-full h-auto pt-16">
       <div style={{ height: isMobile ? "100%" : "70vh" }} className="relative">
@@ -66,7 +75,7 @@ export default function WatchPage({ params }: { params: { params: string } }) {
           </div>
         </Section>
 
-        <div className="w-full flex md:-ml-20">
+        <div className="w-full flex md:-ml-20 p-4">
           <Tabs selectedTabClassName="bg-red-600">
             <TabList className="flex items-center justify-start gap-x-2 list-none -ml-1 mb-4">
               <Tab className="px-4 py-1 bg-background-700 rounded-md cursor-pointer outline-none">
@@ -78,10 +87,10 @@ export default function WatchPage({ params }: { params: { params: string } }) {
             </TabList>
 
             <TabPanel>
-              {related?.media?.data?.map((media: any) => (
+              {relations?.map((media: any) => (
                 <HorizontalCard
                   // redirectUrl={`/upload/anime/${related.latestManga.id}`}
-                  key={media.id}
+                  key={media}
                   data={media}
                   className="w-full"
                 />
@@ -89,7 +98,14 @@ export default function WatchPage({ params }: { params: { params: string } }) {
             </TabPanel>
 
             <TabPanel>
-              <h2>Any content 2</h2>
+              {recommendations?.media?.map((media: any) => (
+                <HorizontalCard
+                  // redirectUrl={`/upload/anime/${related.latestManga.id}`}
+                  key={media.id}
+                  data={media}
+                  className="w-full"
+                />
+              ))}
             </TabPanel>
           </Tabs>
         </div>

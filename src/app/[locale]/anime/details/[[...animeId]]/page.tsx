@@ -77,7 +77,6 @@ export default function DetailsPage({
     relations.push(...data?.Media?.relations?.Manga);
   }
 
-  console.log(data?.Media);
   return (
     <div className="pb-8">
       <DetailsBanner image={data?.Media?.bannerImage} />
