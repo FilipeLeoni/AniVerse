@@ -77,6 +77,7 @@ export default function DetailsPage({
     relations.push(...data?.Media?.relations?.Manga);
   }
 
+  console.log(data?.Media);
   return (
     <div className="pb-8">
       <DetailsBanner image={data?.Media?.bannerImage} />
@@ -239,6 +240,18 @@ export default function DetailsPage({
               value={numberWithCommas(data?.Media?.trending)}
             />
 
+            <InfoItem
+              title={"Studio"}
+              value={data?.Media?.studios?.map((studio: any) => (
+                <div
+                  key={studio}
+                  className="hover:text-primary-300 transition duration-300 cursor-pointer"
+                >
+                  <p>{studio}</p>
+                </div>
+              ))}
+            />
+
             {/* <InfoItem
               title="Studio"
               value={data?.Media?.studios.nodes.map((studio: any) => (
@@ -258,35 +271,41 @@ export default function DetailsPage({
                 data?.Media?.seasonYear
               }`}
             />
-            <InfoItem
+            {/* <InfoItem
               title={"Synonimus"}
               value={data?.Media?.synonyms.map((synomym: any) => (
                 <div key={synomym} className="-mb-2">
                   <p>{synomym}</p>
                 </div>
               ))}
-            />
+            /> */}
           </div>
-          <div className="space-y-2 text-gray-400">
-            <h1 className="font-semibold">Tags</h1>
 
-            <ul className="overflow-x-auto flex flex-row md:flex-col gap-2 [&>*]:shrink-0 md:no-scrollbar">
-              {data?.Media?.tags.map((tag: any) => (
-                <Link
-                  href={{
-                    pathname: "/browse",
-                    query: { type: "anime", tags: tag.name },
-                  }}
-                  key={tag.id}
-                  className="md:block"
-                >
-                  <li className="p-2 rounded-md bg-background-900 hover:text-primary-300 transition duration-300">
-                    {tag.name}
-                  </li>
-                </Link>
-              ))}
-            </ul>
-          </div>
+          {data?.Media?.tags.length > 0 && (
+            <div className="space-y-2 text-gray-400  flex flex-col w-full">
+              <h1 className="font-semibold">Tags</h1>
+
+              <div className="overflow-x-auto flex flex-row md:flex-col gap-2 [&>*]:shrink-0 md:no-scrollbar ">
+                {data?.Media?.tags.map((tag: any) => (
+                  // <Link
+                  //   href={{
+                  //     pathname: "/browse",
+                  //     query: { type: "anime", tags: tag.name },
+                  //   }}
+                  //   key={tag.id}
+                  //   className="md:block"
+                  // >
+                  <p
+                    className="p-2 rounded-md bg-background-900 hover:text-primary-300 transition duration-300 cursor-pointer"
+                    key={tag}
+                  >
+                    {tag}
+                  </p>
+                  // </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-12 md:col-span-8">

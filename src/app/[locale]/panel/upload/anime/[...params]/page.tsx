@@ -74,7 +74,6 @@ export default function UploadPage({
   useEffect(() => {
     const propertiesToSet = {
       synonyms: setSynonimus,
-      tags: setTags,
       characters: setCharacter,
       bannerImage: setBanner,
       genres: setGenres,
@@ -86,6 +85,19 @@ export default function UploadPage({
           setState(data?.Media[property]);
         }
       });
+
+      if (data?.Media?.tags.length > 0) {
+        const categories = data?.Media?.tags?.map((item: any) => item.name);
+        setTags(categories);
+      }
+
+      if (data?.Media?.studios.nodes?.length > 0) {
+        const studios = data?.Media?.studios.nodes.map(
+          (studio: any) => studio.name
+        );
+
+        setStudios(studios);
+      }
 
       setValue("format", data?.Media.format);
       setValue("english", data?.Media.title.english);
@@ -118,10 +130,6 @@ export default function UploadPage({
       );
     }
 
-    if (data?.Media?.studios) {
-      setStudios(data?.Media.studios.nodes);
-    }
-
     if (data?.Media?.coverImage?.extraLarge) {
       setCoverImage(data?.Media.coverImage.extraLarge);
     }
@@ -131,7 +139,6 @@ export default function UploadPage({
     }
   }, [data?.Media, locale, setValue]);
 
-  console.log(data?.Media?.trailer);
   if (isLoading) {
     return (
       <div className="min-h-screen w-full flex justify-center items-center">
@@ -306,6 +313,8 @@ export default function UploadPage({
       status: data?.status,
       format: data?.format,
       season: data?.season,
+      studios: studios,
+      tags: tags,
       trailer: data?.trailer,
       seasonYear: Number(data?.seasonYear),
       characters: transformedCharacters,
@@ -336,6 +345,9 @@ export default function UploadPage({
   const nextAiringSchedule = data?.Media?.airingSchedule?.nodes
     ?.sort((a: any, b: any) => a.episode - b.episode)
     .find((schedule: any) => dayjs.unix(schedule.airingAt).isAfter(dayjs()));
+
+  console.log(tags);
+  console.log(studios);
 
   return (
     <div className="pb-8 relative">
