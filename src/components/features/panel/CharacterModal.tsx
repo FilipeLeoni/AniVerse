@@ -6,6 +6,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const AddDataModal = ({
   isOpen,
@@ -51,6 +52,9 @@ const AddDataModal = ({
 
       reader.readAsDataURL(file);
     } else {
+      toast.error(
+        "Invalid file type. Please upload a valid image file. (png, jpg, jpeg, webp)"
+      );
       setSelectedFile(null);
     }
   };
@@ -141,6 +145,7 @@ const AddDataModal = ({
                       type="file"
                       id="fileInput"
                       className="hidden"
+                      accept=".jpg,.jpeg,.png,.webp"
                       onChange={(e) => {
                         handleFileChange(e);
                       }}

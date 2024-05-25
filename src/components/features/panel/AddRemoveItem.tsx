@@ -77,7 +77,7 @@ export default function AddRemoveItem({
                 <button
                   type="button"
                   onClick={() => handleAddRemove("", state, setState, index)}
-                  className="hover:bg-primary-900 px-2 rounded hover:text-primary-400"
+                  className="hover:bg-primary-900/80 px-2 rounded hover:text-primary-300"
                 >
                   x
                 </button>

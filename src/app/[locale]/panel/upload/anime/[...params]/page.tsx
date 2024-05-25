@@ -105,7 +105,10 @@ export default function UploadPage({
           locale,
         })
       );
-      setValue("episodes", parseInt(data?.Media.episodes));
+      setValue(
+        "episodes",
+        data?.Media.episodes ? parseInt(data?.Media.episodes) : ""
+      );
       setValue("duration", parseInt(data?.Media.duration));
       setValue(
         "status",
@@ -157,12 +160,14 @@ export default function UploadPage({
 
   const transformCharactersData = (characters: any) => {
     return characters.map((character: any) => ({
-      name: character.node.name.userPreferred,
-      image: character.node.image.large,
-      description: character.node.description,
-      gender: character.node.gender,
-      age: Number(character.node.age),
-      dateOfBirth: `${character.node.dateOfBirth.day}/${character.node.dateOfBirth.month}`,
+      name: character?.node?.name?.userPreferred,
+      image: character?.node?.image?.large,
+      description: character?.node?.description,
+      gender: character?.node?.gender,
+      age: Number(character?.node?.age),
+      dateOfBirth: `${character?.node?.dateOfBirth?.day || ""}/${
+        character?.node?.dateOfBirth?.month || ""
+      }`,
       role: character.role,
     }));
   };
@@ -291,8 +296,8 @@ export default function UploadPage({
       },
       referId: referId,
       genres: genres,
-      totalEpisodes: episodes,
-      duration: duration,
+      totalEpisodes: episodes || null,
+      duration: duration || null,
       countryOfOrigin: data?.countryOfOrigin,
       popularity: popularity,
       favourites: favourites,
@@ -427,7 +432,7 @@ export default function UploadPage({
                   <Input
                     containerInputClassName="focus:border border-white/80"
                     label={"Trailer"}
-                    defaultValue={data?.Media?.trailer.id}
+                    defaultValue={data?.Media?.trailer?.id}
                     containerClassName="md:w-full md:w-1/3 mb-8 text-gray-400 "
                     className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                     {...register("trailer")}
@@ -476,13 +481,14 @@ export default function UploadPage({
                 <Input
                   containerInputClassName="focus:border border-white/80"
                   label={"Total Episodes"}
-                  defaultValue={parseInt(data?.Media.episodes)}
+                  defaultValue={parseInt(data?.Media?.episodes)}
+                  type="number"
                   containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
                   className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                   {...register("episodes")}
                 />
 
-                {data?.Media.duration && (
+                {data?.Media?.duration && (
                   <Input
                     containerInputClassName="focus:border border-white/80"
                     label={"Duration"}
@@ -535,13 +541,14 @@ export default function UploadPage({
               <Input
                 containerInputClassName="focus:border border-white/80"
                 label={"Total Episodes"}
-                defaultValue={parseInt(data?.Media.episodes)}
+                defaultValue={parseInt(data?.Media?.episodes)}
+                type="number"
                 containerClassName="w-full md:w-1/3 mb-8 text-gray-400 "
                 className="px-4 py-1 text-gray-400 focus:ring-2 focus:ring-primary-500 rounded-sm"
                 {...register("episodes")}
               />
 
-              {data?.Media.duration && (
+              {data?.Media?.duration && (
                 <Input
                   containerInputClassName="focus:border border-white/80"
                   label={"Duration"}
