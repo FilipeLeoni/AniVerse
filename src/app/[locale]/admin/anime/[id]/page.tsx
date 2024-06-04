@@ -23,7 +23,9 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 
 export default function Params({ params }: { params: { id: number } }) {
   const [checked, setChecked] = useState(false);
+
   const router = useRouter();
+
   const handleCheckboxChange = () => {
     setChecked(!checked);
   };

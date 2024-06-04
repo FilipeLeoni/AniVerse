@@ -1,6 +1,6 @@
 export const LayoutRoutes = [
   "/login",
-  "/panel",
+  "/admin",
   "/manga/read",
   "/anime/watch",
   "/wwf/",

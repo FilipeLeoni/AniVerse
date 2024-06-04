@@ -259,6 +259,15 @@ export const useApi = () => ({
     }
   },
 
+  editAnimeEpisode: async (episodeId: string, data: any) => {
+    try {
+      const response = await Api.put(`episodes/${episodeId}`, data);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   deleteAnimeEpisode: async (episodeId: any) => {
     try {
       const response = await Api.delete(`episodes/${episodeId}`);

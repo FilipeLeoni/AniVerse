@@ -37,45 +37,52 @@ const SidebarPanel = () => {
   };
 
   const Options = [
-    { name: "Upload Anime", href: "/panel/upload/anime", icon: "" },
-    { name: "Upload Manga", href: "/panel/upload/manga", icon: "" },
-    { name: "Upload Episode", href: "/panel/anime/episodes", icon: "" },
-    { name: "Upload Chapter", href: "/panel/manga/chapters", icon: "" },
+    { name: "Upload Anime", href: "/admin/upload/anime", icon: "" },
+    { name: "Upload Manga", href: "/admin/upload/manga", icon: "" },
+    { name: "Upload Episode", href: "/admin/anime/episodes", icon: "" },
+    { name: "Upload Chapter", href: "/admin/manga/chapters", icon: "" },
   ];
 
   const routes = [
     {
       name: "Home",
-      href: "/panel/home",
+      href: "/admin",
       icon: <AiOutlineHome size={24} />,
     },
     {
       name: "Anime",
-      href: "/panel/anime",
+      href: "/admin/anime",
       icon: <AiOutlineVideoCameraAdd size={24} />,
     },
     {
       name: "Manga",
-      href: "/panel/manga",
+      href: "/admin/manga",
       icon: <BiImageAdd size={24} />,
     },
     {
       name: "The Thief",
-      href: "/panel/thief",
+      href: "/admin/thief",
       icon: <PiDetective size={24} />,
     },
     {
       name: "Schedule",
-      href: "/panel/schedule",
+      href: "/admin/schedule",
       icon: <IoCalendarOutline size={24} />,
     },
     {
       name: "Roles",
-      href: "/panel/roles",
+      href: "/admin/roles",
       icon: <MdOutlineAdminPanelSettings size={24} />,
     },
     ...Options,
   ];
+
+  const isSelected = (href: string) => {
+    if (href === "/admin") {
+      return pathname === href;
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -164,9 +171,7 @@ const SidebarPanel = () => {
               <Button
                 primary
                 className={`cursor-pointer w-full font-bold flex gap-2 items-center ${
-                  pathname.startsWith(href)
-                    ? "!bg-neutral-600"
-                    : "bg-transparent"
+                  isSelected(href) ? "!bg-neutral-600" : "bg-transparent"
                 }`}
                 onClick={() => handleChangePage(href)}
               >
